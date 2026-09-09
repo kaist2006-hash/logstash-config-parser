@@ -1,0 +1,242 @@
+[
+  {
+    "id": "D01_request",
+    "parser": "detail",
+    "event": {
+      "b_body": "0073Q99MMMMMMMMMMMMMMMMMMMM02009900DDDDDDDDDD123456789000000001230000AB12",
+      "status": "OUT"
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "format": "GUIDE_D01 신규 NICE 요청",
+        "direction": "request",
+        "detail": {
+          "transaction_amount": 12300,
+          "installment_months": 0,
+          "campaign_code": "AB12"
+        }
+      }
+    }
+  },
+  {
+    "id": "D01_response",
+    "parser": "detail",
+    "event": {
+      "b_body": "0093Q99MMMMMMMMMMMMMMMMMMMM02109900DDDDDDDDDD12345678900000APR0000100000001230020260909160000",
+      "status": "IN"
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "response_code": "0000",
+        "detail": {
+          "approval_number": "APR00001",
+          "transaction_amount": 12300,
+          "approval_datetime": "2026-09-09T16:00:00+09:00"
+        }
+      }
+    }
+  },
+  {
+    "id": "D02_private_request",
+    "parser": "detail",
+    "event": {
+      "b_body": "0059ZGUIDE1MMMMMMMMMMMMMMMMMMMM0200991234567890000000012300",
+      "status": "OUT"
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "parser_type": "private_fixed",
+        "version": "ZGUIDE1",
+        "detail": {
+          "transaction_amount": 12300
+        }
+      }
+    }
+  },
+  {
+    "id": "D03_tag",
+    "parser": "detail",
+    "event": {
+      "b_body": "\u000200711234567890SSSSSSSSSSSSSSSS010101TTTTTTTTTTTTS          Q99ABC123\u001c\u0003",
+      "status": "OUT"
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "parser_type": "integrated_tag",
+        "direction": "request",
+        "detail": {
+          "coupon_code": "ABC123"
+        }
+      }
+    }
+  },
+  {
+    "id": "D04_ponta",
+    "parser": "detail",
+    "event": {
+      "b_body": "0830PTXMMMMMMMMMMMMMMMMMMMM02009900DDDDDDDDDD1234567890GUIDE_MEMBER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ",
+      "status": "OUT"
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "text_code": "PTX",
+        "parser_type": "nice_fixed",
+        "detail": {
+          "Member_Id": "GUIDE_MEMBER                  "
+        }
+      }
+    }
+  },
+  {
+    "id": "D05_dynamic",
+    "parser": "detail",
+    "event": {
+      "b_body": "0079Q98MMMMMMMMMMMMMMMMMMMM02009900DDDDDDDDDD123456789000000001230000AB12003ABC",
+      "status": "OUT"
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "format": "GUIDE_D05 길이 접두부 데이터",
+        "detail": {
+          "campaign_code": "AB12",
+          "extra_length": "003",
+          "extra_data": "ABC"
+        }
+      }
+    }
+  },
+  {
+    "id": "F04_request",
+    "parser": "fs",
+    "event": {
+      "b_body": "[IN] [GUIDE]\u001c1234567890\u001cT1\u001c0000012300\u001c00",
+      "status": "IN",
+      "log": {
+        "file": {
+          "path": "/sample/GUIDE_ONLY_NEW_F04.log"
+        }
+      }
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "direction": "request",
+        "cat_id": "1234567890",
+        "trade_code": "T1",
+        "detail": {
+          "transaction_amount": "0000012300",
+          "installment_months": "00"
+        }
+      }
+    }
+  },
+  {
+    "id": "F04_response",
+    "parser": "fs",
+    "event": {
+      "b_body": "[OUT] [GUIDE]\u001c1234567890\u001cT1\u001c0000\u001cAPR00001\u001c20260909160000",
+      "status": "OUT",
+      "log": {
+        "file": {
+          "path": "/sample/GUIDE_ONLY_NEW_F04.log"
+        }
+      }
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "direction": "response",
+        "cat_id": "1234567890",
+        "trade_code": "T1",
+        "response_code": "0000",
+        "detail": {
+          "approval_number": "APR00001",
+          "approval_datetime": "20260909160000"
+        }
+      }
+    }
+  },
+  {
+    "id": "F01_gsx_route",
+    "parser": "fs",
+    "event": {
+      "b_body": "HEADER\u001c\u001c1000\u001c\u001c\u001c\u001c\u001c00\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c0000012300\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c1234567890",
+      "status": "IN",
+      "log": {
+        "file": {
+          "path": "/sample/GUIDE_ONLY_GSX_F01.log"
+        }
+      }
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "direction": "request",
+        "detail": {
+          "transaction_amount": "0000012300"
+        }
+      }
+    }
+  },
+  {
+    "id": "F02_gsx_coupon",
+    "parser": "fs",
+    "event": {
+      "b_body": "HEADER\u001c\u001c1000\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c0000012300\u001c1234567890\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c\u001c0000\u001cCOUPON01",
+      "status": "OUT",
+      "log": {
+        "file": {
+          "path": "/sample/GCHND_0295_A01.log"
+        }
+      }
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "detail": {
+          "coupon_code": "COUPON01"
+        }
+      }
+    }
+  },
+  {
+    "id": "F03_sk_trade",
+    "parser": "fs",
+    "event": {
+      "b_body": "T1=\u001c1234567890\u001c\u001c\u001c0000012300/0000001118",
+      "status": "IN",
+      "log": {
+        "file": {
+          "path": "/sample/GCHND_0070_A01.log"
+        }
+      }
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "trade_code": "T1",
+        "detail": {
+          "transaction_amount": "0000012300",
+          "tax_amount": "0000001118"
+        }
+      }
+    }
+  },
+  {
+    "id": "F04_other_code",
+    "parser": "fs",
+    "event": {
+      "b_body": "HEADER\u001c1234567890\u001cT2\u001c0000012300\u001c00",
+      "status": "IN",
+      "log": {
+        "file": {
+          "path": "/sample/GUIDE_ONLY_NEW_F04.log"
+        }
+      }
+    },
+    "expected_subset": {
+      "nice_pos": {
+        "direction": "request"
+      }
+    },
+    "absent_paths": [
+      "[nice_pos][cat_id]",
+      "[nice_pos][detail]"
+    ]
+  }
+]

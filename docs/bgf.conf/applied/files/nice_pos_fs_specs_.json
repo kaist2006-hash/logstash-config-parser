@@ -1,0 +1,170 @@
+{
+  "version": "2026-09-04",
+  "_GUIDE_START": "교육용 적용 사본. GUIDE_F01~F04 검색. 각 예시는 실제 JSON 설정이며 운영 반영용 완성본은 아닙니다.",
+  "source": "bgf(8)(1).conf FS block",
+  "description": "FS 3개 업체(GSX/GSC, SK 표준포스, S-OIL 표준포스)의 현재 bgf.conf 동작을 외부 Ruby parser에서 동일하게 재현하기 위한 규격",
+  "_guide_routes": "업체 경로 등록 위치. 기존 GSX/SK/S-OIL과 규격이 같으면 해당 업체 배열에 새 경로만 추가.",
+  "_GUIDE_F01": "기존 GSX와 완전히 같은 새 경로: routes.gsx 마지막의 GUIDE_ONLY_GSX_F01만 추가. Ruby 변경 없음.",
+  "_GUIDE_F04_1": "새 FS 구조: routes.guide_shop을 추가. 연결은 F04_2 mappings → FS Ruby F04_3 case → F04_4 함수.",
+  "routes": {
+    "gsx": [
+      "GCHND_0295_A01",
+      "GSC_0295_A01",
+      "GCHND_0299_A01",
+      "GSC_0299_A01",
+      "GUIDE_ONLY_GSX_F01"
+    ],
+    "sk": [
+      "GCHND_0070_A01"
+    ],
+    "soil": [
+      "GCHND_0216_A01"
+    ],
+    "guide_shop": [
+      "GUIDE_ONLY_NEW_F04"
+    ]
+  },
+  "_guide_new_vendor": {
+    "same_format": "기존 업체와 규격 동일 -> routes만 추가, RB/mappings 수정 없음",
+    "new_format": "새 규격 -> routes에 test 추가 + mappings에 test_request/test_response 추가 + RB case vendor/parse_test 추가"
+  },
+  "_guide_mappings": "com_N -> nice_pos 공통필드 위치 등록. 새 규격은 test_request/test_response처럼 항목을 추가.",
+  "_GUIDE_F02": "기존 GSX 일반응답에 com_83 → coupon_code를 추가. 매핑 안에 설명용 속성을 넣지 않습니다.",
+  "_GUIDE_F04_2": "mappings 맨 앞에 guide_shop_request/response를 추가. 이 이름은 Ruby copy_map의 이름과 같아야 합니다.",
+  "mappings": {
+    "guide_shop_request": {
+      "com_10": "[nice_pos][cat_id]",
+      "com_11": "[nice_pos][trade_code]",
+      "com_12": "[nice_pos][detail][transaction_amount]",
+      "com_13": "[nice_pos][detail][installment_months]"
+    },
+    "guide_shop_response": {
+      "com_10": "[nice_pos][cat_id]",
+      "com_11": "[nice_pos][trade_code]",
+      "com_12": "[nice_pos][response_code]",
+      "com_13": "[nice_pos][detail][approval_number]",
+      "com_14": "[nice_pos][detail][approval_datetime]"
+    },
+    "gsx_cancel_request": {
+      "com_47": "[nice_pos][cat_id]",
+      "com_51": "[nice_pos][detail][transaction_amount]",
+      "com_18": "[nice_pos][detail][installment_months]",
+      "com_52": "[nice_pos][detail][tax_amount]",
+      "com_53": "[nice_pos][detail][service_charge]",
+      "com_16": "[nice_pos][detail][original_approval_number]"
+    },
+    "gsx_cancel_response": {
+      "com_49": "[nice_pos][cat_id]",
+      "com_77": "[nice_pos][response_code]",
+      "com_48": "[nice_pos][detail][transaction_amount]",
+      "com_26": "[nice_pos][detail][installment_months]",
+      "com_69": "[nice_pos][detail][tax_amount]",
+      "com_70": "[nice_pos][detail][service_charge]",
+      "com_19": "[nice_pos][detail][approval_number]",
+      "com_23": "[nice_pos][detail][issuer_name]",
+      "com_24": "[nice_pos][detail][acquirer_code]",
+      "com_25": "[nice_pos][detail][acquirer_name]",
+      "com_41": "[nice_pos][detail][display_message]"
+    },
+    "gsx_normal_request": {
+      "com_51": "[nice_pos][cat_id]",
+      "com_25": "[nice_pos][detail][transaction_amount]",
+      "com_16": "[nice_pos][detail][installment_months]",
+      "com_56": "[nice_pos][detail][tax_amount]",
+      "com_57": "[nice_pos][detail][service_charge]"
+    },
+    "gsx_normal_response": {
+      "com_49": "[nice_pos][cat_id]",
+      "com_82": "[nice_pos][response_code]",
+      "com_77": "[nice_pos][detail][transaction_unique_number]",
+      "com_19": "[nice_pos][detail][approval_number]",
+      "com_78": "[nice_pos][detail][issuer_code]",
+      "com_23": "[nice_pos][detail][issuer_name]",
+      "com_24": "[nice_pos][detail][acquirer_code]",
+      "com_25": "[nice_pos][detail][acquirer_name]",
+      "com_69": "[nice_pos][detail][display_message]",
+      "com_48": "[nice_pos][detail][transaction_amount]",
+      "com_26": "[nice_pos][detail][installment_months]",
+      "com_71": "[nice_pos][detail][tax_amount]",
+      "com_72": "[nice_pos][detail][service_charge]",
+      "com_83": "[nice_pos][detail][coupon_code]"
+    },
+    "sk_dw_response": {
+      "com_10": "[nice_pos][response_code]",
+      "com_11": "[nice_pos][detail][display_message]",
+      "com_12": "[nice_pos][cat_id]"
+    },
+    "sk_common_response": {
+      "com_15": "[nice_pos][detail][transaction_unique_number]",
+      "com_16": "[nice_pos][detail][approval_number]",
+      "com_19": "[nice_pos][detail][merchant_number]",
+      "com_12": "[nice_pos][detail][acquirer_code]",
+      "com_20": "[nice_pos][detail][acquirer_name]",
+      "com_22": "[nice_pos][detail][display_message]"
+    },
+    "sk_hk_response": {
+      "com_12": "[nice_pos][detail][acquirer_code]",
+      "com_15": "[nice_pos][detail][transaction_unique_number]",
+      "com_16": "[nice_pos][detail][approval_number]",
+      "com_23": "[nice_pos][detail][display_message]"
+    },
+    "soil_finance_request": {
+      "com_10": "[nice_pos][detail][transaction_amount]",
+      "com_13": "[nice_pos][detail][tax_amount]",
+      "com_14": "[nice_pos][detail][service_charge]"
+    },
+    "soil_finance_response": {
+      "com_10": "[nice_pos][response_code]",
+      "com_11": "[nice_pos][detail][transaction_amount]",
+      "com_16": "[nice_pos][detail][tax_amount]",
+      "com_17": "[nice_pos][detail][service_charge]",
+      "com_21": "[nice_pos][detail][transaction_unique_number]",
+      "com_18": "[nice_pos][detail][approval_number]",
+      "com_19": "[nice_pos][detail][merchant_number]",
+      "com_22": "[nice_pos][detail][issuer_name]",
+      "com_23": "[nice_pos][detail][acquirer_code]",
+      "com_24": "[nice_pos][detail][acquirer_name]",
+      "com_20": "[nice_pos][detail][display_message]"
+    },
+    "soil_hp_response": {
+      "com_10": "[nice_pos][response_code]",
+      "com_12": "[nice_pos][detail][display_message]"
+    },
+    "soil_a3_response": {
+      "com_10": "[nice_pos][response_code]",
+      "com_13": "[nice_pos][detail][display_message]"
+    },
+    "soil_fo_response": {
+      "com_10": "[nice_pos][response_code]",
+      "com_15": "[nice_pos][detail][merchant_number]",
+      "com_17": "[nice_pos][detail][display_message]",
+      "com_19": "[nice_pos][detail][issuer_name]",
+      "com_25": "[nice_pos][detail][acquirer_name]"
+    }
+  },
+  "_GUIDE_F03": "sk.request_amount_trades의 기존 표현식 끝에 |T1만 추가. com_13이 기존과 같은 금액/세금 구조인 요청이라는 가정.",
+  "sk": {
+    "request_amount_trades": "^(?:[DdVvFfGg][125]|[HhKk][1-5]|[MmJj][34]|PA|PC|T1)$",
+    "installment_trades": "^(?:[DdVvFfGg][125]|PA|PC)$",
+    "cancel_trades": "^(?:[DdVvFfGg]2|PA|PC|[HhKk][25]|[MmJj]4)$",
+    "common_response_trades": "^(?:[DdVvFfGg][125]|[MmJj][34]|M[QSMR]|J[SR]|[Ee][123]|PA|PC)$",
+    "hk_response_trades": "^[HhKk][1-5]$"
+  },
+  "_GUIDE_FS_TYPES": "아래 numeric_fields는 현재 FS Ruby가 읽지 않습니다. FS Ruby 결과는 문자열이며 기존 후처리 범위는 이 가이드에서 다루지 않습니다.",
+  "numeric_fields": [
+    "[nice_pos][detail][transaction_amount]",
+    "[nice_pos][detail][installment_months]",
+    "[nice_pos][detail][tax_amount]",
+    "[nice_pos][detail][service_charge]"
+  ],
+  "temporary_fields": [
+    "sk_trade",
+    "sk_dt",
+    "soil_cat",
+    "soil_msg",
+    "soil_trade",
+    "soil_func",
+    "soil_dt",
+    "gsx_com21_rs"
+  ]
+}

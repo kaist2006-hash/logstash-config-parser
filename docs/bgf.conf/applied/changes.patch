@@ -1,0 +1,478 @@
+--- original/nice_pos_detail_specs.json
++++ files/nice_pos_detail_specs.json
+@@ -1,5 +1,6 @@
+ {
+   "version": "13.0-document-full-review",
++  "_GUIDE_START": "교육용 적용 사본. GUIDE_D01~D05를 검색하세요. 예시 규격은 가정이며 운영에 통째로 적용하지 마세요.",
+   "common_field_types": {
+     "_note": "최종 21개 공통필드 타입은 방향과 무관하게 동일 필드 경로에 항상 동일하게 적용. request_fields/response_fields는 8개 업체 기준 방향별 공통 여부를 설명하기 위한 목록이며 타입 적용 범위를 제한하지 않음.",
+     "_date_timezone": "+09:00",
+@@ -85,6 +86,171 @@
+         "schemas": {},
+         "rules": []
+       },
++      "guide_d01_shop": {
++        "_GUIDE_D01": "추가한 위치: 새 NICE 가맹점 객체 전체. 아래 schemas는 읽을 위치, rules는 이 규격을 고를 조건입니다. 기존 gongju_currency 바로 위입니다.",
++        "schemas": {
++          "guide_d01_request": {
++            "name": "GUIDE_D01 신규 NICE 요청",
++            "direction": "request",
++            "_GUIDE_D01_FIELDS": "내 규격서의 필드명·시작·길이로 바꿀 자리. ASCII 기준: 56~67 금액, 68~69 할부, 70~73 캠페인코드.",
++            "fields": [
++              {
++                "key": "transaction_amount",
++                "start": 56,
++                "length": 12,
++                "_guide": "GUIDE_D01: 000000012300 → 기존 long 타입으로 12300"
++              },
++              {
++                "key": "installment_months",
++                "start": 68,
++                "length": 2,
++                "_guide": "GUIDE_D01: 00 → 기존 integer 타입으로 0"
++              },
++              {
++                "key": "campaign_code",
++                "start": 70,
++                "length": 4,
++                "_guide": "GUIDE_D01: AB12 → 문자열 그대로"
++              }
++            ]
++          },
++          "guide_d01_response": {
++            "name": "GUIDE_D01 신규 NICE 응답",
++            "direction": "response",
++            "response_code_start": 56,
++            "_GUIDE_D01_RESPONSE": "요청과 자리수가 달라 응답 schema를 별도로 추가. 56~59 응답코드는 Ruby가 추출.",
++            "fields": [
++              {
++                "key": "approval_number",
++                "start": 60,
++                "length": 8,
++                "_guide": "GUIDE_D01: APR00001 → 앞자리 유지하는 문자열"
++              },
++              {
++                "key": "transaction_amount",
++                "start": 68,
++                "length": 12,
++                "_guide": "GUIDE_D01: 응답 금액"
++              },
++              {
++                "key": "approval_datetime",
++                "start": 80,
++                "length": 14,
++                "_guide": "GUIDE_D01: 20260909160000 → 날짜 변환"
++              }
++            ]
++          }
++        },
++        "rules": [
++          {
++            "_GUIDE_D01_RULE": "schema 이름은 위 ID와 정확히 같아야 합니다. text/type/trade/길이는 실제 헤더값.",
++            "id": "guide_d01_req",
++            "schema": "guide_d01_request",
++            "when": {
++              "text": [
++                "Q99"
++              ],
++              "trade": [
++                "99"
++              ],
++              "message_type": [
++                "0200"
++              ],
++              "direction": [
++                "request"
++              ],
++              "message_length": [
++                "0073"
++              ]
++            },
++            "priority": 1000
++          },
++          {
++            "id": "guide_d01_res",
++            "schema": "guide_d01_response",
++            "when": {
++              "text": [
++                "Q99"
++              ],
++              "trade": [
++                "99"
++              ],
++              "message_type": [
++                "0210"
++              ],
++              "direction": [
++                "response"
++              ],
++              "message_length": [
++                "0093"
++              ]
++            },
++            "priority": 1000
++          }
++        ],
++        "_GUIDE_D01_END": "D01 추가 블록 끝. 아래부터 기존 설정입니다."
++      },
++      "guide_d05_dynamic_shop": {
++        "_GUIDE_D05": "D01과 같은 고정 73자리 뒤에 003ABC를 붙이는 별도 예시. 새 text Q98, 총길이 0079.",
++        "schemas": {
++          "guide_d05_request": {
++            "name": "GUIDE_D05 길이 접두부 데이터",
++            "direction": "request",
++            "fields": [
++              {
++                "key": "transaction_amount",
++                "start": 56,
++                "length": 12
++              },
++              {
++                "key": "installment_months",
++                "start": 68,
++                "length": 2
++              },
++              {
++                "key": "campaign_code",
++                "start": 70,
++                "length": 4
++              }
++            ],
++            "_GUIDE_D05_DYNAMIC": "fields 바로 뒤, 같은 깊이에 추가. 74~76: 길이 003, 77~79: 값 ABC. 기존 Ruby type 사용.",
++            "dynamic_start": 74,
++            "dynamic": [
++              {
++                "type": "length_prefixed",
++                "length_size": 3,
++                "length_key": "extra_length",
++                "key": "extra_data"
++              }
++            ]
++          }
++        },
++        "rules": [
++          {
++            "id": "guide_d05_req",
++            "schema": "guide_d05_request",
++            "when": {
++              "text": [
++                "Q98"
++              ],
++              "trade": [
++                "99"
++              ],
++              "message_type": [
++                "0200"
++              ],
++              "direction": [
++                "request"
++              ],
++              "message_length": [
++                "0079"
++              ]
++            },
++            "priority": 1000
++          }
++        ],
++        "_GUIDE_D05_END": "D05 추가 블록 끝."
++      },
+       "gongju_currency": {
+         "_section_start": "===== 공주지역화폐 시작 =====",
+         "schemas": {
+@@ -913,11 +1079,13 @@
+           {
+             "id": "ponta_integrated",
+             "schema": "21",
++            "_GUIDE_D04": "기존 BGF 폰타와 전체 구조가 같다는 가정에서 text 배열 마지막에 PTX를 실제 추가했습니다. 다른 레이아웃이면 D01처럼 새 schema/rule.",
+             "when": {
+               "text": [
+                 "PTS",
+                 "PTE",
+-                "PTC"
++                "PTC",
++                "PTX"
+               ]
+             },
+             "priority": 8
+@@ -5896,6 +6064,46 @@
+         "schemas": {},
+         "rules": []
+       },
++      "guide_d02_private": {
++        "_GUIDE_D02": "새 사설 merchant 추가 위치. 기존 7자리 버전 헤더 구조 그대로라는 가정. 기존 sk_private_pos 바로 위.",
++        "versions": [
++          "ZGUIDE1"
++        ],
++        "schemas": {
++          "guide_d02_request": {
++            "name": "GUIDE_D02 신규 사설 요청",
++            "direction": "request",
++            "fields": [
++              {
++                "key": "transaction_amount",
++                "start": 48,
++                "length": 12,
++                "_guide": "GUIDE_D02: 사설 헤더 47자리 바로 뒤 금액."
++              }
++            ]
++          }
++        },
++        "rules": [
++          {
++            "id": "guide_d02_req",
++            "schema": "guide_d02_request",
++            "_GUIDE_D02_RULE": "when.version 생략 시 위 versions가 자동 적용됩니다. 사설 rule에는 message_length 조건을 사용하지 않습니다.",
++            "when": {
++              "trade": [
++                "99"
++              ],
++              "message_type": [
++                "0200"
++              ],
++              "direction": [
++                "request"
++              ]
++            },
++            "priority": 1000
++          }
++        ],
++        "_GUIDE_D02_END": "D02 추가 블록 끝. 응답도 바뀌면 응답 schema/rule을 별도로 만듭니다."
++      },
+       "sk_private_pos": {
+         "_section_start": "===== SK 사설포스 시작 =====",
+         "versions": [
+@@ -7275,6 +7483,19 @@
+         "_note": "▼▼▼ 기존 통합 TAG-VALUE 형식의 신규 TAG는 이 마커 바로 아래에 추가 ▼▼▼",
+         "_how": "실제 TAG 3자리 키(A01, Pxx, Zxx 등)로 request/response 정의를 추가. 기존 일반 TAG 또는 P/Z Length TAG 형식이면 RB 수정 없음."
+       },
++      "Q99": {
++        "_GUIDE_D03": "새 일반 TAG 객체 추가 위치. Q99ABC123 + FS → detail.coupon_code. 기존 A01 바로 위.",
++        "request": {
++          "key": "coupon_code",
++          "attribute": "A/N",
++          "max_length": 12
++        },
++        "response": {
++          "key": "coupon_code",
++          "attribute": "A/N",
++          "max_length": 12
++        }
++      },
+       "A01": {
+         "request": {
+           "key": "A01_wcc",
+--- original/nice_pos_detail_parser.rb
++++ files/nice_pos_detail_parser.rb
+@@ -1,4 +1,6 @@
+ # frozen_string_literal: true
++# GUIDE_START: 원본 처리 로직 그대로, JSON 예시와 연결되는 위치에 주석만 추가한 가이드 사본.
++# GUIDE_D01 새 NICE / D02 사설 / D03 TAG / D04 기존 코드 / D05 가변길이.
+ 
+ require "json"
+ require "time"
+@@ -20,6 +22,9 @@
+     hash[path.delete_prefix("detail.")] = type
+   end.freeze
+ 
++# >>> GUIDE_D01_LOAD / GUIDE_D04: 수정 불필요 — detail JSON nice_fixed 전체를 이미 읽습니다.
++# 새 merchant/schema/rule 또는 기존 text 배열은 JSON에서 추가하세요.
++# <<< GUIDE_D01_LOAD
+   nice = spec.fetch("nice_fixed")
+   @nice_schemas, nice_rules = load_schema_rule_merchants(nice)
+   compile_schema_fields!(@nice_schemas)
+@@ -594,6 +599,8 @@
+ 
+ 
+ # [6] 전문 형식 판별: 등록된 Version이면 SK/S-OIL 사설포스로 처리합니다.
++# >>> GUIDE_D02: 수정 불필요 — JSON versions에 추가한 ZGUIDE1을 아래에서 판별합니다.
++# <<< GUIDE_D02
+ def private_message?(raw)
+   version = match_value(logical_byte_slice(raw, 5, 7))
+   @private_version_lookup.key?(version)
+@@ -618,6 +625,9 @@
+     event.tag(@nice_unregistered_text_seen_tag)
+   end
+ 
++# >>> GUIDE_D01_SELECT / GUIDE_D04: 수정 불필요 — Q99/99/0200/request/0073으로 JSON rule 선택.
++# rule.schema → guide_d01_request, 또는 PTX → 기존 schema 21.
++# <<< GUIDE_D01_SELECT
+   # 1순위: 기존 JSON Rule 완전일치. 정상 등록 전문은 기존 동작을 그대로 유지합니다.
+   schema = choose_schema(
+     @nice_lookup,
+@@ -721,6 +731,9 @@
+ end
+ 
+ 
++# >>> GUIDE_D01_READ: 수정 불필요 — JSON fields의 start/length를 읽어 detail을 만듭니다.
++# D01 요청: 56~67 금액 / 68~69 할부 / 70~73 campaign_code.
++# <<< GUIDE_D01_READ
+ def parse_nice_with_schema(event, raw, header, direction, schema)
+   detail = extract_compiled_fields(raw, schema.fetch("_compiled_fields"))
+ 
+@@ -1380,6 +1393,8 @@
+   nil
+ end
+ 
++# >>> GUIDE_D03: 수정 불필요 — JSON tag_specs.Q99의 request/response.key=coupon_code로 저장.
++# <<< GUIDE_D03
+ def append_integrated_value(detail, definition, direction, value)
+   return if definition.nil?
+ 
+@@ -1485,6 +1500,9 @@
+       detail[field["key"]] = logical_byte_slice(raw, cursor, field["length"].to_i)
+       cursor += field["length"].to_i
+ 
++# >>> GUIDE_D05: 수정 불필요 — JSON dynamic에 type=length_prefixed를 추가하면 이 기존 분기 사용.
++# length_size=3으로 003을 읽고 다음 ABC를 extra_data에 넣습니다.
++# <<< GUIDE_D05
+     when "length_prefixed"
+       length_text = logical_byte_slice(raw, cursor, field["length_size"].to_i)
+       break if length_text.empty? && field["optional"]
+--- original/nice_pos_fs_specs_.json
++++ files/nice_pos_fs_specs_.json
+@@ -1,20 +1,27 @@
+ {
+   "version": "2026-09-04",
++  "_GUIDE_START": "교육용 적용 사본. GUIDE_F01~F04 검색. 각 예시는 실제 JSON 설정이며 운영 반영용 완성본은 아닙니다.",
+   "source": "bgf(8)(1).conf FS block",
+   "description": "FS 3개 업체(GSX/GSC, SK 표준포스, S-OIL 표준포스)의 현재 bgf.conf 동작을 외부 Ruby parser에서 동일하게 재현하기 위한 규격",
+   "_guide_routes": "업체 경로 등록 위치. 기존 GSX/SK/S-OIL과 규격이 같으면 해당 업체 배열에 새 경로만 추가.",
++  "_GUIDE_F01": "기존 GSX와 완전히 같은 새 경로: routes.gsx 마지막의 GUIDE_ONLY_GSX_F01만 추가. Ruby 변경 없음.",
++  "_GUIDE_F04_1": "새 FS 구조: routes.guide_shop을 추가. 연결은 F04_2 mappings → FS Ruby F04_3 case → F04_4 함수.",
+   "routes": {
+     "gsx": [
+       "GCHND_0295_A01",
+       "GSC_0295_A01",
+       "GCHND_0299_A01",
+-      "GSC_0299_A01"
++      "GSC_0299_A01",
++      "GUIDE_ONLY_GSX_F01"
+     ],
+     "sk": [
+       "GCHND_0070_A01"
+     ],
+     "soil": [
+       "GCHND_0216_A01"
++    ],
++    "guide_shop": [
++      "GUIDE_ONLY_NEW_F04"
+     ]
+   },
+   "_guide_new_vendor": {
+@@ -22,7 +29,22 @@
+     "new_format": "새 규격 -> routes에 test 추가 + mappings에 test_request/test_response 추가 + RB case vendor/parse_test 추가"
+   },
+   "_guide_mappings": "com_N -> nice_pos 공통필드 위치 등록. 새 규격은 test_request/test_response처럼 항목을 추가.",
++  "_GUIDE_F02": "기존 GSX 일반응답에 com_83 → coupon_code를 추가. 매핑 안에 설명용 속성을 넣지 않습니다.",
++  "_GUIDE_F04_2": "mappings 맨 앞에 guide_shop_request/response를 추가. 이 이름은 Ruby copy_map의 이름과 같아야 합니다.",
+   "mappings": {
++    "guide_shop_request": {
++      "com_10": "[nice_pos][cat_id]",
++      "com_11": "[nice_pos][trade_code]",
++      "com_12": "[nice_pos][detail][transaction_amount]",
++      "com_13": "[nice_pos][detail][installment_months]"
++    },
++    "guide_shop_response": {
++      "com_10": "[nice_pos][cat_id]",
++      "com_11": "[nice_pos][trade_code]",
++      "com_12": "[nice_pos][response_code]",
++      "com_13": "[nice_pos][detail][approval_number]",
++      "com_14": "[nice_pos][detail][approval_datetime]"
++    },
+     "gsx_cancel_request": {
+       "com_47": "[nice_pos][cat_id]",
+       "com_51": "[nice_pos][detail][transaction_amount]",
+@@ -64,7 +86,8 @@
+       "com_48": "[nice_pos][detail][transaction_amount]",
+       "com_26": "[nice_pos][detail][installment_months]",
+       "com_71": "[nice_pos][detail][tax_amount]",
+-      "com_72": "[nice_pos][detail][service_charge]"
++      "com_72": "[nice_pos][detail][service_charge]",
++      "com_83": "[nice_pos][detail][coupon_code]"
+     },
+     "sk_dw_response": {
+       "com_10": "[nice_pos][response_code]",
+@@ -119,13 +142,15 @@
+       "com_25": "[nice_pos][detail][acquirer_name]"
+     }
+   },
++  "_GUIDE_F03": "sk.request_amount_trades의 기존 표현식 끝에 |T1만 추가. com_13이 기존과 같은 금액/세금 구조인 요청이라는 가정.",
+   "sk": {
+-    "request_amount_trades": "^(?:[DdVvFfGg][125]|[HhKk][1-5]|[MmJj][34]|PA|PC)$",
++    "request_amount_trades": "^(?:[DdVvFfGg][125]|[HhKk][1-5]|[MmJj][34]|PA|PC|T1)$",
+     "installment_trades": "^(?:[DdVvFfGg][125]|PA|PC)$",
+     "cancel_trades": "^(?:[DdVvFfGg]2|PA|PC|[HhKk][25]|[MmJj]4)$",
+     "common_response_trades": "^(?:[DdVvFfGg][125]|[MmJj][34]|M[QSMR]|J[SR]|[Ee][123]|PA|PC)$",
+     "hk_response_trades": "^[HhKk][1-5]$"
+   },
++  "_GUIDE_FS_TYPES": "아래 numeric_fields는 현재 FS Ruby가 읽지 않습니다. FS Ruby 결과는 문자열이며 기존 후처리 범위는 이 가이드에서 다루지 않습니다.",
+   "numeric_fields": [
+     "[nice_pos][detail][transaction_amount]",
+     "[nice_pos][detail][installment_months]",
+--- original/nice_pos_fs_parser_.rb
++++ files/nice_pos_fs_parser_.rb
+@@ -1,4 +1,5 @@
+ # frozen_string_literal: true
++# GUIDE_START: 교육용 사본. GUIDE_F04_3/4는 실제 추가 코드, F01/2/3는 기존 처리 위치 주석.
+ 
+ require "json"
+ 
+@@ -79,6 +80,10 @@
+     parse_sk(event, status)
+   when "soil"
+     parse_soil(event, status)
++  # >>> GUIDE_F04_3: 실제 추가 1/2 — case vendor 안, 기존 soil 다음에 넣습니다.
++  when "guide_shop"
++    parse_guide_shop(event, status)
++  # <<< GUIDE_F04_3
+   # <신규 규격 업체 등록 예시>
+   # when "test"
+   #   parse_test(event, status)
+@@ -121,6 +126,9 @@
+ end
+ 
+ # JSON routes를 기준으로 현재 로그가 어느 업체인지 판별
++# >>> GUIDE_F01_READ: 수정 불필요 — JSON routes.gsx의 새 경로를 기존 GSX로 연결.
++# GUIDE_F04_1도 여기서 guide_shop으로 판별한 뒤 GUIDE_F04_3으로 갑니다.
++# <<< GUIDE_F01_READ
+ def vendor_for(path)
+   return nil if path.nil?
+ 
+@@ -172,6 +180,9 @@
+ 
+   # 일반 승인 응답(CAT-ID/금액/응답코드 위치 확인)
+   elsif status == "OUT" && text(event, "com_49")&.match?(/\A\d{10}\z/) && text(event, "com_48")&.match?(/\A\d+\z/) && !value(event, "com_82").nil?
++    # >>> GUIDE_F02_READ: 수정 불필요 — JSON의 com_83 → coupon_code 매핑도 같이 복사합니다.
++    # 이 분기의 CAT-ID/금액/응답코드 판정 위치가 달라지면 해당 조건도 수정해야 합니다.
++    # <<< GUIDE_F02_READ
+     copy_map(event, "gsx_normal_response")
+ 
+     dt = text(event, "com_20")
+@@ -217,6 +228,8 @@
+   end
+ 
+   # 요청 전문의 거래금액/세금 추출
++  # >>> GUIDE_F03_READ: 수정 불필요 — JSON 정규식에 추가한 T1도 아래 com_13 처리에 들어옵니다.
++  # <<< GUIDE_F03_READ
+   if status == "IN" && sk_trade&.match?(@sk_regex.fetch("request_amount_trades"))
+     com13 = text(event, "com_13")
+     if com13&.match?(/\A\d+\/\d+\z/)
+@@ -393,3 +406,18 @@
+ # end
+ # 특수 Header/분리/자리수 가공이 필요하면 parse_test() 안에 조건을 추가한다.
+ # -----------------------------------------------------------------------------
++
++# >>> GUIDE_F04_4: 실제 추가 2/2 — 기존 함수들의 end가 끝난 뒤 파일 맨 아래에 넣습니다.
++# 연결: JSON routes.guide_shop → 위 case → 이 함수 → JSON mappings의 같은 이름.
++# 가정: 이 업체 T1 전문만 아래 자리 배치를 사용합니다.
++def parse_guide_shop(event, status)
++  trade = text(event, "com_11")
++  return unless trade == "T1" # 내 실제 전문코드로 바꿀 자리. 다른 코드는 여기서 종료합니다.
++
++  if status == "IN" # FS 요청
++    copy_map(event, "guide_shop_request")
++  elsif status == "OUT" # FS 응답
++    copy_map(event, "guide_shop_response")
++  end
++end
++# <<< GUIDE_F04_4
