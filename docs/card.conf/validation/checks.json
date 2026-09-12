@@ -1,9 +1,0 @@
-{
-  "multiworker_equal": true,
-  "events_per_run": 353957,
-  "message_mutations": 0,
-  "route_mutations": 0,
-  "unexpected_parser_exceptions": 0,
-  "original_16_routes_preserved": true,
-  "no_original_password_or_internal_endpoints": true
-}
