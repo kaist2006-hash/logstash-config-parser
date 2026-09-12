@@ -1,0 +1,3997 @@
+{
+  "schema_version": 1,
+  "version": "2026-09-12.1",
+  "description": "운영 승인 전 검증 후보. 미확인 프로파일은 disabled. 필드 길이는 payload bytes, prefix 별도. 민감 필드는 경계만 읽고 출력하지 않음.",
+  "emv_export": {
+    "95": {
+      "name": "terminal_verification_results",
+      "length": 5
+    },
+    "9F33": {
+      "name": "terminal_capabilities",
+      "length": 3
+    },
+    "9F34": {
+      "name": "cvm_results",
+      "length": 3
+    },
+    "9F35": {
+      "name": "terminal_type",
+      "length": 1
+    },
+    "9F09": {
+      "name": "application_version",
+      "length": 2
+    },
+    "9F36": {
+      "name": "transaction_counter",
+      "length": 2
+    },
+    "82": {
+      "name": "application_interchange_profile",
+      "length": 2
+    },
+    "9F27": {
+      "name": "cryptogram_information",
+      "length": 1
+    },
+    "9A": {
+      "name": "transaction_date",
+      "length": 3
+    },
+    "9C": {
+      "name": "transaction_type",
+      "length": 1
+    },
+    "5F2A": {
+      "name": "currency_code",
+      "length": 2
+    },
+    "9F1A": {
+      "name": "terminal_country",
+      "length": 2
+    }
+  },
+  "profiles": [
+    {
+      "id": "kb_ic",
+      "alias": "s_service_cnb_ic",
+      "issuer": "국민카드",
+      "service": "IC",
+      "wire": "binary",
+      "enabled": true,
+      "validation_stage": "sample_test",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 3,
+      "mtis": [
+        "0200",
+        "0210",
+        "0420",
+        "0430",
+        "0500",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "국민카드 250000035524_1_★KB국민카드 IC승인 전문 Layout_20250523.xlsx",
+          "sha256": "6eab04d0c6fc3e7c296ff3ad1649b8f8194e5c5dba3a3b0482a7e6f51bde1afb",
+          "sheets": [
+            [
+              "VISA",
+              96
+            ],
+            [
+              "마스터 MCHIP",
+              103
+            ],
+            [
+              "POS Entry Mode구분 의미",
+              11
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "F60: 문서 8 BCD(4 bytes), 실로그 length=5 bytes. 문서를 임의 수정하지 않고 document_max=4 경고 유지.",
+        "F55: MCHIP 문서 최대134 payload bytes. 실제 TLV에 더 긴 사례가 있으면 경고. VISA표와 MCHIP표의 상한 차이를 합쳐 wire 한계255로 제한.",
+        "성공은 프레임 경계/선택 필드/TLV 구조 검증이며 전체 업무규칙 인증이 아님."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "processing_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "amount",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "5": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "point_balance",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 5,
+          "emit": "transmission_datetime",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "trace_number",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "local_time",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "local_date",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "merchant_type",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "acquirer_country",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_entry_mode",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "card_sequence",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 1,
+          "emit": "pos_condition",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "currency_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "53": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "61": {
+          "kind": "fixed",
+          "length": 35,
+          "parts": [
+            {
+              "emit": "fallback_reason",
+              "offset": 0,
+              "length": 2,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "encrypted_card_transport",
+              "offset": 2,
+              "length": 1,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "terminal_software_model",
+              "offset": 3,
+              "length": 16,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "terminal_reader_model",
+              "offset": 19,
+              "length": 16,
+              "encoding": "ascii",
+              "numeric": false
+            }
+          ]
+        },
+        "62": {
+          "kind": "fixed",
+          "length": 20
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "network_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 21,
+          "parts": [
+            {
+              "emit": "original_mti",
+              "offset": 0,
+              "length": 2,
+              "encoding": "bcd",
+              "numeric": false
+            },
+            {
+              "emit": "original_trace",
+              "offset": 2,
+              "length": 3,
+              "encoding": "bcd",
+              "numeric": false
+            },
+            {
+              "emit": "original_date",
+              "offset": 5,
+              "length": 3,
+              "encoding": "bcd",
+              "numeric": false
+            },
+            {
+              "emit": "original_approval_code",
+              "offset": 10,
+              "length": 8,
+              "encoding": "ascii",
+              "numeric": false
+            }
+          ]
+        },
+        "130": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "131": {
+          "kind": "fixed",
+          "length": 5
+        },
+        "132": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "136": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "137": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "138": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "144": {
+          "kind": "fixed",
+          "length": 1
+        },
+        "145": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "146": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "147": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "148": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "149": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "2": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 19
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 11
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 37
+        },
+        "44": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 8
+        },
+        "47": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 203
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "tlv": true,
+          "document_max": 134
+        },
+        "60": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 5,
+          "document_max": 4
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "parts": [
+            {
+              "emit": "domestic_country",
+              "offset": 0,
+              "length": 2,
+              "encoding": "bcd",
+              "numeric": false
+            },
+            {
+              "emit": "installments",
+              "offset": 2,
+              "length": 2,
+              "encoding": "ascii",
+              "numeric": true
+            },
+            {
+              "emit": "domestic_merchant_id",
+              "offset": 4,
+              "length": 15,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "approval_code",
+              "offset": 19,
+              "length": 8,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "business_id",
+              "offset": 27,
+              "length": 15,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "terminal_id",
+              "offset": 42,
+              "length": 10,
+              "encoding": "ascii",
+              "numeric": false
+            },
+            {
+              "emit": "tax_amount",
+              "offset": 52,
+              "length": 12,
+              "encoding": "ascii",
+              "numeric": true
+            },
+            {
+              "emit": "service_amount",
+              "offset": 64,
+              "length": 12,
+              "encoding": "ascii",
+              "numeric": true
+            }
+          ]
+        },
+        "134": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "135": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "139": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "142": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "143": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        }
+      },
+      "expected_headers": [
+        "ISO023400053"
+      ]
+    },
+    {
+      "id": "kb_ms",
+      "alias": "s_service_cnb_ms",
+      "issuer": "국민카드",
+      "service": "MS",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "국민카드 250000035524_2_★KB국민카드 MS승인 전문 Layout_20250523.xlsx",
+          "sha256": "c7e9f3f0418462f6e6e24369b442f51eb03fc9ab7a30f5bf253347710d307e49",
+          "sheets": [
+            [
+              "일반승인공통 (가맹점로열티)",
+              31
+            ],
+            [
+              "공통비밀번호및인증서비스(가맹점로열티)",
+              32
+            ],
+            [
+              "1-1.35 Bitmap 세부",
+              18
+            ],
+            [
+              "1-2.43 Bitmap 세부",
+              60
+            ],
+            [
+              "1-3.46 Bitmap 세부",
+              29
+            ],
+            [
+              "1-4.61 Bitmap 세부",
+              9
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "5": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "6": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 10,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "8": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "28": {
+          "kind": "fixed",
+          "length": 9
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "62": {
+          "kind": "fixed",
+          "length": 20
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 6
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 37
+        },
+        "46": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        },
+        "47": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 203
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 2,
+          "emit": "installments",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "56": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 8,
+          "emit": "approval_code",
+          "encoding": "ascii"
+        },
+        "61": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 35
+        }
+      }
+    },
+    {
+      "id": "lotte_ms",
+      "alias": "s_service_ltc_ms",
+      "issuer": "롯데카드",
+      "service": "MS",
+      "wire": "ascii",
+      "enabled": true,
+      "validation_stage": "sample_test",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0200",
+        "0210",
+        "0420",
+        "0430",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "롯데카드_VAN MS 전문 FORMAT(48bit추가)_20211021.xlsx",
+          "sha256": "60c27afa79d7fb34d2a03b4562bbc9fa3aff2f110ab540b6c3c08d549921bf21",
+          "sheets": [
+            [
+              "승인전문",
+              31
+            ],
+            [
+              "응답코드",
+              58
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "실로그에 존재하는 F57/F61은 제공 문서에 없음. 추정하지 않고 첫 미정의 필드에서 중지.",
+        "RESPDATA 8 bytes는 get 본문 접두어이며 declared len에는 포함됨. len 불일치를 자동 보정하거나 본문을 잘라내지 않음."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "5": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "settlement_amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "6": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "billing_amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 10,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "trace_number",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "32": {
+          "kind": "fixed",
+          "length": 8,
+          "parts": [
+            {
+              "emit": "acquirer_id",
+              "offset": 2,
+              "length": 6,
+              "encoding": "ascii",
+              "numeric": false
+            }
+          ]
+        },
+        "35": {
+          "kind": "fixed",
+          "length": 39
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "41": {
+          "kind": "fixed",
+          "length": 16,
+          "emit": "terminal_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40,
+          "parts": [
+            {
+              "emit": "business_id",
+              "offset": 0,
+              "length": 10,
+              "encoding": "ascii",
+              "numeric": false
+            }
+          ]
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "network_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "48": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 4,
+          "emit": "merchant_fee_rate_raw",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 2,
+          "emit": "installments",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "56": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 8,
+          "emit": "approval_code",
+          "encoding": "ascii"
+        },
+        "60": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 50
+        },
+        "63": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        }
+      },
+      "response_prefix": "RESPDATA"
+    },
+    {
+      "id": "lotte_ic",
+      "alias": "s_service_ltc_ic",
+      "issuer": "롯데카드",
+      "service": "IC",
+      "wire": "binary",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        9
+      ],
+      "max_bitmaps": 3,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "롯데카드_VAN IC 전문(48bit추가)_20211021.xls",
+          "sha256": "4251aa326e353066a3c9d0d5488eade1732ee58e432273a1408c3cad0ca42ff3",
+          "sheets": [
+            [
+              "승인전문",
+              118
+            ],
+            [
+              "코드목록",
+              56
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "F35 인코딩 모드와 F145 문서 오기 확인 전 보류."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "processing_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "amount",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 5,
+          "emit": "transmission_datetime",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "trace_number",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "local_time",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "local_date",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "merchant_type",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "acquirer_country",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_entry_mode",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "card_sequence",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 1,
+          "emit": "pos_condition",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "currency_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "53": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "network_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "128": {
+          "kind": "fixed",
+          "length": 234
+        },
+        "130": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "131": {
+          "kind": "fixed",
+          "length": 5
+        },
+        "132": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "136": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "137": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "138": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "139": {
+          "kind": "fixed",
+          "length": 10
+        },
+        "144": {
+          "kind": "fixed",
+          "length": 1
+        },
+        "146": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "147": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "148": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "149": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "150": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "2": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 19
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 11
+        },
+        "44": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 25
+        },
+        "48": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 4
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "tlv": true
+        },
+        "60": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 5
+        },
+        "61": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 10
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "134": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "135": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "140": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "142": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "143": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 20
+        },
+        "35": {
+          "kind": "blocked",
+          "reason": "평문 nibble 길이와 암호문 byte 길이 판별에 실로그 필요"
+        },
+        "145": {
+          "kind": "blocked",
+          "reason": "문서 M열 K 오기: 해당 필드 번호 확인 전 보류"
+        }
+      }
+    },
+    {
+      "id": "nh_ms",
+      "alias": "s_service_nlc_ms",
+      "issuer": "농협카드",
+      "service": "MS",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        9
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "농협VAN전문-Ver 2 3-유종코드 추가(2011.04.11_.xls",
+          "sha256": "198e06bb696103f27a49bc450859abb684a715c78d617d7041e98459717474cb",
+          "sheets": [
+            [
+              "개요",
+              13
+            ],
+            [
+              "변경이력",
+              12
+            ],
+            [
+              "1. NH카드 승인전문 요약",
+              78
+            ],
+            [
+              "2. 응답코드",
+              54
+            ],
+            [
+              "3. 승인요청 응답",
+              69
+            ],
+            [
+              "4.승인취소요청 응답",
+              70
+            ],
+            [
+              "5. VAN사 승인 대행건 반영요청 응답",
+              69
+            ],
+            [
+              "6. VAN대행취소건 반영요청 응답",
+              70
+            ],
+            [
+              "8. 통신망관리",
+              15
+            ],
+            [
+              "9. Chip Data",
+              30
+            ],
+            [
+              "10. 해외ACQ거래승인내역",
+              43
+            ],
+            [
+              "11.거래내역집계일괄",
+              35
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "IC/MS는 같은 문서 format 사용. 기존 ES index는 분리 유지.",
+        "F118 길이 충돌. F124는 HEX ASCII TLV이며 F55로 해석하지 않음."
+      ],
+      "fields": {
+        "2": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 14,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "trace_number",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 8,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "merchant_type",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "acquirer_country",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "card_sequence",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_condition",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "32": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "35": {
+          "kind": "fixed",
+          "length": 39
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "38": {
+          "kind": "fixed",
+          "length": 8,
+          "emit": "approval_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "41": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "terminal_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "53": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "60": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "network_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 24
+        },
+        "99": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "100": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "120": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 512
+        },
+        "124": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 512
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 512
+        },
+        "118": {
+          "kind": "blocked",
+          "reason": "총길이106, 길이3+본문104 표기 상충: 개정규격 확인 필요"
+        }
+      }
+    },
+    {
+      "id": "nh_ic",
+      "alias": "s_service_nlc_ic",
+      "issuer": "농협카드",
+      "service": "IC",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        9
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "농협VAN전문-Ver 2 3-유종코드 추가(2011.04.11_.xls",
+          "sha256": "198e06bb696103f27a49bc450859abb684a715c78d617d7041e98459717474cb",
+          "sheets": [
+            [
+              "개요",
+              13
+            ],
+            [
+              "변경이력",
+              12
+            ],
+            [
+              "1. NH카드 승인전문 요약",
+              78
+            ],
+            [
+              "2. 응답코드",
+              54
+            ],
+            [
+              "3. 승인요청 응답",
+              69
+            ],
+            [
+              "4.승인취소요청 응답",
+              70
+            ],
+            [
+              "5. VAN사 승인 대행건 반영요청 응답",
+              69
+            ],
+            [
+              "6. VAN대행취소건 반영요청 응답",
+              70
+            ],
+            [
+              "8. 통신망관리",
+              15
+            ],
+            [
+              "9. Chip Data",
+              30
+            ],
+            [
+              "10. 해외ACQ거래승인내역",
+              43
+            ],
+            [
+              "11.거래내역집계일괄",
+              35
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "IC/MS는 같은 문서 format 사용. 기존 ES index는 분리 유지.",
+        "F118 길이 충돌. F124는 HEX ASCII TLV이며 F55로 해석하지 않음."
+      ],
+      "fields": {
+        "2": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 14,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "trace_number",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 8,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "merchant_type",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "acquirer_country",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "card_sequence",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_condition",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "32": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "35": {
+          "kind": "fixed",
+          "length": 39
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "38": {
+          "kind": "fixed",
+          "length": 8,
+          "emit": "approval_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "41": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "terminal_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "53": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "60": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "network_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 24
+        },
+        "99": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "100": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "120": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 512
+        },
+        "124": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 512
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 512
+        },
+        "118": {
+          "kind": "blocked",
+          "reason": "총길이106, 길이3+본문104 표기 상충: 개정규격 확인 필요"
+        }
+      }
+    },
+    {
+      "id": "samsung_ms",
+      "alias": "s_service_win_ms",
+      "issuer": "삼성카드",
+      "service": "MS",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "삼성카드_(승인) MS승인VAN사전문_20230830.xlsx",
+          "sha256": "38137f127c532da57401cb9713845f0fc26f5a364b067a049fa878e3023926d8",
+          "sheets": [
+            [
+              "MS-통신망관리전문",
+              9
+            ],
+            [
+              "MS-승인전문",
+              103
+            ],
+            [
+              "MS-취소전문",
+              97
+            ],
+            [
+              "MS-대행전문",
+              39
+            ],
+            [
+              "EMV-통신망관리전문",
+              10
+            ],
+            [
+              "EMV-승인전문(MChip)",
+              138
+            ],
+            [
+              "EMV-취소전문(MChip)",
+              108
+            ],
+            [
+              "EMV-승인전문(VSDC)",
+              132
+            ],
+            [
+              "EMV-취소전문(VSDC)",
+              113
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "GINST_0005_A01 / WIN alias는 기존 설정 그대로 보존. 기관 식별은 운영자가 재확인."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 10,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "trace_number",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "network_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "82": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "83": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 6
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 35
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 2
+        },
+        "56": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 8
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        },
+        "127": {
+          "kind": "blocked",
+          "reason": "하위항목 합계와512표기 및 거래별 확장 확인 필요"
+        },
+        "90": {
+          "kind": "blocked",
+          "reason": "MS 취소/대행 거래별 original data 형식 확인 필요"
+        }
+      }
+    },
+    {
+      "id": "samsung_ic",
+      "alias": "s_service_win_ic",
+      "issuer": "삼성카드",
+      "service": "IC",
+      "wire": "binary",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        6
+      ],
+      "max_bitmaps": 3,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "삼성카드_(승인) IC승인전문 Spec_직승인 반영_220318.xlsx",
+          "sha256": "e0fe0cac2c63bb77f0d77f16a4a79e4a15d62c2ff878340433595407e9d714fd",
+          "sheets": [
+            [
+              "MChip",
+              34
+            ],
+            [
+              "VSDC",
+              53
+            ],
+            [
+              "F55",
+              27
+            ],
+            [
+              "F59",
+              8
+            ],
+            [
+              "F119",
+              22
+            ],
+            [
+              "F118",
+              65
+            ],
+            [
+              "F122",
+              15
+            ]
+          ]
+        },
+        {
+          "file": "삼성카드_(승인) MS승인VAN사전문_20230830.xlsx",
+          "sha256": "38137f127c532da57401cb9713845f0fc26f5a364b067a049fa878e3023926d8",
+          "sheets": [
+            [
+              "MS-통신망관리전문",
+              9
+            ],
+            [
+              "MS-승인전문",
+              103
+            ],
+            [
+              "MS-취소전문",
+              97
+            ],
+            [
+              "MS-대행전문",
+              39
+            ],
+            [
+              "EMV-통신망관리전문",
+              10
+            ],
+            [
+              "EMV-승인전문(MChip)",
+              138
+            ],
+            [
+              "EMV-취소전문(MChip)",
+              108
+            ],
+            [
+              "EMV-승인전문(VSDC)",
+              132
+            ],
+            [
+              "EMV-취소전문(VSDC)",
+              113
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "구/신 EMV 문서의 충돌 필드를 보류. 실로그 이전 활성화 금지."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "processing_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "amount",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 5,
+          "emit": "transmission_datetime",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "trace_number",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "local_time",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "local_date",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "merchant_type",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "acquirer_country",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_entry_mode",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "card_sequence",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 1,
+          "emit": "pos_condition",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "53": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 42
+        },
+        "130": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "131": {
+          "kind": "fixed",
+          "length": 5
+        },
+        "132": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "136": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "137": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "138": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "139": {
+          "kind": "fixed",
+          "length": 10
+        },
+        "144": {
+          "kind": "fixed",
+          "length": 1
+        },
+        "145": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "146": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "147": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "148": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "149": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "2": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 19
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 11
+        },
+        "44": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 25
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "tlv": true
+        },
+        "59": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 200
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "119": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "122": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "134": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "135": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "140": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "142": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "143": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 20
+        },
+        "49": {
+          "kind": "blocked",
+          "reason": "IC 20220318 문서 길이4와 0+3BCD(2bytes) 상충. 20230830 EMV표와 거래별 대조 필요"
+        }
+      }
+    },
+    {
+      "id": "shinhan_ms",
+      "alias": "s_service_lgc_ms",
+      "issuer": "신한카드",
+      "service": "MS",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "신한_1.1_국내신판_승인전문_VAN(2023.05.23)_VAN사_안내.xlsx",
+          "sha256": "5e20f56c3720cac890db0ed3b83ea89e50034b586e44d239ab2e3b7ec0b47a9d",
+          "sheets": [
+            [
+              "2. 국내신판승인",
+              688
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 10,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 6
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 37
+        },
+        "44": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 4
+        },
+        "46": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 40
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 2
+        },
+        "56": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 8
+        },
+        "61": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        }
+      }
+    },
+    {
+      "id": "shinhan_ic",
+      "alias": "s_service_lgc_ic",
+      "issuer": "신한카드",
+      "service": "IC",
+      "wire": "binary",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 3,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "신한_1.1_국내신판_승인전문_VAN(2023.05.23)_VAN사_안내.xlsx",
+          "sha256": "5e20f56c3720cac890db0ed3b83ea89e50034b586e44d239ab2e3b7ec0b47a9d",
+          "sheets": [
+            [
+              "2. 국내신판승인",
+              688
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "processing_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "amount",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 5,
+          "emit": "transmission_datetime",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "trace_number",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "merchant_type",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "acquirer_country",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_entry_mode",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "card_sequence",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 1,
+          "emit": "pos_condition",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "currency_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "130": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "131": {
+          "kind": "fixed",
+          "length": 5
+        },
+        "132": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "136": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "137": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "138": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "144": {
+          "kind": "fixed",
+          "length": 1
+        },
+        "145": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "146": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "147": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "148": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "149": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "2": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 19
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 6
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 37
+        },
+        "44": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 25
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "tlv": true
+        },
+        "60": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 10
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "119": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "134": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 32
+        },
+        "140": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 10
+        },
+        "120": {
+          "kind": "blocked",
+          "reason": "가변 길이(1bin)와 설명 3ASCII prefix 상충: 거래별 분기 검증 필요"
+        }
+      }
+    },
+    {
+      "id": "woori_sum",
+      "alias": "s_service_wrc_sum",
+      "issuer": "우리카드",
+      "service": "통합",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        9,
+        13
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "우리카드_ (우리카드)1. 국내승인_통합전문_v1.3(20230405).xlsx",
+          "sha256": "9bd57407c8acb23caf62d6632d0cd9e766440963e2c35f4e2c0ffc59c7c17b11",
+          "sheets": [
+            [
+              "변경이력",
+              14
+            ],
+            [
+              "Layout",
+              61
+            ],
+            [
+              "BITMAP #35",
+              20
+            ],
+            [
+              "BITMAP #39 ",
+              81
+            ],
+            [
+              "bitmap #118",
+              27
+            ],
+            [
+              "VAN사별 기관코드",
+              21
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "TCP길이4/UserArea9 포함여부 실로그 확인 필요. ASCII전문 내 F47 길이는 binary1byte."
+      ],
+      "fields": {
+        "2": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 10,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "trace_number",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "card_sequence",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_condition",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "32": {
+          "kind": "fixed",
+          "length": 10
+        },
+        "35": {
+          "kind": "fixed",
+          "length": 39
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "38": {
+          "kind": "fixed",
+          "length": 8,
+          "emit": "approval_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "60": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "network_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 31
+        },
+        "47": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 74
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 256,
+          "tlv": true
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 500
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        }
+      }
+    },
+    {
+      "id": "hana_sum",
+      "alias": "s_service_keb_sum",
+      "issuer": "하나카드",
+      "service": "통합",
+      "wire": "binary",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0
+      ],
+      "max_bitmaps": 3,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "하나카드_국내승인_통합전문_v6.5.xlsx",
+          "sha256": "54014e0c061fc42a2f1a587d5882d21926fc3867db1e86a99100d7f2eb1f61ba",
+          "sheets": [
+            [
+              "표지",
+              0
+            ],
+            [
+              "개정이력",
+              55
+            ],
+            [
+              "Layout",
+              37
+            ],
+            [
+              "bitmap #3",
+              20
+            ],
+            [
+              "bitmap #22",
+              26
+            ],
+            [
+              "bitmap #55",
+              18
+            ],
+            [
+              "bitmap #60",
+              21
+            ],
+            [
+              "해외카드 bitmap #60.2 설명",
+              20
+            ],
+            [
+              "bitmap #118",
+              21
+            ],
+            [
+              "bitmap #119",
+              8
+            ],
+            [
+              "bitmap #124",
+              13
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "F52 길이 상충. F123/F124 고정512는 문서 기준이며 실로그 확인 필요."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "processing_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "amount",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 5,
+          "emit": "transmission_datetime",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "9": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "10": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "trace_number",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_entry_mode",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "card_sequence",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 1,
+          "emit": "pos_condition",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "currency_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "network_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "123": {
+          "kind": "fixed",
+          "length": 512
+        },
+        "124": {
+          "kind": "fixed",
+          "length": 512
+        },
+        "2": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 19
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 6
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 38
+        },
+        "47": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 74
+        },
+        "48": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 126
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "tlv": true
+        },
+        "60": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 46
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 98
+        },
+        "119": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 100
+        },
+        "120": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 150
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 80
+        },
+        "52": {
+          "kind": "blocked",
+          "reason": "표 길이16과16BCD 설명(8bytes) 상충"
+        }
+      }
+    },
+    {
+      "id": "hyundai_ms",
+      "alias": "s_service_din_ms",
+      "issuer": "현대카드",
+      "service": "MS",
+      "wire": "ascii",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        9
+      ],
+      "max_bitmaps": 2,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "현대_1.국내_VAN_MS전문_PIA1001_20230726_실카드해피포인트.docx",
+          "sha256": "c3c407a0858df0a9cde73febafe89ccbd128139e8379d685c354ae25b5964b89",
+          "sheets": [
+            [
+              "paragraphs",
+              180
+            ],
+            [
+              "table_1",
+              17
+            ],
+            [
+              "table_2",
+              13
+            ],
+            [
+              "table_3",
+              6
+            ],
+            [
+              "table_4",
+              11
+            ],
+            [
+              "table_5",
+              32
+            ],
+            [
+              "table_6",
+              21
+            ],
+            [
+              "table_7",
+              10
+            ],
+            [
+              "table_8",
+              5
+            ],
+            [
+              "table_9",
+              28
+            ],
+            [
+              "table_10",
+              28
+            ],
+            [
+              "table_11",
+              15
+            ],
+            [
+              "table_12",
+              2
+            ],
+            [
+              "table_13",
+              2
+            ],
+            [
+              "table_14",
+              2
+            ],
+            [
+              "table_15",
+              15
+            ],
+            [
+              "table_16",
+              23
+            ],
+            [
+              "table_17",
+              2
+            ],
+            [
+              "table_18",
+              2
+            ],
+            [
+              "table_19",
+              2
+            ],
+            [
+              "table_20",
+              2
+            ],
+            [
+              "table_21",
+              2
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "processing_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "amount",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "5": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "6": {
+          "kind": "fixed",
+          "length": 12
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 10,
+          "emit": "transmission_datetime",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "trace_number",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "local_time",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "local_date",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 4,
+          "emit": "merchant_type",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "pos_entry_mode",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "41": {
+          "kind": "fixed",
+          "length": 16,
+          "emit": "terminal_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "currency_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 16
+        },
+        "61": {
+          "kind": "fixed",
+          "length": 30
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "network_code",
+          "encoding": "ascii",
+          "numeric": true
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 6
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "ascii2",
+          "unit": "bytes",
+          "max": 37
+        },
+        "54": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 25
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 2
+        },
+        "56": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 8
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        },
+        "127": {
+          "kind": "var",
+          "prefix": "ascii3",
+          "unit": "bytes",
+          "max": 80
+        },
+        "90": {
+          "kind": "blocked",
+          "reason": "취소전문 거래별 original data 확인 필요"
+        }
+      }
+    },
+    {
+      "id": "hyundai_ic",
+      "alias": "s_service_din_ic",
+      "issuer": "현대카드",
+      "service": "IC",
+      "wire": "binary",
+      "enabled": false,
+      "validation_stage": "document_draft_no_real_log",
+      "header_offsets": [
+        0,
+        9
+      ],
+      "max_bitmaps": 3,
+      "mtis": [
+        "0100",
+        "0110",
+        "0120",
+        "0130",
+        "0200",
+        "0210",
+        "0220",
+        "0230",
+        "0400",
+        "0410",
+        "0420",
+        "0430",
+        "0500",
+        "0510",
+        "0600",
+        "0610",
+        "0800",
+        "0810"
+      ],
+      "sources": [
+        {
+          "file": "현대_2.국내_VAN_IC카드Layout_PIA1002_20221101_크림페이.docx",
+          "sha256": "ab43987287e6c8db4fa53ba83ee784c34b74f32aaa13aa6fc414e53c04db1a7d",
+          "sheets": [
+            [
+              "paragraphs",
+              12
+            ],
+            [
+              "table_1",
+              5
+            ],
+            [
+              "table_2",
+              85
+            ],
+            [
+              "table_3",
+              13
+            ],
+            [
+              "table_4",
+              5
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "F134 KLSC 32bytes 확장 반영. F118/127 업무별 하위항목은 실로그 검증 후 확대."
+      ],
+      "fields": {
+        "3": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "processing_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "4": {
+          "kind": "fixed",
+          "length": 6,
+          "emit": "amount",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "7": {
+          "kind": "fixed",
+          "length": 5,
+          "emit": "transmission_datetime",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "11": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "trace_number",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "12": {
+          "kind": "fixed",
+          "length": 3,
+          "emit": "local_time",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "13": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "local_date",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "14": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "18": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "merchant_type",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "19": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "acquirer_country",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "22": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "pos_entry_mode",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "23": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "card_sequence",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "25": {
+          "kind": "fixed",
+          "length": 1,
+          "emit": "pos_condition",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "37": {
+          "kind": "fixed",
+          "length": 12,
+          "emit": "retrieval_reference",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "39": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "response_code",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "42": {
+          "kind": "fixed",
+          "length": 15,
+          "emit": "merchant_id",
+          "encoding": "ascii",
+          "numeric": false
+        },
+        "43": {
+          "kind": "fixed",
+          "length": 40
+        },
+        "49": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "currency_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "52": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "53": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "61": {
+          "kind": "fixed",
+          "length": 30
+        },
+        "70": {
+          "kind": "fixed",
+          "length": 2,
+          "emit": "network_code",
+          "encoding": "bcd",
+          "numeric": true
+        },
+        "90": {
+          "kind": "fixed",
+          "length": 21
+        },
+        "130": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "131": {
+          "kind": "fixed",
+          "length": 5
+        },
+        "132": {
+          "kind": "fixed",
+          "length": 4
+        },
+        "136": {
+          "kind": "fixed",
+          "length": 8
+        },
+        "137": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "138": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "139": {
+          "kind": "fixed",
+          "length": 10
+        },
+        "144": {
+          "kind": "fixed",
+          "length": 1
+        },
+        "145": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "146": {
+          "kind": "fixed",
+          "length": 3
+        },
+        "147": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "148": {
+          "kind": "fixed",
+          "length": 2
+        },
+        "149": {
+          "kind": "fixed",
+          "length": 6
+        },
+        "2": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 19
+        },
+        "32": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 11
+        },
+        "35": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "digits",
+          "max": 37
+        },
+        "44": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 25
+        },
+        "54": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 120
+        },
+        "55": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255,
+          "tlv": true
+        },
+        "60": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 5
+        },
+        "118": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "126": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "127": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "134": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 32
+        },
+        "135": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 15
+        },
+        "142": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 255
+        },
+        "143": {
+          "kind": "var",
+          "prefix": "binary",
+          "unit": "bytes",
+          "max": 20
+        }
+      }
+    }
+  ]
+}

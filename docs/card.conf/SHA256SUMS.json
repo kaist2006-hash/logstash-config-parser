@@ -1,0 +1,18 @@
+{
+  "card.conf": "902e3a6e9ff655fb03ee449ae8a2546024c62888d93fb64e8fce29ff28734d09",
+  "card_detail.mapping.json": "be04494b7f49b2f65543faeed9870cbe0bd7f07d0f90480e9a983ac62bdf83dd",
+  "card_detail_parser.rb": "9cfc38cbefb44c1165044d42e5f6e91e47b0078fba3822a80f67913c1f4cb20c",
+  "card_detail_specs.json": "b02628bf479fb5bde8e520a2d6ef0d795634a09011c89776f52adeb69363fb89",
+  "HANDOFF.md": "57d63ccee8c6e3d43cc80ea23f35d60291c74b850c5bf4074124f45965456de5",
+  "README.md": "b02f560f85bfe2b191e3dd736850e112468b142c049d48c0b5b4f95e3af00b06",
+  "tests/card.replay.conf": "382e6a10c1dfa02a18d58f1f96f622afdeaf95024431fa2fea5651ca95b8ace5",
+  "tests/contracts.jsonl": "2c7c1b2978f28891d0cb1d3a03bceb0dc187fd96f7c0397f47970aab4d8cd254",
+  "tests/core_replay.rb": "6d971598f7d79ed18a62f6fb854b57130ce507e4b4be1eaf049c860da4e664c2",
+  "tests/run_core.py": "574563b6fd34a35c410a78db4f8a0121bee4a622417b53a509106700ae2396fe",
+  "validation/checks.json": "b26cc86fd648429e4fc9706f019010ffdd9f5a744897afbd4a2cc119e67dca78",
+  "validation/contracts-result.json": "2f25bb71a2ac389e0d9e7afcf43fc141c89253f7161b618233711a5ae357ed8c",
+  "validation/core-final-w1.json": "2e358e2963a3338076f0cbfdd5757d0c7001cd70cb342dc23d0688528ebcc163",
+  "validation/core-final-w4.json": "506c01c7ece36d3dabe526bcb39bd2b0beef8ec38c5b3ec8b1eabd60fcb8b3ed",
+  "validation/golden-result.json": "28f4061b69b6fce5d8af85326e6430fedfd919d0233d4c26d67b3007e5cee22d",
+  "validation/REPORT.md": "a1d8f14474a78e8244e03943cece67a2a56f3708f37ccdf106086f21e26c9e3d"
+}
