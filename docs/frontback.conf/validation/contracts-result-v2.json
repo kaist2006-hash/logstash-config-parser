@@ -1,0 +1,174 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "event_class": "LogStash::Event",
+  "workers": 1,
+  "contracts": [
+    {
+      "id": "front_request",
+      "checks": {
+        "fields": true,
+        "channel": true,
+        "correlation": true,
+        "retained": true
+      },
+      "detail": {
+        "correlation_id": "T00000000000000001",
+        "target_endpoint": "FC",
+        "inner_kind": "front_fixed_width",
+        "timestamp_text": "20260919 12:34:56,789",
+        "status": "ok",
+        "transaction_id": "202609191234567890",
+        "code_role": "network_code",
+        "session_descriptor_present": false,
+        "payload_bytes": 132,
+        "code": "8373",
+        "schema_version": "2026-09-19.1",
+        "message_class": "B",
+        "level": "INFO",
+        "source_endpoint": "FT",
+        "direction": "request",
+        "institution_code": "ZZ",
+        "route_code": "ZZ00",
+        "correlation_match": true,
+        "partner_code": "HOBT",
+        "channel": "front"
+      }
+    },
+    {
+      "id": "front_response",
+      "checks": {
+        "fields": true,
+        "channel": true,
+        "correlation": true,
+        "retained": true
+      },
+      "detail": {
+        "correlation_id": "T00000000000000001",
+        "target_endpoint": "FC",
+        "inner_kind": "front_fixed_width",
+        "timestamp_text": "20260919 12:34:56,789",
+        "status": "ok",
+        "transaction_id": "202609191234567890",
+        "code_role": "response_code",
+        "session_descriptor_present": true,
+        "payload_bytes": 132,
+        "code": "0000",
+        "schema_version": "2026-09-19.1",
+        "message_class": "B",
+        "level": "INFO",
+        "source_endpoint": "FT",
+        "direction": "response",
+        "institution_code": "ZZ",
+        "connection_slot": "1",
+        "route_code": "ZZ012",
+        "correlation_match": true,
+        "partner_code": "HOBT",
+        "channel": "front"
+      }
+    },
+    {
+      "id": "back_named_ascii",
+      "checks": {
+        "fields": true,
+        "channel": true,
+        "correlation": true,
+        "retained": true
+      },
+      "detail": {
+        "target_endpoint": "BT",
+        "transaction_id": "202609191234567890",
+        "code_role": "network_code",
+        "protocol_marker_offset": 129,
+        "protocol_marker": "ISO",
+        "code": "8373",
+        "message_class": "B",
+        "level": "INFO",
+        "connection_slot": "1",
+        "institution_code": "02",
+        "route_code": "07002",
+        "institution_name": "KB국민카드",
+        "institution_mapping_status": "mapped",
+        "correlation_match": true,
+        "correlation_id": "T00000000000000001",
+        "inner_kind": "iso8583_ascii_candidate",
+        "status": "ok",
+        "timestamp_text": "20260919 12:34:56,789",
+        "session_descriptor_present": true,
+        "payload_bytes": 140,
+        "schema_version": "2026-09-19.1",
+        "source_endpoint": "BC",
+        "direction": "response",
+        "inner_offset": 132,
+        "inner_bytes": 8,
+        "partner_code": "NHCARD",
+        "channel": "back"
+      }
+    },
+    {
+      "id": "back_inline_binary",
+      "checks": {
+        "fields": true,
+        "channel": true,
+        "correlation": true,
+        "retained": true
+      },
+      "detail": {
+        "target_endpoint": "BT",
+        "transaction_id": "202609191234567890",
+        "code_role": "network_code",
+        "protocol_marker_offset": 120,
+        "protocol_marker": "ISO",
+        "code": "8373",
+        "message_class": "B",
+        "level": "INFO",
+        "connection_slot": "1",
+        "institution_code": "07",
+        "route_code": "07002",
+        "institution_name": "신한카드",
+        "institution_mapping_status": "mapped",
+        "correlation_match": true,
+        "correlation_id": "T00000000000000001",
+        "inner_kind": "iso8583_binary_stx",
+        "status": "ok",
+        "timestamp_text": "20260919 12:34:56,789",
+        "session_descriptor_present": true,
+        "payload_bytes": 136,
+        "schema_version": "2026-09-19.1",
+        "source_endpoint": "BC",
+        "direction": "request",
+        "inner_offset": 132,
+        "inner_bytes": 4,
+        "channel": "back"
+      }
+    },
+    {
+      "id": "short_payload",
+      "checks": {
+        "failed": true,
+        "tagged": true
+      }
+    },
+    {
+      "id": "operational_skip",
+      "checks": {
+        "unchanged": true
+      }
+    },
+    {
+      "id": "target_collision",
+      "checks": {
+        "preserved": true,
+        "tagged": true
+      }
+    },
+    {
+      "id": "invalid_encoding_rejected",
+      "checks": {
+        "rejected": true
+      }
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "elapsed_seconds": 0.968
+}

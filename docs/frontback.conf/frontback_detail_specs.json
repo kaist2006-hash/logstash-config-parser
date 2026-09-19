@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "version": "2026-09-19.1",
+  "description": "FrontChannelMgr/BackChannelMgr 공통 채널 헤더 검증본. 내부 업무전문은 검증된 선택자가 추가되기 전까지 분류만 수행한다.",
+  "minimum_payload_bytes": 132,
+  "slices": {
+    "transaction_id": { "offset": 0, "length": 18, "pattern": "^[0-9A-Z]{18}$" },
+    "institution_code": { "offset": 18, "length": 2, "pattern": "^[0-9A-Z]{2}$" },
+    "correlation_id": { "offset": 20, "length": 18, "pattern": "^[0-9A-Z]{18}$" },
+    "session_descriptor": { "offset": 38, "length": 50, "emit": false },
+    "connection_slot": { "offset": 88, "length": 1 },
+    "separator": { "offset": 89, "length": 1, "emit": false },
+    "message_class": { "offset": 90, "length": 1, "pattern": "^[A-Z]$" },
+    "transport_reference": { "offset": 91, "length": 20, "emit": false },
+    "route_code": { "offset": 111, "length": 5 },
+    "code": { "offset": 116, "length": 4 },
+    "front_partner_code": { "offset": 120, "length": 8 },
+    "back_routing_segment": { "offset": 120, "length": 12, "emit": false }
+  },
+  "channels": {
+    "front": {
+      "path_token": "FrontChannelMgr",
+      "source": "FT",
+      "target": "FC",
+      "request_code": "8373"
+    },
+    "back": {
+      "path_token": "BackChannelMgr",
+      "source": "BC",
+      "target": "BT",
+      "network_code": "8373",
+      "inner_offset": 132
+    }
+  },
+  "institution_codes": {
+    "01": "BC카드",
+    "02": "KB국민카드",
+    "03": "하나카드",
+    "05": "신한카드",
+    "06": "삼성카드",
+    "07": "신한카드",
+    "08": "현대카드",
+    "11": "NH농협카드",
+    "17": "우리카드",
+    "29": "하나카드",
+    "33": "롯데카드",
+    "38": "롯데카드"
+  },
+  "inner_profiles": [
+    {
+      "id": "soil_bonus_coupon",
+      "enabled": false,
+      "selector": { "front_partner_code": "SOIN" },
+      "reason": "첨부 XLS에 특정 S-OIL 업무 예시와 512-byte 상위전문 필드표가 있으나, 제공 BackChannel 실로그에는 SOIN 표본이 없어 내부 필드 적용을 보류한다."
+    }
+  ],
+  "evidence": {
+    "channel_spec_status": "no_standalone_common_spec_found",
+    "matched_documents": [
+      {
+        "file": "20250120_NASR2412-01466_SOIL모바일쿠폰46및세차쿠폰.xls",
+        "relevance": "FrontChannelMgr/BackChannelMgr 실제 예시 및 특정 S-OIL 상위전문 필드표"
+      },
+      {
+        "file": "20250205_NASR2412-01466_SOIL세차쿠폰발급사명변경.xls",
+        "relevance": "FrontChannelMgr/BackChannelMgr 실제 예시 및 특정 S-OIL 테스트 자료"
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "logstash_version": "8.17.6",
+  "config_syntax": "pass",
+  "contracts": {
+    "passed": 8,
+    "failed": 0
+  },
+  "real_log_replay": {
+    "events": 25707,
+    "front_transactions": 992,
+    "back_transactions": 24715,
+    "ok": 25706,
+    "warning": 1,
+    "failed": 0,
+    "parser_errors": 0,
+    "message_mutations": 0,
+    "path_mutations": 0,
+    "correlation_mismatches": 0,
+    "worker_1_and_4_digest_equal": true,
+    "digest_sum": "97abf0273a2348b785196c3f079657dfb215ee265e046d7b9fe5abca7ee2e0c8",
+    "digest_xor": "e4f1f6ed4fcdc1dec1cddeac6078906be640ca3943781053a7ef5a91bfac802e"
+  },
+  "inner_classification": {
+    "iso8583_ascii_candidate": 11819,
+    "iso8583_binary_stx": 8656,
+    "custom_or_opaque": 3757,
+    "front_fixed_width": 992,
+    "fixed_text_3hdr": 475,
+    "test_text": 8
+  },
+  "warnings": {
+    "unexpected_front_request_code": 1
+  },
+  "external_connections": {
+    "beats": false,
+    "elasticsearch": false
+  }
+}
