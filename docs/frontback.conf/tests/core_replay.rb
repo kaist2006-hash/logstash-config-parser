@@ -16,39 +16,35 @@ def fb_put(buffer, offset, value)
   buffer[offset, value.bytesize] = value
 end
 
-def fb_contract_message(channel, direction, options = {})
-  payload = (' ' * 132).b
-  transaction_id = '202609191234567890'
+def fb_contract_message(channel, flow, options = {})
+  body = options.fetch(:body, 'UNPARSED-BODY').b
+  payload = (' ' * 120).b
   nice = 'T00000000000000001'
-  fb_put(payload, 0, transaction_id)
-  fb_put(payload, 18, channel == 'front' ? 'ZZ' : options.fetch(:institution, '02'))
+  msg_type = channel == 'front' ? (flow == 'request' ? '0200' : '0210') : (flow == 'request' ? '0200' : '0110')
+  process_code = channel == 'front' ? '010100ZZ' : "010100#{options.fetch(:institution, '02')}"
+  format_code = channel == 'front' ? '010100ZZ01' : "010101#{options.fetch(:institution, '02')}00"
+  correlation = options.fetch(:correlation, flow == 'response' ? 'ID:00025-M0000000A-NICE' : '').ljust(52)
+
+  fb_put(payload, 0, format('%04d', payload.bytesize + body.bytesize))
+  fb_put(payload, 4, msg_type)
+  fb_put(payload, 8, options.fetch(:network_response_code, '0000'))
+  fb_put(payload, 12, process_code)
   fb_put(payload, 20, nice)
-  descriptor = direction == 'response' || channel == 'back' ? 'ID:00025-M0000000A-NICE'.ljust(50) : (' ' * 50)
-  fb_put(payload, 38, descriptor)
-  fb_put(payload, 88, direction == 'response' || channel == 'back' ? '1' : ' ')
-  fb_put(payload, 89, ' ')
-  fb_put(payload, 90, options.fetch(:message_class, 'B'))
-  fb_put(payload, 91, '00000000000000000000')
-  if channel == 'front'
-    fb_put(payload, 111, direction == 'request' ? 'ZZ00 ' : 'ZZ012')
-    fb_put(payload, 116, direction == 'request' ? options.fetch(:code, '8373') : options.fetch(:code, '0000'))
-    fb_put(payload, 120, options.fetch(:partner, 'HOBT').ljust(8))
-    endpoints = direction == 'request' ? '[FT --> FC]' : '[FT <-- FC]'
-  else
-    fb_put(payload, 111, '07002')
-    fb_put(payload, 116, options.fetch(:code, '8373'))
-    if options[:inline_iso]
-      fb_put(payload, 120, 'ISO053020')
-      body = "\x02\x00\x01\x02".b
-    else
-      fb_put(payload, 120, options.fetch(:partner, 'NHCARD').ljust(9))
-      fb_put(payload, 129, 'ISO')
-      body = options.fetch(:body, '02000000').b
-    end
-    payload << body
-    endpoints = direction == 'request' ? '[BC --> BT]' : '[BC <-- BT]'
-  end
-  ["20260919 12:34:56,789\t#{nice}\tINFO  \t#{endpoints} |#{payload.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)}", nice]
+  fb_put(payload, 38, correlation)
+  fb_put(payload, 90, options.fetch(:header_direction, 'B'))
+  fb_put(payload, 91, '20260919')
+  fb_put(payload, 99, '123456')
+  fb_put(payload, 105, format_code)
+  fb_put(payload, 115, options.fetch(:service_instance_id, channel == 'back' ? '2' : '1'))
+  fb_put(payload, 116, options.fetch(:response_code, '8373'))
+  payload << body
+
+  endpoints = if channel == 'front'
+                flow == 'request' ? '[FT --> FC]' : '[FT <-- FC]'
+              else
+                flow == 'request' ? '[BC --> BT]' : '[BC <-- BT]'
+              end
+  ["20260919 12:34:56,789\t#{nice}\tINFO  \t#{endpoints} |#{payload.force_encoding(Encoding::UTF_8)}", nice]
 end
 
 directory = ENV.fetch('FRONTBACK_PARSER_DIR')
@@ -56,7 +52,7 @@ parser = Object.new
 parser.instance_eval(File.read(File.join(directory, 'frontback_detail_parser.rb')), 'frontback_detail_parser.rb')
 parser.register(
   'specs_path' => File.join(directory, 'frontback_detail_specs.json'),
-  'source_encoding' => 'ISO-8859-1'
+  'max_message_bytes' => 131_072
 )
 
 workers = Integer(ENV.fetch('FRONTBACK_CORE_WORKERS', '1'))
@@ -70,23 +66,29 @@ started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
 if ENV['FRONTBACK_CONTRACTS'] == '1'
   cases = [
-    ['front_request', 'front', 'request', {}, { 'status' => 'ok', 'code' => '8373', 'partner_code' => 'HOBT', 'code_role' => 'network_code' }],
-    ['front_response', 'front', 'response', { :code => '0000' }, { 'status' => 'ok', 'code' => '0000', 'code_role' => 'response_code', 'session_descriptor_present' => true }],
-    ['back_named_ascii', 'back', 'response', { :institution => '02', :partner => 'NHCARD', :body => '02100000' }, { 'status' => 'ok', 'institution_name' => 'KB국민카드', 'partner_code' => 'NHCARD', 'protocol_marker_offset' => 129, 'inner_kind' => 'iso8583_ascii_candidate' }],
-    ['back_inline_binary', 'back', 'request', { :institution => '07', :inline_iso => true }, { 'status' => 'ok', 'institution_name' => '신한카드', 'protocol_marker_offset' => 120, 'inner_kind' => 'iso8583_binary_stx' }]
+    ['front_request_blank_defaults', 'front', 'request', { :header_direction => 'F', :service_instance_id => ' ', :response_code => '    ' }],
+    ['front_response', 'front', 'response', { :response_code => '0000' }],
+    ['back_request', 'back', 'request', { :institution => '07', :body => 'ISO0234000530200' }],
+    ['back_response', 'back', 'response', { :institution => '11', :body => 'NHCARD   ISO0110' }]
   ]
   results = []
-  cases.each do |id, channel, direction, options, expected|
-    message, nice = fb_contract_message(channel, direction, options)
+  cases.each do |id, channel, flow, options|
+    message, nice = fb_contract_message(channel, flow, options)
     path = "C:/logs/#{channel == 'front' ? 'FrontChannelMgr' : 'BackChannelMgr'}.log"
     event = LogStash::Event.new('message' => message, 'nice_number' => nice, 'log' => { 'file' => { 'path' => path } })
     before = event.get('message')
     returned = parser.filter(event)
     detail = event.get('frontback_detail') || {}
+    header = detail['nice_header'] || {}
+    expected_msg_type = channel == 'front' ? (flow == 'request' ? '0200' : '0210') : (flow == 'request' ? '0200' : '0110')
     checks = {
-      'fields' => expected.all? { |key, value| detail[key] == value },
-      'channel' => detail['channel'] == channel && detail['direction'] == direction,
-      'correlation' => detail['correlation_match'] == true,
+      'status' => detail['status'] == 'ok',
+      'channel' => detail['channel'] == channel && detail['flow_direction'] == flow,
+      'header_size' => detail['header_bytes'] == 120,
+      'documented_fields' => header.keys.sort == %w[direction message_correlation_id msg_format_code msg_length msg_type network_response_code nice_serial_no process_code response_code service_instance_id transaction_date transaction_time].sort,
+      'values' => header['msg_type'] == expected_msg_type && header['nice_serial_no'] == nice && header['transaction_date'] == '20260919',
+      'nice_number' => detail['nice_number_match'] == true,
+      'no_body_fields' => (%w[partner_code protocol_marker inner_kind institution_code] & detail.keys).empty?,
       'retained' => returned.length == 1 && returned[0].equal?(event) && event.get('message') == before
     }
     results << { 'id' => id, 'checks' => checks, 'detail' => detail }
@@ -122,11 +124,11 @@ if ENV['FRONTBACK_CONTRACTS'] == '1'
   begin
     invalid = Object.new
     invalid.instance_eval(File.read(File.join(directory, 'frontback_detail_parser.rb')))
-    invalid.register('specs_path' => File.join(directory, 'frontback_detail_specs.json'), 'source_encoding' => 'NOT-A-REAL-ENCODING')
+    invalid.register('specs_path' => File.join(directory, 'frontback_detail_specs.json'), 'max_message_bytes' => 100)
   rescue ArgumentError
     rejected = true
   end
-  results << { 'id' => 'invalid_encoding_rejected', 'checks' => { 'rejected' => rejected } }
+  results << { 'id' => 'invalid_limit_rejected', 'checks' => { 'rejected' => rejected } }
 
   report['contracts'] = results
   report['passed'] = results.count { |item| item['checks'].values.all? }
@@ -134,7 +136,7 @@ if ENV['FRONTBACK_CONTRACTS'] == '1'
 else
   queue = SizedQueue.new(2048)
   pool = workers.times.map do
-    Thread.new do |; local, item, message, path, event, before_path, returned, returned_event, detail, key, digest|
+    Thread.new do |; local, item, message, path, event, before_path, returned, returned_event, detail, header, key, digest|
       local = {
         'events' => 0,
         'counts' => Hash.new(0),
@@ -143,7 +145,7 @@ else
         'message_mutations' => 0,
         'path_mutations' => 0,
         'return_proxy_identity_mismatches' => 0,
-        'correlation_mismatches' => 0,
+        'nice_number_mismatches' => 0,
         'digest_sum' => 0,
         'digest_xor' => 0
       }
@@ -162,8 +164,9 @@ else
         local['path_mutations'] += 1 unless event.get('[log][file][path]') == before_path
         detail = returned_event.get('frontback_detail')
         raise 'selected transaction not parsed' unless detail
-        local['correlation_mismatches'] += 1 unless detail['correlation_match'] == true
-        key = [detail['channel'], detail['direction'], detail['status'], detail['institution_code'], detail['partner_code'], detail['inner_kind']].join('|')
+        local['nice_number_mismatches'] += 1 unless detail['nice_number_match'] == true
+        header = detail['nice_header'] || {}
+        key = [detail['channel'], detail['flow_direction'], detail['status'], header['msg_type'], header['process_code'], header['msg_format_code'], header['response_code']].join('|')
         local['counts'][key] += 1
         detail.fetch('warnings', []).each { |warning| local['warnings'][warning] += 1 }
         detail.fetch('errors', []).each { |error| local['errors'][error['code']] += 1 }
@@ -205,14 +208,14 @@ else
     'message_mutations' => 0,
     'path_mutations' => 0,
     'return_proxy_identity_mismatches' => 0,
-    'correlation_mismatches' => 0,
+    'nice_number_mismatches' => 0,
     'digest_sum' => 0,
     'digest_xor' => 0
   }
   pool.each do |thread|
     local = thread.value
     %w[counts warnings errors].each { |name| local[name].each { |key, value| merged[name][key] += value } }
-    %w[events message_mutations path_mutations return_proxy_identity_mismatches correlation_mismatches].each { |name| merged[name] += local[name] }
+    %w[events message_mutations path_mutations return_proxy_identity_mismatches nice_number_mismatches].each { |name| merged[name] += local[name] }
     merged['digest_sum'] = (merged['digest_sum'] + local['digest_sum']) % (1 << 256)
     merged['digest_xor'] ^= local['digest_xor']
   end
