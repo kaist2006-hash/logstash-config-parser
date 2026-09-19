@@ -1,0 +1,192 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "event_class": "LogStash::Event",
+  "workers": 1,
+  "contracts": [
+    {
+      "id": "front_request_blank_defaults",
+      "checks": {
+        "status": true,
+        "channel": true,
+        "header_size": true,
+        "documented_fields": true,
+        "values": true,
+        "nice_number": true,
+        "no_body_fields": true,
+        "retained": true
+      },
+      "detail": {
+        "header_bytes": 120,
+        "nice_number_match": true,
+        "flow_direction": "request",
+        "timestamp_text": "20260919 12:34:56,789",
+        "channel": "front",
+        "level": "INFO",
+        "schema_version": "2026-09-19.2",
+        "nice_header": {
+          "direction": "F",
+          "nice_serial_no": "T00000000000000001",
+          "msg_length": 133,
+          "transaction_date": "20260919",
+          "msg_format_code": "010100ZZ01",
+          "network_response_code": "0000",
+          "transaction_time": "123456",
+          "response_code": "",
+          "process_code": "010100ZZ",
+          "service_instance_id": "",
+          "message_correlation_id": "",
+          "msg_type": "0200"
+        },
+        "source_endpoint": "FT",
+        "target_endpoint": "FC",
+        "status": "ok"
+      }
+    },
+    {
+      "id": "front_response",
+      "checks": {
+        "status": true,
+        "channel": true,
+        "header_size": true,
+        "documented_fields": true,
+        "values": true,
+        "nice_number": true,
+        "no_body_fields": true,
+        "retained": true
+      },
+      "detail": {
+        "header_bytes": 120,
+        "nice_number_match": true,
+        "flow_direction": "response",
+        "timestamp_text": "20260919 12:34:56,789",
+        "channel": "front",
+        "level": "INFO",
+        "schema_version": "2026-09-19.2",
+        "nice_header": {
+          "direction": "B",
+          "nice_serial_no": "T00000000000000001",
+          "msg_length": 133,
+          "transaction_date": "20260919",
+          "msg_format_code": "010100ZZ01",
+          "network_response_code": "0000",
+          "transaction_time": "123456",
+          "response_code": "0000",
+          "process_code": "010100ZZ",
+          "service_instance_id": "1",
+          "message_correlation_id": "ID:00025-M0000000A-NICE",
+          "msg_type": "0210"
+        },
+        "source_endpoint": "FT",
+        "target_endpoint": "FC",
+        "status": "ok"
+      }
+    },
+    {
+      "id": "back_request",
+      "checks": {
+        "status": true,
+        "channel": true,
+        "header_size": true,
+        "documented_fields": true,
+        "values": true,
+        "nice_number": true,
+        "no_body_fields": true,
+        "retained": true
+      },
+      "detail": {
+        "header_bytes": 120,
+        "nice_number_match": true,
+        "flow_direction": "request",
+        "timestamp_text": "20260919 12:34:56,789",
+        "channel": "back",
+        "level": "INFO",
+        "schema_version": "2026-09-19.2",
+        "nice_header": {
+          "direction": "B",
+          "nice_serial_no": "T00000000000000001",
+          "msg_length": 136,
+          "transaction_date": "20260919",
+          "msg_format_code": "0101010700",
+          "network_response_code": "0000",
+          "transaction_time": "123456",
+          "response_code": "8373",
+          "process_code": "01010007",
+          "service_instance_id": "2",
+          "message_correlation_id": "",
+          "msg_type": "0200"
+        },
+        "source_endpoint": "BC",
+        "target_endpoint": "BT",
+        "status": "ok"
+      }
+    },
+    {
+      "id": "back_response",
+      "checks": {
+        "status": true,
+        "channel": true,
+        "header_size": true,
+        "documented_fields": true,
+        "values": true,
+        "nice_number": true,
+        "no_body_fields": true,
+        "retained": true
+      },
+      "detail": {
+        "header_bytes": 120,
+        "nice_number_match": true,
+        "flow_direction": "response",
+        "timestamp_text": "20260919 12:34:56,789",
+        "channel": "back",
+        "level": "INFO",
+        "schema_version": "2026-09-19.2",
+        "nice_header": {
+          "direction": "B",
+          "nice_serial_no": "T00000000000000001",
+          "msg_length": 136,
+          "transaction_date": "20260919",
+          "msg_format_code": "0101011100",
+          "network_response_code": "0000",
+          "transaction_time": "123456",
+          "response_code": "8373",
+          "process_code": "01010011",
+          "service_instance_id": "2",
+          "message_correlation_id": "ID:00025-M0000000A-NICE",
+          "msg_type": "0110"
+        },
+        "source_endpoint": "BC",
+        "target_endpoint": "BT",
+        "status": "ok"
+      }
+    },
+    {
+      "id": "short_payload",
+      "checks": {
+        "failed": true,
+        "tagged": true
+      }
+    },
+    {
+      "id": "operational_skip",
+      "checks": {
+        "unchanged": true
+      }
+    },
+    {
+      "id": "target_collision",
+      "checks": {
+        "preserved": true,
+        "tagged": true
+      }
+    },
+    {
+      "id": "invalid_limit_rejected",
+      "checks": {
+        "rejected": true
+      }
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "elapsed_seconds": 0.878
+}
