@@ -1,87 +1,86 @@
-# frontback.conf 파서 — 1차 검증본
+# frontback.conf — NICE 공통 120바이트 헤더 파서
 
-이 묶음은 기존 `frontback.conf`의 수집·인덱스 분기를 유지하면서 `FrontChannelMgr`와 `BackChannelMgr` 거래행에 검증 가능한 공통 상세 필드를 추가합니다. Logstash 8.17.6에서 문법과 실제 이벤트 처리를 확인했으며 Beats·Elasticsearch에는 접속하지 않았습니다.
+이 묶음은 기존 `frontback.conf`의 수집·인덱스 분기를 유지하면서 `FrontChannelMgr`와 `BackChannelMgr` 거래행의 앞 120바이트 `SYSTEM_HEADER`만 상세 파싱합니다. Logstash 8.17.6에서 설정 문법, 합성 계약, 실제 로그 전체 재생을 검증했습니다. Beats와 Elasticsearch에는 접속하지 않았습니다.
 
-## 1차 결론
+## 구현 선택
 
-`taps.7z`에는 Front/Back 채널 전체를 정의하는 독립 규격서가 없습니다. 대신 S-OIL 개발요건 XLS 2개에서 두 매니저의 실제 로그 예시와 특정 업무 필드표를 확인했습니다. 제공 로그는 카드사·업무·ASCII ISO8583·binary ISO8583·기타 고정 전문이 섞여 있으므로 특정 문서 하나를 전체 로그에 적용하면 필드가 밀립니다.
+고정폭 헤더에는 `dissect`를 사용하지 않습니다. `dissect`는 구분자를 기준으로 필드를 분리하므로 구분자가 없는 120바이트 연속 필드에 적합하지 않습니다.
 
-따라서 이번 버전은 다음 범위만 활성화합니다.
+- `frontback.conf`: 대상 파일 선택과 Ruby 호출, 기존 인덱스 분기
+- `frontback_detail_specs.json`: 문서의 12개 필드 offset·length·형식
+- `frontback_detail_parser.rb`: `byteslice` 기반 고정폭 파싱과 방어 검증
 
-- 공통 132-byte 채널 헤더
-- Front/Back 요청·응답 방향과 endpoint
-- transaction/correlation key 및 기존 `nice_number` 일치 여부
-- Back 기관 코드와 확인된 카드사 이름 매핑
-- route/code/partner/protocol marker
-- 내부 전문의 안전한 형식 분류
+JSON은 파이프라인 시작 시 한 번만 읽고 동결합니다. 이벤트 처리 중 파일 I/O·네트워크 호출·본문 복사는 없습니다.
 
-카드번호·Track2·PIN·내부 본문 원문은 `frontback_detail` 아래에 복제하지 않습니다. 기존 `message` 자체에는 민감정보가 있을 수 있으므로 이 파서는 저장 원문의 마스킹 기능이 아닙니다.
+## 활성 파싱 범위
 
-## 구성
+| Offset | 길이 | 결과 필드 |
+|---:|---:|---|
+| 0–3 | 4 | `nice_header.msg_length` |
+| 4–7 | 4 | `nice_header.msg_type` |
+| 8–11 | 4 | `nice_header.network_response_code` |
+| 12–19 | 8 | `nice_header.process_code` |
+| 20–37 | 18 | `nice_header.nice_serial_no` |
+| 38–89 | 52 | `nice_header.message_correlation_id` |
+| 90 | 1 | `nice_header.direction` |
+| 91–98 | 8 | `nice_header.transaction_date` |
+| 99–104 | 6 | `nice_header.transaction_time` |
+| 105–114 | 10 | `nice_header.msg_format_code` |
+| 115 | 1 | `nice_header.service_instance_id` |
+| 116–119 | 4 | `nice_header.response_code` |
 
-| 파일 | 역할 |
-|---|---|
-| `frontback.conf` | 기존 Beats 8805, alias 분기, ES 출력 구조와 신규 Ruby 호출 |
-| `frontback_detail_parser.rb` | 공통 헤더·형식 파서 |
-| `frontback_detail_specs.json` | 고정 위치, 기관 매핑, 비활성 내부 후보 |
-| `frontback_detail.mapping.json` | 신규 필드의 ES 매핑 참고 본문; 자동 적용하지 않음 |
-| `validation/REPORT.md` | 문서 조사 및 실로그 검증 결과 |
-| `HANDOFF.md` | 다음 채팅/다음 단계 인수인계 |
-| `tests/` | Logstash 8.17.6 Event/JRuby 오프라인 재생 도구 |
+Offset 120 이후는 파싱·분류·복제하지 않습니다. 카드번호·Track2·PIN·업무 본문이 신규 필드에 복제되지 않습니다. 원래 `message`는 변경하거나 삭제하지 않습니다.
 
-## 기존 설정 보존 범위
+Excel의 `DEFAULT_VAL`은 고정 검증값으로 사용하지 않습니다. 실제 Front 로그에는 `direction=F`, 빈 service instance, `8373` 이외의 응답코드가 존재하기 때문입니다. `msg_length`도 길이 산정 범위가 문서에 추가로 정의되기 전까지 로그 문자열의 전체 바이트 수와 비교하지 않습니다.
 
-- Beats port `8805`
-- FrontMessage, FrontChannel, BackMessage, BackChannel, JeusServer의 기존 alias
-- 기존 Front 응답 root `code` 추출
-- `ilm_enabled => false`, `manage_template => false`
-- 기존 ECS 필드 제거 목록
+## 생성 필드
 
-추가 파서는 `FrontChannelMgr`와 `BackChannelMgr`에만 실행됩니다. 운영 상태 로그·스택 트레이스·MessageMgr·JeusServer는 변경하지 않습니다. 파싱 실패가 생겨도 이벤트를 drop하지 않습니다.
+`[frontback_detail]` 아래에 다음 값을 생성합니다.
 
-## 신규 필드
+- `schema_version`, `status`
+- `channel`: `front` 또는 `back`
+- `flow_direction`: 로그 화살표 기준 `request` 또는 `response`
+- `source_endpoint`, `target_endpoint`, `timestamp_text`, `level`
+- `header_bytes`: 항상 `120`
+- `nice_number_match`: 외부 로그의 `nice_number`와 `nice_serial_no` 일치 여부
+- `nice_header.*`: 문서에 정의된 12개 필드
+- 이상 시 `warnings`, `errors`
 
-주요 값은 `[frontback_detail]` 아래에 생성됩니다.
+파싱 실패가 발생해도 이벤트는 drop하지 않고 `_frontback_parse_failure` 태그와 오류 코드만 추가합니다. 기존 `[frontback_detail]`이 있으면 덮어쓰지 않습니다.
 
-| 필드 | 의미 |
-|---|---|
-| `status` | `ok`, `warning`, `failed` |
-| `channel`, `direction` | `front/back`, `request/response` |
-| `transaction_id`, `correlation_id` | 채널 공통 식별·상관키 |
-| `correlation_match` | 로그 헤더 `nice_number`와 상관키 일치 여부 |
-| `institution_code/name` | Back 기관 코드와 확인된 카드사 이름 |
-| `route_code`, `code`, `code_role` | 공통 위치의 라우팅·응답/네트워크 코드 |
-| `partner_code` | 검증 가능한 파트너 구간 |
-| `protocol_marker(_offset)` | Back `ISO` marker와 위치 |
-| `inner_kind` | 내부 전문 형식 분류 |
+## 운영 최적화
 
-`inner_kind=iso8583_*`는 세부 비트필드 파싱 완료를 뜻하지 않습니다. `custom_or_opaque`도 실패가 아니라 아직 업무별 규격이 연결되지 않은 상태입니다.
+- 로그 외피는 최대 512바이트까지만 검사합니다.
+- 실제 헤더 120바이트만 복사하며 긴 본문 전체를 정규식으로 캡처하지 않습니다.
+- 스펙은 `register`에서 한 번 검증·컴파일·동결합니다.
+- 120바이트 전체가 누락·중복 없이 정의됐는지 시작 시 검사합니다.
+- 최대 이벤트 크기 128KiB 제한으로 비정상 대형 이벤트의 처리 비용을 제한합니다.
+- 이벤트별 공유 상태 쓰기와 잠금이 없어 멀티워커에서 결정적으로 동작합니다.
+- 비ASCII 헤더, 짧은 헤더, 잘못된 외피는 안전하게 실패 처리하며 원문은 유지합니다.
 
 ## 검증 결과
 
 | 항목 | 결과 |
 |---|---:|
+| Logstash 8.17.6 설정 문법 | 통과 |
 | 합성 계약 | 8/8 통과 |
-| Front 실거래행 | 992 |
-| Back 실거래행 | 24,715 |
-| 전체 실거래행 | 25,707 |
-| ok / warning / failed | 25,706 / 1 / 0 |
-| parser error | 0 |
-| message/path 변경 | 0 / 0 |
-| correlation 불일치 | 0 |
-| 1-worker/4-worker digest | 동일 |
+| Back 거래행 | 24,715 |
+| Front 거래행 | 992 |
+| 합계 | 25,707 |
+| ok / warning / failed | 25,707 / 0 / 0 |
+| 원본 message/path 변경 | 0 / 0 |
+| `nice_number` 불일치 | 0 |
+| 1-worker/4-worker 결과 digest | 동일 |
 
-경고 1건은 일반 Front 요청 code `8373` 위치가 공백인 변형입니다. 추정 파싱하지 않고 확인 대상으로 남겼습니다.
+필드별 분포와 마스킹된 대표 결과는 `validation/HEADER_VALUES.md`, 상세 검증은 `validation/REPORT.md`를 봅니다.
 
 ## 운영 배치
 
-세 핵심 파일을 같은 디렉터리에 둡니다.
-
 ```text
 /etc/logstash/frontback/
+  frontback.conf
   frontback_detail_parser.rb
   frontback_detail_specs.json
-  frontback.conf
 ```
 
 필수 환경 또는 Logstash keystore 값을 준비합니다.
@@ -91,12 +90,11 @@ FRONTBACK_PARSER_DIR=/etc/logstash/frontback
 FRONTBACK_ES_HOST_1=<기존 첫 번째 ES URL>
 FRONTBACK_ES_HOST_2=<기존 두 번째 ES URL>
 FRONTBACK_ES_HOST_3=<기존 세 번째 ES URL>
-FRONTBACK_ES_PASSWORD=<keystore 권장>
 FRONTBACK_ES_USER=elastic
-FRONTBACK_SOURCE_ENCODING=UTF-8
+FRONTBACK_ES_PASSWORD=<Logstash keystore 권장>
 ```
 
-운영 원본의 내부 주소와 평문 비밀번호는 공개 파일에 복사하지 않았습니다. `FRONTBACK_SOURCE_ENCODING`은 수집 단계에서 실제로 생성되는 문자열 인코딩에 맞춰야 합니다. 이번 원시 파일은 CP949로 읽히면서 일부 binary가 섞여 있었고, 로컬 검증은 원바이트 보존을 위해 ISO-8859-1 운반 방식으로 수행했습니다. 공통 132-byte 헤더는 ASCII라 이번 활성 범위는 본문 문자 해석에 의존하지 않습니다.
+`manage_template => false`를 유지하므로 운영 적용 전에 `frontback_detail.mapping.json`의 필드를 기존 인덱스 템플릿에 병합해야 합니다. 이 단계 없이 동적 매핑에 의존하면 날짜처럼 보이는 문자열의 타입이 환경별로 달라질 수 있습니다.
 
 ## 오프라인 재검증
 
@@ -108,10 +106,4 @@ python tests/run_core.py --logstash-home C:/tools/logstash-8.17.6 --logs-dir C:/
 python tests/run_core.py --logstash-home C:/tools/logstash-8.17.6 --logs-dir C:/samples/frontback --workers 4 --report C:/temp/frontback-w4.json
 ```
 
-같은 보고서 경로를 덮어쓰지 않도록 도구가 기존 파일이 있으면 중단합니다. 원시 로그는 읽기만 하며 ES나 네트워크를 사용하지 않습니다.
-
-## 다음 상세 파싱 원칙
-
-내부 업무 프로파일은 `institution_code + partner_code + route_code + inner_kind`처럼 충돌하지 않는 selector를 먼저 고정해야 합니다. 그 다음 정확히 대응하는 문서와 요청/응답 표본을 함께 검증합니다. JSON만 수정해도 실행 중인 파서에 즉시 반영되지 않으므로 파이프라인 reload/restart가 필요합니다.
-
-S-OIL 후보는 문서는 있지만 제공 Back 표본이 없어 비활성입니다. 카드사별 ISO8583 상세 파싱은 중단해 둔 `card.conf` 작업과 규격 범위가 겹치므로, 우선순위를 정한 뒤 재사용 가능한 core와 채널 wrapper를 분리해 연결하는 편이 안전합니다.
+JSON이나 Ruby를 변경하면 pipeline reload/restart가 필요합니다.
