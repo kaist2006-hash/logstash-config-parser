@@ -1,8 +1,6 @@
 {
-  "version": "13.0-document-full-review",
-  "_GUIDE_START": "교육용 적용 사본. GUIDE_D01~D05를 검색하세요. 예시 규격은 가정이며 운영에 통째로 적용하지 마세요.",
+  "version": "15.3-production",
   "common_field_types": {
-    "_note": "최종 21개 공통필드 타입은 방향과 무관하게 동일 필드 경로에 항상 동일하게 적용. request_fields/response_fields는 8개 업체 기준 방향별 공통 여부를 설명하기 위한 목록이며 타입 적용 범위를 제한하지 않음.",
     "_date_timezone": "+09:00",
     "types": {
       "parser_type": "keyword",
@@ -25,7 +23,12 @@
       "detail.acquirer_name": "keyword",
       "detail.original_approval_number": "keyword",
       "detail.display_message": "text_keyword",
-      "detail.approval_datetime": "date"
+      "detail.approval_datetime": "date",
+      "merchant": "keyword",
+      "external_version": "keyword",
+      "transport_trailer_length": "integer",
+      "declared_message_length": "integer",
+      "transport_missing_length": "integer"
     },
     "request_fields": [
       "parser_type",
@@ -57,12 +60,10 @@
       "detail.acquirer_name",
       "detail.display_message",
       "detail.approval_datetime"
-    ],
-    "_response_note": "transaction_amount/installment_months/tax_amount/service_charge는 NICE/TAG 응답에는 존재하지만 SK/S-OIL 사설 응답 규격에는 없어 8개 업체 응답 공통에서는 제외. 해당 필드가 존재하는 응답 이벤트에는 전역 types에 의해 동일 타입이 적용됨."
+    ]
   },
   "nice_fixed": {
     "unregistered_text_fallback": {
-      "_note": "v8 정상 전문 fallback 정책. 기존 Rule 완전일치를 최우선으로 사용한다. Rule 불일치 시 text/trade 기반으로 기존 Schema 후보를 찾더라도 바로 전체 Detail을 적용하지 않고, 정상 전문 길이 확인 + 공통필드 구조 점수 + 후보 간 점수차 + 증거수 + 동일 Profile 내 전체 Detail 구조 유일성을 모두 검증한 뒤에만 전체 Schema를 적용한다. 전체 Schema를 안전하게 확정하지 못해도 정상 완전 전문이면 공통필드 구조 Profile을 비교하여 21개 공통필드 중 해당 구조에 존재하는 필드만 추출한다. 선언 길이보다 실제 전문이 짧은 비정상/잘린 전문에는 상세 fallback을 적용하지 않는다.",
       "enabled": true,
       "unresolved_format": "UNKNOWN",
       "resolved_tag": "_nice_pos_unregistered_text_fallback",
@@ -80,179 +81,7 @@
       "schema_validation_require_unique_structure": true
     },
     "merchants": {
-      "_INSERT_NEW_NICE_MERCHANT_BELOW": {
-        "_note": "▼▼▼ 신규 NICE 고정길이 가맹점/업무 규격은 이 마커 바로 아래에 추가 ▼▼▼",
-        "_how": "새 가맹점은 schemas + rules를 추가. 기존 공통 schema를 재사용할 수 있으면 해당 merchant의 rules만 추가.",
-        "schemas": {},
-        "rules": []
-      },
-      "guide_d01_shop": {
-        "_GUIDE_D01": "추가한 위치: 새 NICE 가맹점 객체 전체. 아래 schemas는 읽을 위치, rules는 이 규격을 고를 조건입니다. 기존 gongju_currency 바로 위입니다.",
-        "schemas": {
-          "guide_d01_request": {
-            "name": "GUIDE_D01 신규 NICE 요청",
-            "direction": "request",
-            "_GUIDE_D01_FIELDS": "내 규격서의 필드명·시작·길이로 바꿀 자리. ASCII 기준: 56~67 금액, 68~69 할부, 70~73 캠페인코드.",
-            "fields": [
-              {
-                "key": "transaction_amount",
-                "start": 56,
-                "length": 12,
-                "_guide": "GUIDE_D01: 000000012300 → 기존 long 타입으로 12300"
-              },
-              {
-                "key": "installment_months",
-                "start": 68,
-                "length": 2,
-                "_guide": "GUIDE_D01: 00 → 기존 integer 타입으로 0"
-              },
-              {
-                "key": "campaign_code",
-                "start": 70,
-                "length": 4,
-                "_guide": "GUIDE_D01: AB12 → 문자열 그대로"
-              }
-            ]
-          },
-          "guide_d01_response": {
-            "name": "GUIDE_D01 신규 NICE 응답",
-            "direction": "response",
-            "response_code_start": 56,
-            "_GUIDE_D01_RESPONSE": "요청과 자리수가 달라 응답 schema를 별도로 추가. 56~59 응답코드는 Ruby가 추출.",
-            "fields": [
-              {
-                "key": "approval_number",
-                "start": 60,
-                "length": 8,
-                "_guide": "GUIDE_D01: APR00001 → 앞자리 유지하는 문자열"
-              },
-              {
-                "key": "transaction_amount",
-                "start": 68,
-                "length": 12,
-                "_guide": "GUIDE_D01: 응답 금액"
-              },
-              {
-                "key": "approval_datetime",
-                "start": 80,
-                "length": 14,
-                "_guide": "GUIDE_D01: 20260909160000 → 날짜 변환"
-              }
-            ]
-          }
-        },
-        "rules": [
-          {
-            "_GUIDE_D01_RULE": "schema 이름은 위 ID와 정확히 같아야 합니다. text/type/trade/길이는 실제 헤더값.",
-            "id": "guide_d01_req",
-            "schema": "guide_d01_request",
-            "when": {
-              "text": [
-                "Q99"
-              ],
-              "trade": [
-                "99"
-              ],
-              "message_type": [
-                "0200"
-              ],
-              "direction": [
-                "request"
-              ],
-              "message_length": [
-                "0073"
-              ]
-            },
-            "priority": 1000
-          },
-          {
-            "id": "guide_d01_res",
-            "schema": "guide_d01_response",
-            "when": {
-              "text": [
-                "Q99"
-              ],
-              "trade": [
-                "99"
-              ],
-              "message_type": [
-                "0210"
-              ],
-              "direction": [
-                "response"
-              ],
-              "message_length": [
-                "0093"
-              ]
-            },
-            "priority": 1000
-          }
-        ],
-        "_GUIDE_D01_END": "D01 추가 블록 끝. 아래부터 기존 설정입니다."
-      },
-      "guide_d05_dynamic_shop": {
-        "_GUIDE_D05": "D01과 같은 고정 73자리 뒤에 003ABC를 붙이는 별도 예시. 새 text Q98, 총길이 0079.",
-        "schemas": {
-          "guide_d05_request": {
-            "name": "GUIDE_D05 길이 접두부 데이터",
-            "direction": "request",
-            "fields": [
-              {
-                "key": "transaction_amount",
-                "start": 56,
-                "length": 12
-              },
-              {
-                "key": "installment_months",
-                "start": 68,
-                "length": 2
-              },
-              {
-                "key": "campaign_code",
-                "start": 70,
-                "length": 4
-              }
-            ],
-            "_GUIDE_D05_DYNAMIC": "fields 바로 뒤, 같은 깊이에 추가. 74~76: 길이 003, 77~79: 값 ABC. 기존 Ruby type 사용.",
-            "dynamic_start": 74,
-            "dynamic": [
-              {
-                "type": "length_prefixed",
-                "length_size": 3,
-                "length_key": "extra_length",
-                "key": "extra_data"
-              }
-            ]
-          }
-        },
-        "rules": [
-          {
-            "id": "guide_d05_req",
-            "schema": "guide_d05_request",
-            "when": {
-              "text": [
-                "Q98"
-              ],
-              "trade": [
-                "99"
-              ],
-              "message_type": [
-                "0200"
-              ],
-              "direction": [
-                "request"
-              ],
-              "message_length": [
-                "0079"
-              ]
-            },
-            "priority": 1000
-          }
-        ],
-        "_GUIDE_D05_END": "D05 추가 블록 끝."
-      },
       "gongju_currency": {
-        "_section_start": "===== 공주지역화폐 시작 =====",
         "schemas": {
           "22": {
             "name": "1-16-1. 공주지역화폐 승인 요청 , 응답",
@@ -520,11 +349,9 @@
             },
             "priority": 1
           }
-        ],
-        "_section_end": "===== 공주지역화폐 끝 ====="
+        ]
       },
       "k7_chakpay": {
-        "_section_start": "===== K7 착페이 시작 =====",
         "schemas": {
           "12": {
             "name": "1-10 착페이 요청전문 : 결제 승인",
@@ -882,11 +709,9 @@
             },
             "priority": 7
           }
-        ],
-        "_section_end": "===== K7 착페이 끝 ====="
+        ]
       },
       "bgf_ponta": {
-        "_section_start": "===== BGF 폰타포인트 시작 =====",
         "schemas": {
           "21": {
             "name": "1-15 BGF – 폰타포인트 ( 서비스 : 조회 , 사용 , 적립 / 요청 , 응답 통합 )",
@@ -1079,22 +904,18 @@
           {
             "id": "ponta_integrated",
             "schema": "21",
-            "_GUIDE_D04": "기존 BGF 폰타와 전체 구조가 같다는 가정에서 text 배열 마지막에 PTX를 실제 추가했습니다. 다른 레이아웃이면 D01처럼 새 schema/rule.",
             "when": {
               "text": [
                 "PTS",
                 "PTE",
-                "PTC",
-                "PTX"
+                "PTC"
               ]
             },
             "priority": 8
           }
-        ],
-        "_section_end": "===== BGF 폰타포인트 끝 ====="
+        ]
       },
       "nice_special_formats": {
-        "_section_start": "===== NICE 별도 DATA 포맷 시작 =====",
         "schemas": {
           "special_cash_ic_request": {
             "name": "1-4 현금IC 구매/망취소 요청전문",
@@ -2400,11 +2221,9 @@
             },
             "priority": 22
           }
-        ],
-        "_section_end": "===== NICE 별도 DATA 포맷 끝 ====="
+        ]
       },
       "nit_ec_inferred": {
-        "_section_start": "===== NIT/EC 실로그 추정 포맷 시작 =====",
         "schemas": {
           "nit_ec_inferred_request": {
             "name": "NIT/EC 실로그 추정 요청전문",
@@ -2500,11 +2319,9 @@
             },
             "priority": 24
           }
-        ],
-        "_section_end": "===== NIT/EC 실로그 추정 포맷 끝 ====="
+        ]
       },
       "nice_common_credit": {
-        "_section_start": "===== NICE 공통 신용·인증 시작 =====",
         "schemas": {
           "2": {
             "name": "1-1 신용 / 인증요청전문",
@@ -2888,11 +2705,9 @@
             },
             "priority": 10
           }
-        ],
-        "_section_end": "===== NICE 공통 신용·인증 끝 ====="
+        ]
       },
       "nice_document_full": {
-        "_section_start": "===== NICE 문서 전체 보완 규격 시작 =====",
         "schemas": {
           "3": {
             "name": "1-2 신 IC 키 다운로드 요청전문",
@@ -6050,62 +5865,13 @@
             },
             "priority": 201
           }
-        ],
-        "_section_end": "===== NICE 문서 전체 보완 규격 끝 ====="
+        ]
       }
     }
   },
   "private_fixed": {
     "merchants": {
-      "_INSERT_NEW_PRIVATE_MERCHANT_BELOW": {
-        "_note": "▼▼▼ 신규 SK/S-OIL 계열 사설포스 규격은 이 마커 바로 아래에 추가 ▼▼▼",
-        "_how": "versions + schemas + rules를 한 가맹점 블록으로 추가. 기존 사설 Header/dynamic 구조면 RB 수정 없음.",
-        "versions": [],
-        "schemas": {},
-        "rules": []
-      },
-      "guide_d02_private": {
-        "_GUIDE_D02": "새 사설 merchant 추가 위치. 기존 7자리 버전 헤더 구조 그대로라는 가정. 기존 sk_private_pos 바로 위.",
-        "versions": [
-          "ZGUIDE1"
-        ],
-        "schemas": {
-          "guide_d02_request": {
-            "name": "GUIDE_D02 신규 사설 요청",
-            "direction": "request",
-            "fields": [
-              {
-                "key": "transaction_amount",
-                "start": 48,
-                "length": 12,
-                "_guide": "GUIDE_D02: 사설 헤더 47자리 바로 뒤 금액."
-              }
-            ]
-          }
-        },
-        "rules": [
-          {
-            "id": "guide_d02_req",
-            "schema": "guide_d02_request",
-            "_GUIDE_D02_RULE": "when.version 생략 시 위 versions가 자동 적용됩니다. 사설 rule에는 message_length 조건을 사용하지 않습니다.",
-            "when": {
-              "trade": [
-                "99"
-              ],
-              "message_type": [
-                "0200"
-              ],
-              "direction": [
-                "request"
-              ]
-            },
-            "priority": 1000
-          }
-        ],
-        "_GUIDE_D02_END": "D02 추가 블록 끝. 응답도 바뀌면 응답 schema/rule을 별도로 만듭니다."
-      },
       "sk_private_pos": {
-        "_section_start": "===== SK 사설포스 시작 =====",
         "versions": [
           "SKOIL",
           "SKOILSF",
@@ -6717,11 +6483,9 @@
             },
             "priority": 5
           }
-        ],
-        "_section_end": "===== SK 사설포스 끝 ====="
+        ]
       },
       "soil_private_pos": {
-        "_section_start": "===== S-OIL 사설포스 시작 =====",
         "versions": [
           "S-OIL",
           "S-OILHN",
@@ -7270,8 +7034,7 @@
             },
             "priority": 11
           }
-        ],
-        "_section_end": "===== S-OIL 사설포스 끝 ====="
+        ]
       }
     },
     "ic_schemas": {
@@ -7429,6 +7192,3617 @@
       }
     }
   },
+  "external_fixed": {
+    "source_routes": {
+      "GCHND_0133_A01": "NVRR",
+      "GCHND_0227_A01": "NVRR",
+      "GCHND_0241_A01": "NVRR",
+      "GCHND_0242_A01": "NVRR",
+      "GCHND_0237_A01": "KKOR",
+      "GCHND_0238_A01": "KKOR",
+      "GCHND_0239_A01": "KKOR",
+      "GCHND_0240_A01": "KKOR",
+      "GCHND_0230_A01": "NPG4",
+      "GCHND_0231_A01": "PSTI",
+      "GNPG1_TCPD_S01": "NPG4"
+    },
+    "allowed_transport_trailer_lengths": [
+      0,
+      5
+    ],
+    "common_fallback": {
+      "enabled": true,
+      "format": "UNKNOWN",
+      "tag": "_nice_pos_common_fields_fallback",
+      "profiles": [
+        {
+          "id": "kkor_request_common",
+          "merchant": "KKOR",
+          "direction": "request",
+          "priority": 10,
+          "base_schema": "kkor_request_standard",
+          "include_fields": [
+            "external_version",
+            "msg_seqno",
+            "message_type",
+            "trade_code",
+            "cat_id",
+            "wcc",
+            "installment_months",
+            "transaction_amount",
+            "original_approval_number",
+            "org_date",
+            "busi_no",
+            "domain",
+            "ip_addr",
+            "cury_sign"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 1,
+                "length": 7,
+                "values": [
+                  "NICKKID"
+                ]
+              },
+              {
+                "start": 28,
+                "length": 4,
+                "values": [
+                  "0200",
+                  "0420"
+                ]
+              }
+            ],
+            "length": [
+              396,
+              896
+            ]
+          }
+        },
+        {
+          "id": "kkor_response_common",
+          "merchant": "KKOR",
+          "direction": "response",
+          "priority": 11,
+          "base_schema": "kkor_response",
+          "include_fields": [
+            "external_version",
+            "msg_seqno",
+            "message_type",
+            "trade_code",
+            "cat_id",
+            "response_code",
+            "wcc",
+            "installment_months",
+            "transaction_amount",
+            "issuer_code",
+            "issuer_name",
+            "acquirer_code",
+            "acquirer_name",
+            "merchant_number",
+            "approval_datetime",
+            "approval_number",
+            "display_message"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 1,
+                "length": 7,
+                "values": [
+                  "NICKKID"
+                ]
+              },
+              {
+                "start": 28,
+                "length": 4,
+                "values": [
+                  "0210",
+                  "0430"
+                ]
+              }
+            ],
+            "length": [
+              475,
+              496
+            ]
+          }
+        },
+        {
+          "id": "nvrr_request_common",
+          "merchant": "NVRR",
+          "direction": "request",
+          "priority": 20,
+          "base_schema": "nvrr_request_approval",
+          "include_fields": [
+            "org_id",
+            "msg_id",
+            "header",
+            "message_type",
+            "trade_code",
+            "transaction_amount",
+            "tr_time",
+            "trace_no",
+            "tr_st_time",
+            "tr_st_date"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 5,
+                "length": 3,
+                "values": [
+                  "KCP"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "nvrr_response_common",
+          "merchant": "NVRR",
+          "direction": "response",
+          "priority": 21,
+          "base_schema": "nvrr_response_approval",
+          "include_fields": [
+            "msg_id",
+            "header",
+            "message_type",
+            "trade_code",
+            "transaction_amount",
+            "tr_time",
+            "trace_no",
+            "tr_st_time",
+            "tr_st_date",
+            "mcht_id",
+            "transaction_unique_number",
+            "response_code",
+            "cat_id",
+            "merchant_number",
+            "busi_no",
+            "cury_code",
+            "installment_months",
+            "approval_number"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 1,
+                "length": 3,
+                "values": [
+                  "KCP"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "npg4_request_card_common",
+          "merchant": "NPG4",
+          "direction": "request",
+          "priority": 30,
+          "base_schema": "npg4_request_approval",
+          "include_fields": [
+            "external_version",
+            "msg_seqno",
+            "message_type",
+            "trade_code",
+            "cat_id",
+            "wcc",
+            "installment_months",
+            "transaction_amount",
+            "original_approval_number",
+            "org_date",
+            "busi_no",
+            "domain",
+            "ip_addr",
+            "cury_sign"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 28,
+                "length": 4,
+                "values": [
+                  "0200",
+                  "0420"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "npg4_response_standard_common",
+          "merchant": "NPG4",
+          "direction": "response",
+          "priority": 31,
+          "base_schema": "npg4_response_standard",
+          "include_fields": [
+            "external_version",
+            "msg_seqno",
+            "message_type",
+            "trade_code",
+            "cat_id",
+            "response_code",
+            "wcc",
+            "installment_months",
+            "transaction_amount",
+            "issuer_code",
+            "issuer_name",
+            "acquirer_code",
+            "acquirer_name",
+            "merchant_number",
+            "approval_datetime",
+            "approval_number",
+            "display_message"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 28,
+                "length": 4,
+                "values": [
+                  "0210",
+                  "0430"
+                ]
+              }
+            ],
+            "length": [
+              377
+            ]
+          }
+        },
+        {
+          "id": "psti_request_fs_common",
+          "merchant": "PSTI",
+          "direction": "request",
+          "priority": 40,
+          "base_schema": "psti_request_ms",
+          "include_fields": [
+            "make_cd",
+            "trade_code",
+            "led",
+            "tr_seqno",
+            "cat_gb",
+            "cat_id",
+            "installment_months",
+            "transaction_amount",
+            "cash_amount",
+            "original_approval_number",
+            "original_approval_date",
+            "service_charge",
+            "tax_amount"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 1,
+                "length": 1,
+                "values": [
+                  "\u0002"
+                ]
+              },
+              {
+                "start": 4,
+                "length": 3,
+                "values": [
+                  "CAT"
+                ]
+              },
+              {
+                "start": 14,
+                "length": 2,
+                "values": [
+                  "PI"
+                ]
+              },
+              {
+                "start": 22,
+                "length": 1,
+                "values": [
+                  "\u001c"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "psti_response_fs_common",
+          "merchant": "PSTI",
+          "direction": "response",
+          "priority": 41,
+          "base_schema": "psti_response_ms_fs",
+          "include_fields": [
+            "make_cd",
+            "trade_code",
+            "led",
+            "tr_seqno",
+            "cat_gb",
+            "cat_id",
+            "response_code",
+            "acquirer_code",
+            "acquirer_sequence_number",
+            "approval_datetime",
+            "transaction_unique_number",
+            "approval_number",
+            "merchant_number",
+            "screen_indicator",
+            "transaction_amount"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 1,
+                "length": 1,
+                "values": [
+                  "\u0002"
+                ]
+              },
+              {
+                "start": 4,
+                "length": 3,
+                "values": [
+                  "CAT"
+                ]
+              },
+              {
+                "start": 14,
+                "length": 2,
+                "values": [
+                  "QA"
+                ]
+              },
+              {
+                "start": 22,
+                "length": 1,
+                "values": [
+                  "\u001c"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "psti_request_key_common",
+          "merchant": "PSTI",
+          "direction": "request",
+          "priority": 42,
+          "base_schema": "psti_request_key",
+          "include_fields": [
+            "option",
+            "message_type",
+            "req_type",
+            "cat_id",
+            "merchant_gb",
+            "key_gb",
+            "model_cd",
+            "firmware_ver",
+            "serial_no",
+            "protocol_ver",
+            "inst_code",
+            "pk_ver"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 14,
+                "length": 4,
+                "values": [
+                  "0200"
+                ]
+              }
+            ],
+            "length": [
+              621
+            ]
+          }
+        },
+        {
+          "id": "psti_response_key_common",
+          "merchant": "PSTI",
+          "direction": "response",
+          "priority": 43,
+          "base_schema": "psti_response_key",
+          "include_fields": [
+            "option",
+            "message_type",
+            "req_type",
+            "response_code",
+            "inst_code",
+            "key_gb",
+            "key_ver"
+          ],
+          "when": {
+            "fields": [
+              {
+                "start": 14,
+                "length": 4,
+                "values": [
+                  "0210"
+                ]
+              }
+            ],
+            "length": [
+              227
+            ]
+          }
+        }
+      ]
+    },
+    "prefix_names": {
+      "NICKKID": "KKOR",
+      "NICCCOP": "CCOP",
+      "NICKMPY": "KMPY",
+      "NICBMIN": "BMI1",
+      "NICE000": "NPG4",
+      "NICTOSS": "TOSS",
+      "NICNVPY": "NVPY",
+      "NICDGPY": "DGPY",
+      "NICEPAY": "EPAY",
+      "NICPAYU": "PAYU",
+      "NICDINM": "DINM"
+    },
+    "schemas": {
+      "kkor_request_standard": {
+        "name": "KKOR 카카오페이 요청 396B",
+        "merchant": "KKOR",
+        "direction": "request",
+        "source_total_length": 396,
+        "source_documents": [
+          "[10]망상취소요청.xls",
+          "[1E]카드번호암호화 망상취소요청.xls",
+          "[30]취소요청.xls",
+          "[3E]카드번호암호화 취소 요청.xls",
+          "카카오[10]승인요청.xls",
+          "카카오[13]SSL인증요청.xls",
+          "카카오[14]안심클릭요청.xls",
+          "카카오[1E]카드번호암호화 승인요청.xls",
+          "카카오[4E]카드번호암호화 안심클릭요청.xls",
+          "카카오[AE]카드번호암호화 SSL인증요청.xls",
+          "카카오[BE]SSL인증+승인요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "filler1",
+          "filler2",
+          "helping",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 20
+          },
+          {
+            "key": "wcc",
+            "start": 82,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 183,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 185,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "original_approval_number",
+            "start": 197,
+            "length": 8,
+            "source_key": "org_aprno"
+          },
+          {
+            "key": "org_date",
+            "start": 205,
+            "length": 6
+          },
+          {
+            "key": "busi_no",
+            "start": 211,
+            "length": 10
+          },
+          {
+            "key": "domain",
+            "start": 221,
+            "length": 30
+          },
+          {
+            "key": "ip_addr",
+            "start": 251,
+            "length": 20
+          },
+          {
+            "key": "cury_sign",
+            "start": 271,
+            "length": 3
+          }
+        ]
+      },
+      "kkor_request_isp": {
+        "name": "KKOR 카카오페이 ISP 요청 896B",
+        "merchant": "KKOR",
+        "direction": "request",
+        "source_total_length": 896,
+        "source_documents": [
+          "카카오[5E]ISP 승인요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "filler1",
+          "filler2",
+          "helping",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 20
+          },
+          {
+            "key": "wcc",
+            "start": 82,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 183,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 185,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "original_approval_number",
+            "start": 197,
+            "length": 8,
+            "source_key": "org_aprno"
+          },
+          {
+            "key": "org_date",
+            "start": 205,
+            "length": 6
+          },
+          {
+            "key": "busi_no",
+            "start": 211,
+            "length": 10
+          },
+          {
+            "key": "domain",
+            "start": 221,
+            "length": 30
+          },
+          {
+            "key": "ip_addr",
+            "start": 251,
+            "length": 20
+          },
+          {
+            "key": "cury_sign",
+            "start": 271,
+            "length": 3
+          },
+          {
+            "key": "isp_info",
+            "start": 397,
+            "length": 500
+          }
+        ]
+      },
+      "kkor_response": {
+        "name": "KKOR 카카오페이 응답 496B",
+        "merchant": "KKOR",
+        "direction": "response",
+        "source_total_length": 496,
+        "source_documents": [
+          "[10]망상취소응답.xls",
+          "[1E]카드번호암호화 망상취소응답.xls",
+          "[30]취소응답.xls",
+          "[3E]카드번호암호화 취소 응답.xls",
+          "카카오[10]승인응답.xls",
+          "카카오[13]SSL인증응답.xls",
+          "카카오[14]안심클릭응답.xls",
+          "카카오[1E]카드번호암호화 승인응답.xls",
+          "카카오[4E]카드번호암호화 안심클릭응답.xls",
+          "카카오[5E]ISP 승인응답.xls",
+          "카카오[AE]카드번호암호화 SSL인증응답.xls",
+          "카카오[BE]SSL인증+승인응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "filler1",
+          "filler2",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 20
+          },
+          {
+            "key": "response_code",
+            "start": 82,
+            "length": 4,
+            "source_key": "resp_code"
+          },
+          {
+            "key": "wcc",
+            "start": 86,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 187,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 189,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "issuer_code",
+            "start": 201,
+            "length": 4,
+            "source_key": "iss_code"
+          },
+          {
+            "key": "issuer_name",
+            "start": 205,
+            "length": 20,
+            "source_key": "iss_name"
+          },
+          {
+            "key": "acquirer_code",
+            "start": 225,
+            "length": 4,
+            "source_key": "acq_code"
+          },
+          {
+            "key": "acquirer_name",
+            "start": 229,
+            "length": 20,
+            "source_key": "acq_name"
+          },
+          {
+            "key": "merchant_number",
+            "start": 249,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "approval_datetime",
+            "start": 264,
+            "length": 12,
+            "source_key": "aprv_time"
+          },
+          {
+            "key": "approval_number",
+            "start": 276,
+            "length": 8,
+            "source_key": "aprv_no"
+          },
+          {
+            "key": "ddc_gb",
+            "start": 284,
+            "length": 1
+          },
+          {
+            "key": "display_message",
+            "start": 285,
+            "length": 40,
+            "source_key": "resp_msg"
+          },
+          {
+            "key": "pnt_resp_code",
+            "start": 325,
+            "length": 4
+          },
+          {
+            "key": "msg_1",
+            "start": 329,
+            "length": 40
+          },
+          {
+            "key": "msg_2",
+            "start": 369,
+            "length": 24
+          },
+          {
+            "key": "msg_3",
+            "start": 393,
+            "length": 24
+          },
+          {
+            "key": "add_pnt",
+            "start": 417,
+            "length": 9
+          },
+          {
+            "key": "use_pnt",
+            "start": 426,
+            "length": 9
+          },
+          {
+            "key": "sum_pnt",
+            "start": 435,
+            "length": 9
+          },
+          {
+            "key": "pnt_aprv_no",
+            "start": 444,
+            "length": 12
+          },
+          {
+            "key": "user_name",
+            "start": 456,
+            "length": 20
+          }
+        ],
+        "accepted_logged_body_lengths": [
+          496,
+          475
+        ],
+        "live_log_note": "카카오 S 로그는 선언 496바이트 중 실제 업무필드 475바이트까지 기록하고 후행 CR 1바이트와 filler 20바이트를 생략한다. 475바이트 이상일 때만 정상 처리한다."
+      },
+      "npg4_request_approval": {
+        "name": "NPG4 NICEPG 승인계열 요청",
+        "merchant": "NPG4",
+        "direction": "request",
+        "source_total_length": 4479,
+        "min_required_length": 174,
+        "source_documents": [
+          "[10]승인요청.xls",
+          "[12]인증+승인요청.xls",
+          "[13]인증요청.xls",
+          "[14]안심클릭승인요청.xls",
+          "[A6]ISP승인요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "filler",
+          "helping",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "wcc",
+            "start": 44,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 84,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 86,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "original_approval_number",
+            "start": 98,
+            "length": 8,
+            "source_key": "org_aprno"
+          },
+          {
+            "key": "org_date",
+            "start": 106,
+            "length": 6
+          },
+          {
+            "key": "busi_no",
+            "start": 112,
+            "length": 10
+          },
+          {
+            "key": "domain",
+            "start": 122,
+            "length": 30
+          },
+          {
+            "key": "ip_addr",
+            "start": 152,
+            "length": 20
+          },
+          {
+            "key": "cury_sign",
+            "start": 172,
+            "length": 3
+          },
+          {
+            "key": "add_info",
+            "start": 175,
+            "length": 100
+          }
+        ]
+      },
+      "npg4_request_cancel": {
+        "name": "NPG4 NICEPG 취소계열 요청",
+        "merchant": "NPG4",
+        "direction": "request",
+        "source_total_length": 4479,
+        "min_required_length": 175,
+        "source_documents": [
+          "[10]승인취소요청.xls",
+          "[30]승인취소요청.xls",
+          "[G4]현대M포인트취소요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "filler",
+          "helping",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "wcc",
+            "start": 44,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 84,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 86,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "original_approval_number",
+            "start": 98,
+            "length": 8,
+            "source_key": "org_aprno"
+          },
+          {
+            "key": "org_date",
+            "start": 106,
+            "length": 6
+          },
+          {
+            "key": "busi_no",
+            "start": 112,
+            "length": 10
+          },
+          {
+            "key": "domain",
+            "start": 122,
+            "length": 30
+          },
+          {
+            "key": "ip_addr",
+            "start": 152,
+            "length": 20
+          },
+          {
+            "key": "cury_sign",
+            "start": 172,
+            "length": 3
+          },
+          {
+            "key": "add_info",
+            "start": 175,
+            "length": 100
+          },
+          {
+            "key": "cr_code",
+            "start": 4479,
+            "length": 1
+          }
+        ]
+      },
+      "npg4_request_check": {
+        "name": "NPG4 NICEPG 수표조회 요청",
+        "merchant": "NPG4",
+        "direction": "request",
+        "source_total_length": 100,
+        "source_documents": [
+          "[20]수표조회요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "wcc",
+            "start": 44,
+            "length": 1
+          },
+          {
+            "key": "chk_gb",
+            "start": 45,
+            "length": 2
+          },
+          {
+            "key": "chk_ty",
+            "start": 47,
+            "length": 2
+          },
+          {
+            "key": "chk_no",
+            "start": 49,
+            "length": 14
+          },
+          {
+            "key": "iss_date",
+            "start": 63,
+            "length": 6
+          },
+          {
+            "key": "pers_id",
+            "start": 69,
+            "length": 13
+          },
+          {
+            "key": "chk_amt",
+            "start": 82,
+            "length": 12
+          },
+          {
+            "key": "acount_no",
+            "start": 94,
+            "length": 6
+          }
+        ]
+      },
+      "npg4_request_cash": {
+        "name": "NPG4 NICEPG 현금영수증 요청",
+        "merchant": "NPG4",
+        "direction": "request",
+        "source_total_length": 159,
+        "source_documents": [
+          "[21]현금영수증요청.xls",
+          "[21]현금영수증취소요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "wcc",
+            "start": 44,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 84,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 86,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "service_charge",
+            "start": 98,
+            "length": 8,
+            "source_key": "tip_amt"
+          },
+          {
+            "key": "tax_amount",
+            "start": 106,
+            "length": 8,
+            "source_key": "tax_amt"
+          },
+          {
+            "key": "busi_no",
+            "start": 114,
+            "length": 10
+          },
+          {
+            "key": "pers_id",
+            "start": 124,
+            "length": 13
+          },
+          {
+            "key": "original_approval_number",
+            "start": 137,
+            "length": 12,
+            "source_key": "org_aprno"
+          },
+          {
+            "key": "org_date",
+            "start": 149,
+            "length": 6
+          },
+          {
+            "key": "cury_sign",
+            "start": 155,
+            "length": 3
+          },
+          {
+            "key": "offline_gubun",
+            "start": 158,
+            "length": 1
+          }
+        ]
+      },
+      "npg4_request_isp_cancel": {
+        "name": "NPG4 NICEPG ISP 취소 요청",
+        "merchant": "NPG4",
+        "direction": "request",
+        "source_total_length": 375,
+        "min_required_length": 175,
+        "source_documents": [
+          "[31]ISP승인취소요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "filler",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "wcc",
+            "start": 44,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 84,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 86,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "original_approval_number",
+            "start": 98,
+            "length": 8,
+            "source_key": "org_aprno"
+          },
+          {
+            "key": "org_date",
+            "start": 106,
+            "length": 6
+          },
+          {
+            "key": "busi_no",
+            "start": 112,
+            "length": 10
+          },
+          {
+            "key": "domain",
+            "start": 122,
+            "length": 30
+          },
+          {
+            "key": "ip_addr",
+            "start": 152,
+            "length": 20
+          },
+          {
+            "key": "cury_sign",
+            "start": 172,
+            "length": 3
+          },
+          {
+            "key": "add_info",
+            "start": 175,
+            "length": 100
+          },
+          {
+            "key": "cr_code",
+            "start": 375,
+            "length": 1
+          }
+        ]
+      },
+      "npg4_response_standard": {
+        "name": "NPG4 NICEPG 표준 응답 377B",
+        "merchant": "NPG4",
+        "direction": "response",
+        "source_total_length": 377,
+        "source_documents": [
+          "[10]승인응답.xls",
+          "[10]승인취소응답.xls",
+          "[12]인증+승인응답.xls",
+          "[13]인증응답.xls",
+          "[14]안심클릭승인응답.xls",
+          "[30]승인취소응답.xls",
+          "[31]ISP승인취소응답.xls",
+          "[A6]ISP승인응답.xls",
+          "[G4]현대M포인트취소응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "response_code",
+            "start": 44,
+            "length": 4,
+            "source_key": "resp_code"
+          },
+          {
+            "key": "wcc",
+            "start": 48,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 88,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 90,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "issuer_code",
+            "start": 102,
+            "length": 4,
+            "source_key": "iss_code"
+          },
+          {
+            "key": "issuer_name",
+            "start": 106,
+            "length": 20,
+            "source_key": "iss_name"
+          },
+          {
+            "key": "acquirer_code",
+            "start": 126,
+            "length": 4,
+            "source_key": "acq_code"
+          },
+          {
+            "key": "acquirer_name",
+            "start": 130,
+            "length": 20,
+            "source_key": "acq_name"
+          },
+          {
+            "key": "merchant_number",
+            "start": 150,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "approval_datetime",
+            "start": 165,
+            "length": 12,
+            "source_key": "aprv_time"
+          },
+          {
+            "key": "approval_number",
+            "start": 177,
+            "length": 8,
+            "source_key": "aprv_no"
+          },
+          {
+            "key": "ddc_gb",
+            "start": 185,
+            "length": 1
+          },
+          {
+            "key": "display_message",
+            "start": 186,
+            "length": 40,
+            "source_key": "resp_msg"
+          },
+          {
+            "key": "pnt_resp_code",
+            "start": 226,
+            "length": 4
+          },
+          {
+            "key": "msg_1",
+            "start": 230,
+            "length": 40
+          },
+          {
+            "key": "msg_2",
+            "start": 270,
+            "length": 24
+          },
+          {
+            "key": "msg_3",
+            "start": 294,
+            "length": 24
+          },
+          {
+            "key": "add_pnt",
+            "start": 318,
+            "length": 9
+          },
+          {
+            "key": "use_pnt",
+            "start": 327,
+            "length": 9
+          },
+          {
+            "key": "sum_pnt",
+            "start": 336,
+            "length": 9
+          },
+          {
+            "key": "pnt_aprv_no",
+            "start": 345,
+            "length": 12
+          },
+          {
+            "key": "user_name",
+            "start": 357,
+            "length": 20
+          }
+        ]
+      },
+      "npg4_response_check": {
+        "name": "NPG4 NICEPG 수표조회 응답",
+        "merchant": "NPG4",
+        "direction": "response",
+        "source_total_length": 96,
+        "source_documents": [
+          "[20]수표조회응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "response_code",
+            "start": 44,
+            "length": 4,
+            "source_key": "resp_code"
+          },
+          {
+            "key": "approval_number",
+            "start": 48,
+            "length": 8,
+            "source_key": "aprv_no"
+          },
+          {
+            "key": "display_message",
+            "start": 56,
+            "length": 40,
+            "source_key": "resp_msg"
+          }
+        ]
+      },
+      "npg4_response_cash": {
+        "name": "NPG4 NICEPG 현금영수증 응답",
+        "merchant": "NPG4",
+        "direction": "response",
+        "source_total_length": 343,
+        "source_documents": [
+          "[21]현금영수증응답.xls",
+          "[21]현금영수증취소응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "cr",
+          "track_ii"
+        ],
+        "fields": [
+          {
+            "key": "external_version",
+            "start": 1,
+            "length": 7,
+            "source_key": "msg_ver"
+          },
+          {
+            "key": "msg_seqno",
+            "start": 8,
+            "length": 20
+          },
+          {
+            "key": "message_type",
+            "start": 28,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 32,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 34,
+            "length": 10
+          },
+          {
+            "key": "response_code",
+            "start": 44,
+            "length": 4,
+            "source_key": "resp_code"
+          },
+          {
+            "key": "wcc",
+            "start": 48,
+            "length": 1
+          },
+          {
+            "key": "installment_months",
+            "start": 88,
+            "length": 2,
+            "source_key": "halbu"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 90,
+            "length": 12,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "service_charge",
+            "start": 102,
+            "length": 8,
+            "source_key": "tip_amt"
+          },
+          {
+            "key": "tax_amount",
+            "start": 110,
+            "length": 8,
+            "source_key": "tax_amt"
+          },
+          {
+            "key": "issuer_code",
+            "start": 118,
+            "length": 4,
+            "source_key": "iss_code"
+          },
+          {
+            "key": "issuer_name",
+            "start": 122,
+            "length": 20,
+            "source_key": "iss_name"
+          },
+          {
+            "key": "acquirer_code",
+            "start": 142,
+            "length": 4,
+            "source_key": "acq_code"
+          },
+          {
+            "key": "acquirer_name",
+            "start": 146,
+            "length": 20,
+            "source_key": "acq_name"
+          },
+          {
+            "key": "merchant_number",
+            "start": 166,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "busi_no",
+            "start": 181,
+            "length": 10
+          },
+          {
+            "key": "approval_datetime",
+            "start": 191,
+            "length": 12,
+            "source_key": "aprv_time"
+          },
+          {
+            "key": "approval_number",
+            "start": 203,
+            "length": 12,
+            "source_key": "aprv_no"
+          },
+          {
+            "key": "display_message",
+            "start": 215,
+            "length": 40,
+            "source_key": "resp_msg"
+          },
+          {
+            "key": "msg_1",
+            "start": 255,
+            "length": 40
+          },
+          {
+            "key": "msg_2",
+            "start": 295,
+            "length": 24
+          },
+          {
+            "key": "msg_3",
+            "start": 319,
+            "length": 24
+          }
+        ]
+      },
+      "nvrr_request_approval": {
+        "name": "NVRR 네이버 승인계열 요청",
+        "merchant": "NVRR",
+        "direction": "request",
+        "source_total_length": 5037,
+        "source_documents": [
+          "[10]신용승인요청.xls",
+          "[12]인증+승인요청.xls",
+          "[13]인증ONLY요청.xls",
+          "[14]안심클릭승인요청.xls",
+          "[A6]ISP승인요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "pri_bitmap",
+          "sec_bitmap",
+          "track_ii",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "org_id",
+            "start": 1,
+            "length": 4
+          },
+          {
+            "key": "msg_id",
+            "start": 5,
+            "length": 3
+          },
+          {
+            "key": "header",
+            "start": 8,
+            "length": 9
+          },
+          {
+            "key": "message_type",
+            "start": 17,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 53,
+            "length": 6,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 59,
+            "length": 12,
+            "source_key": "amt"
+          },
+          {
+            "key": "tr_time",
+            "start": 71,
+            "length": 10
+          },
+          {
+            "key": "trace_no",
+            "start": 81,
+            "length": 6
+          },
+          {
+            "key": "tr_st_time",
+            "start": 87,
+            "length": 6
+          },
+          {
+            "key": "tr_st_date",
+            "start": 93,
+            "length": 4
+          },
+          {
+            "key": "pos_mode",
+            "start": 97,
+            "length": 3
+          },
+          {
+            "key": "mcht_id",
+            "start": 100,
+            "length": 8
+          },
+          {
+            "key": "transaction_unique_number",
+            "start": 147,
+            "length": 12,
+            "source_key": "ref_no"
+          },
+          {
+            "key": "cat_id",
+            "start": 159,
+            "length": 16
+          },
+          {
+            "key": "merchant_number",
+            "start": 175,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "busi_no",
+            "start": 190,
+            "length": 40
+          },
+          {
+            "key": "cury_code",
+            "start": 230,
+            "length": 3
+          },
+          {
+            "key": "installment_months",
+            "start": 233,
+            "length": 5,
+            "source_key": "halbu"
+          }
+        ]
+      },
+      "nvrr_response_approval": {
+        "name": "NVRR 네이버 승인계열 응답",
+        "merchant": "NVRR",
+        "direction": "response",
+        "source_total_length": 2243,
+        "source_documents": [
+          "[10]신용승인응답.xls",
+          "[12]인증+승인응답.xls",
+          "[13]인증ONLY응답.xls",
+          "[14]안심클릭승인응답.xls",
+          "[A6]ISP승인응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "pri_bitmap",
+          "sec_bitmap",
+          "track_ii",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "msg_id",
+            "start": 1,
+            "length": 3
+          },
+          {
+            "key": "header",
+            "start": 4,
+            "length": 9
+          },
+          {
+            "key": "message_type",
+            "start": 13,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 49,
+            "length": 6,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 55,
+            "length": 12,
+            "source_key": "amt"
+          },
+          {
+            "key": "tr_time",
+            "start": 67,
+            "length": 10
+          },
+          {
+            "key": "trace_no",
+            "start": 77,
+            "length": 6
+          },
+          {
+            "key": "tr_st_time",
+            "start": 83,
+            "length": 6
+          },
+          {
+            "key": "tr_st_date",
+            "start": 89,
+            "length": 4
+          },
+          {
+            "key": "mcht_id",
+            "start": 93,
+            "length": 8
+          },
+          {
+            "key": "transaction_unique_number",
+            "start": 140,
+            "length": 12,
+            "source_key": "ref_no"
+          },
+          {
+            "key": "response_code",
+            "start": 152,
+            "length": 2,
+            "source_key": "resp_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 154,
+            "length": 16
+          },
+          {
+            "key": "merchant_number",
+            "start": 170,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "busi_no",
+            "start": 185,
+            "length": 40
+          },
+          {
+            "key": "cury_code",
+            "start": 225,
+            "length": 3
+          },
+          {
+            "key": "installment_months",
+            "start": 228,
+            "length": 5,
+            "source_key": "halbu"
+          },
+          {
+            "key": "approval_number",
+            "start": 233,
+            "length": 11,
+            "source_key": "aprv_no"
+          }
+        ]
+      },
+      "nvrr_request_cancel": {
+        "name": "NVRR 네이버 취소 요청",
+        "merchant": "NVRR",
+        "direction": "request",
+        "source_total_length": 2247,
+        "source_documents": [
+          "[30]승인취소요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "pri_bitmap",
+          "sec_bitmap",
+          "track_ii",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "org_id",
+            "start": 1,
+            "length": 4
+          },
+          {
+            "key": "msg_id",
+            "start": 5,
+            "length": 3
+          },
+          {
+            "key": "header",
+            "start": 8,
+            "length": 9
+          },
+          {
+            "key": "message_type",
+            "start": 17,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 53,
+            "length": 6,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 59,
+            "length": 12,
+            "source_key": "amt"
+          },
+          {
+            "key": "tr_time",
+            "start": 71,
+            "length": 10
+          },
+          {
+            "key": "trace_no",
+            "start": 81,
+            "length": 6
+          },
+          {
+            "key": "tr_st_time",
+            "start": 87,
+            "length": 6
+          },
+          {
+            "key": "tr_st_date",
+            "start": 93,
+            "length": 4
+          },
+          {
+            "key": "mcht_id",
+            "start": 97,
+            "length": 8
+          },
+          {
+            "key": "transaction_unique_number",
+            "start": 144,
+            "length": 12,
+            "source_key": "ref_no"
+          },
+          {
+            "key": "response_code",
+            "start": 156,
+            "length": 2,
+            "source_key": "resp_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 158,
+            "length": 16
+          },
+          {
+            "key": "merchant_number",
+            "start": 174,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "busi_no",
+            "start": 189,
+            "length": 40
+          },
+          {
+            "key": "cury_code",
+            "start": 229,
+            "length": 3
+          },
+          {
+            "key": "installment_months",
+            "start": 232,
+            "length": 5,
+            "source_key": "halbu"
+          },
+          {
+            "key": "original_approval_number",
+            "start": 237,
+            "length": 11,
+            "source_key": "org_aprno"
+          }
+        ]
+      },
+      "nvrr_response_cancel": {
+        "name": "NVRR 네이버 취소 응답",
+        "merchant": "NVRR",
+        "direction": "response",
+        "source_total_length": 2247,
+        "source_documents": [
+          "[30]승인취소응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "pri_bitmap",
+          "sec_bitmap",
+          "track_ii",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "msg_id",
+            "start": 1,
+            "length": 3
+          },
+          {
+            "key": "header",
+            "start": 4,
+            "length": 9
+          },
+          {
+            "key": "message_type",
+            "start": 13,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "trade_code",
+            "start": 49,
+            "length": 6,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 55,
+            "length": 12,
+            "source_key": "amt"
+          },
+          {
+            "key": "tr_time",
+            "start": 67,
+            "length": 10
+          },
+          {
+            "key": "trace_no",
+            "start": 77,
+            "length": 6
+          },
+          {
+            "key": "tr_st_time",
+            "start": 83,
+            "length": 6
+          },
+          {
+            "key": "tr_st_date",
+            "start": 89,
+            "length": 4
+          },
+          {
+            "key": "mcht_id",
+            "start": 93,
+            "length": 8
+          },
+          {
+            "key": "transaction_unique_number",
+            "start": 140,
+            "length": 12,
+            "source_key": "ref_no"
+          },
+          {
+            "key": "response_code",
+            "start": 152,
+            "length": 2,
+            "source_key": "resp_cd"
+          },
+          {
+            "key": "cat_id",
+            "start": 154,
+            "length": 16
+          },
+          {
+            "key": "merchant_number",
+            "start": 170,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "busi_no",
+            "start": 185,
+            "length": 40
+          },
+          {
+            "key": "cury_code",
+            "start": 225,
+            "length": 3
+          },
+          {
+            "key": "installment_months",
+            "start": 228,
+            "length": 5,
+            "source_key": "halbu"
+          },
+          {
+            "key": "approval_number",
+            "start": 233,
+            "length": 11,
+            "source_key": "aprv_no"
+          }
+        ],
+        "live_log_note": "실로그 응답 본문은 규격 원본의 선행 org_id 4바이트 없이 KCP(msg_id)부터 시작하므로 응답 좌표를 4바이트 보정한다."
+      },
+      "psti_request_ms": {
+        "name": "PSTI 우정국 MS 요청",
+        "merchant": "PSTI",
+        "direction": "request",
+        "source_total_length": 1888,
+        "min_required_parts": 14,
+        "source_documents": [
+          "[10]망취소요청.xls",
+          "[10]승인요청.xls",
+          "[12]인증+승인요청.xls",
+          "[21]현금영수증승인요청.xls",
+          "[21]현금영수증취소요청.xls",
+          "[30]승인취소요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "_STX",
+          "emv_data",
+          "msg_key",
+          "pin",
+          "track_ii",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "make_cd",
+            "start": 2,
+            "length": 2
+          },
+          {
+            "key": "trade_code",
+            "start": 12,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "led",
+            "start": 14,
+            "length": 2
+          },
+          {
+            "key": "tr_seqno",
+            "start": 16,
+            "length": 4
+          },
+          {
+            "key": "cat_gb",
+            "start": 20,
+            "length": 2
+          }
+        ],
+        "wire_format": "field_separator",
+        "delimiter": "\u001c",
+        "delimiter_start": 22,
+        "delimiter_fields": [
+          {
+            "index": 1,
+            "key": "cat_id"
+          },
+          {
+            "index": 3,
+            "key": "installment_months"
+          },
+          {
+            "index": 4,
+            "key": "transaction_amount"
+          },
+          {
+            "index": 5,
+            "key": "cash_amount"
+          },
+          {
+            "index": 6,
+            "key": "original_approval_number"
+          },
+          {
+            "index": 7,
+            "key": "original_approval_date"
+          },
+          {
+            "index": 9,
+            "key": "service_charge"
+          },
+          {
+            "index": 10,
+            "key": "tax_amount"
+          }
+        ],
+        "live_log_note": "규격의 공통 21바이트 헤더 뒤 FS(0x1C) 구분자로 전송되는 실로그 형식. track/pin/EMV/가변 opaque 필드는 저장하지 않는다."
+      },
+      "psti_response_ms_plain": {
+        "name": "PSTI 우정국 MS 응답",
+        "merchant": "PSTI",
+        "direction": "response",
+        "source_total_length": 1336,
+        "runtime_enabled": false,
+        "source_documents": [
+          "[10]승인응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "_STX",
+          "msg_key",
+          "tmk",
+          "tpk",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "make_cd",
+            "start": 2,
+            "length": 2
+          },
+          {
+            "key": "trade_code",
+            "start": 12,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "led",
+            "start": 14,
+            "length": 2
+          },
+          {
+            "key": "tr_seqno",
+            "start": 16,
+            "length": 4
+          },
+          {
+            "key": "cat_gb",
+            "start": 20,
+            "length": 2
+          },
+          {
+            "key": "cat_id",
+            "start": 22,
+            "length": 10
+          },
+          {
+            "key": "response_code",
+            "start": 32,
+            "length": 4,
+            "source_key": "resp_code"
+          },
+          {
+            "key": "acquirer_code",
+            "start": 36,
+            "length": 3,
+            "source_key": "acq_code"
+          },
+          {
+            "key": "acq_sno",
+            "start": 39,
+            "length": 4
+          },
+          {
+            "key": "approval_datetime",
+            "start": 43,
+            "length": 13,
+            "source_key": "aprv_date"
+          },
+          {
+            "key": "transaction_unique_number",
+            "start": 56,
+            "length": 18,
+            "source_key": "ref_no"
+          },
+          {
+            "key": "approval_number",
+            "start": 74,
+            "length": 12,
+            "source_key": "aprv_no"
+          },
+          {
+            "key": "si",
+            "start": 90,
+            "length": 1
+          },
+          {
+            "key": "issuer_name",
+            "start": 91,
+            "length": 14,
+            "source_key": "iss_name"
+          },
+          {
+            "key": "merchant_number",
+            "start": 105,
+            "length": 15,
+            "source_key": "mcht_no"
+          },
+          {
+            "key": "acquirer_name",
+            "start": 120,
+            "length": 14,
+            "source_key": "acq_name"
+          },
+          {
+            "key": "scr_led",
+            "start": 134,
+            "length": 1
+          },
+          {
+            "key": "display_message",
+            "start": 135,
+            "length": 64,
+            "source_key": "msg"
+          },
+          {
+            "key": "transaction_amount",
+            "start": 199,
+            "length": 8,
+            "source_key": "aprv_amt"
+          },
+          {
+            "key": "notice",
+            "start": 207,
+            "length": 104
+          }
+        ],
+        "runtime_note": "해당 고정폭 응답은 제공 실로그에서 확인되지 않아 런타임 규칙에 연결하지 않는다. 실로그 서명 확보 후 별도 활성화한다."
+      },
+      "psti_response_ms_fs": {
+        "name": "PSTI 우정국 MS 구분자 응답",
+        "merchant": "PSTI",
+        "direction": "response",
+        "source_total_length": 1348,
+        "min_required_parts": 17,
+        "approval_datetime_trim_trailing_zero_length": 13,
+        "source_documents": [
+          "[10]망취소응답.xls",
+          "[12]인증+승인응답.xls",
+          "[21]현금영수증승인응답.xls",
+          "[21]현금영수증취소응답.xls",
+          "[30]승인취소응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "_STX",
+          "fs_1",
+          "fs_10",
+          "fs_11",
+          "fs_12",
+          "fs_13",
+          "fs_14",
+          "fs_15",
+          "fs_16",
+          "fs_2",
+          "fs_3",
+          "fs_4",
+          "fs_5",
+          "fs_6",
+          "fs_7",
+          "fs_8",
+          "fs_9",
+          "msg_key",
+          "tmk",
+          "tpk",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "make_cd",
+            "start": 2,
+            "length": 2
+          },
+          {
+            "key": "trade_code",
+            "start": 12,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "led",
+            "start": 14,
+            "length": 2
+          },
+          {
+            "key": "tr_seqno",
+            "start": 16,
+            "length": 4
+          },
+          {
+            "key": "cat_gb",
+            "start": 20,
+            "length": 2
+          }
+        ],
+        "wire_format": "field_separator",
+        "delimiter": "\u001c",
+        "delimiter_start": 22,
+        "delimiter_fields": [
+          {
+            "index": 1,
+            "key": "cat_id"
+          },
+          {
+            "index": 2,
+            "key": "response_code"
+          },
+          {
+            "index": 3,
+            "key": "acquirer_code"
+          },
+          {
+            "index": 4,
+            "key": "acquirer_sequence_number"
+          },
+          {
+            "index": 5,
+            "key": "approval_datetime"
+          },
+          {
+            "index": 6,
+            "key": "transaction_unique_number"
+          },
+          {
+            "index": 7,
+            "key": "approval_number"
+          },
+          {
+            "index": 10,
+            "key": "merchant_number"
+          },
+          {
+            "index": 12,
+            "key": "screen_indicator"
+          },
+          {
+            "index": 14,
+            "key": "transaction_amount"
+          }
+        ],
+        "live_log_note": "규격의 공통 21바이트 헤더 뒤 FS(0x1C) 구분자로 전송되는 실로그 형식. track/pin/EMV/가변 opaque 필드는 저장하지 않는다."
+      },
+      "psti_request_ic": {
+        "name": "PSTI 우정국 보안IC 요청",
+        "merchant": "PSTI",
+        "direction": "request",
+        "source_total_length": 2278,
+        "min_required_parts": 14,
+        "source_documents": [
+          "[10]망취소요청.xls",
+          "[10]승인요청.xls",
+          "[21]현금영수증승인요청.xls",
+          "[21]현금영수증취소요청.xls",
+          "[30]승인취소요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "_STX",
+          "emv_data",
+          "msg_key",
+          "pin",
+          "track_ii",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "make_cd",
+            "start": 2,
+            "length": 2
+          },
+          {
+            "key": "trade_code",
+            "start": 12,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "led",
+            "start": 14,
+            "length": 2
+          },
+          {
+            "key": "tr_seqno",
+            "start": 16,
+            "length": 4
+          },
+          {
+            "key": "cat_gb",
+            "start": 20,
+            "length": 2
+          }
+        ],
+        "wire_format": "field_separator",
+        "delimiter": "\u001c",
+        "delimiter_start": 22,
+        "delimiter_fields": [
+          {
+            "index": 1,
+            "key": "cat_id"
+          },
+          {
+            "index": 3,
+            "key": "installment_months"
+          },
+          {
+            "index": 4,
+            "key": "transaction_amount"
+          },
+          {
+            "index": 5,
+            "key": "cash_amount"
+          },
+          {
+            "index": 6,
+            "key": "original_approval_number"
+          },
+          {
+            "index": 7,
+            "key": "original_approval_date"
+          },
+          {
+            "index": 9,
+            "key": "service_charge"
+          },
+          {
+            "index": 10,
+            "key": "tax_amount"
+          }
+        ],
+        "live_log_note": "규격의 공통 21바이트 헤더 뒤 FS(0x1C) 구분자로 전송되는 실로그 형식. track/pin/EMV/가변 opaque 필드는 저장하지 않는다."
+      },
+      "psti_response_ic": {
+        "name": "PSTI 우정국 보안IC 응답",
+        "merchant": "PSTI",
+        "direction": "response",
+        "source_total_length": 2020,
+        "min_required_parts": 17,
+        "approval_datetime_trim_trailing_zero_length": 13,
+        "source_documents": [
+          "[10]망취소응답.xls",
+          "[10]승인응답.xls",
+          "[21]현금영수증승인응답.xls",
+          "[21]현금영수증취소응답.xls",
+          "[30]승인취소응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "_STX",
+          "card_no",
+          "emv_data",
+          "fs_1",
+          "fs_10",
+          "fs_11",
+          "fs_12",
+          "fs_13",
+          "fs_14",
+          "fs_15",
+          "fs_16",
+          "fs_17",
+          "fs_18",
+          "fs_19",
+          "fs_2",
+          "fs_3",
+          "fs_4",
+          "fs_5",
+          "fs_6",
+          "fs_7",
+          "fs_8",
+          "fs_9",
+          "msg_key",
+          "tmk",
+          "tpk",
+          "var_data"
+        ],
+        "fields": [
+          {
+            "key": "make_cd",
+            "start": 2,
+            "length": 2
+          },
+          {
+            "key": "trade_code",
+            "start": 12,
+            "length": 2,
+            "source_key": "tr_cd"
+          },
+          {
+            "key": "led",
+            "start": 14,
+            "length": 2
+          },
+          {
+            "key": "tr_seqno",
+            "start": 16,
+            "length": 4
+          },
+          {
+            "key": "cat_gb",
+            "start": 20,
+            "length": 2
+          }
+        ],
+        "wire_format": "field_separator",
+        "delimiter": "\u001c",
+        "delimiter_start": 22,
+        "delimiter_fields": [
+          {
+            "index": 1,
+            "key": "cat_id"
+          },
+          {
+            "index": 2,
+            "key": "response_code"
+          },
+          {
+            "index": 3,
+            "key": "acquirer_code"
+          },
+          {
+            "index": 4,
+            "key": "acquirer_sequence_number"
+          },
+          {
+            "index": 5,
+            "key": "approval_datetime"
+          },
+          {
+            "index": 6,
+            "key": "transaction_unique_number"
+          },
+          {
+            "index": 7,
+            "key": "approval_number"
+          },
+          {
+            "index": 10,
+            "key": "merchant_number"
+          },
+          {
+            "index": 12,
+            "key": "screen_indicator"
+          },
+          {
+            "index": 14,
+            "key": "transaction_amount"
+          }
+        ],
+        "live_log_note": "규격의 공통 21바이트 헤더 뒤 FS(0x1C) 구분자로 전송되는 실로그 형식. track/pin/EMV/가변 opaque 필드는 저장하지 않는다."
+      },
+      "psti_request_key": {
+        "name": "PSTI 우정국 키 다운로드 요청",
+        "merchant": "PSTI",
+        "direction": "request",
+        "source_total_length": 621,
+        "source_documents": [
+          "[EK]키 다운로드 요청.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "chk_value",
+          "enc_key"
+        ],
+        "fields": [
+          {
+            "key": "option",
+            "start": 5,
+            "length": 9
+          },
+          {
+            "key": "message_type",
+            "start": 14,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "req_type",
+            "start": 18,
+            "length": 2
+          },
+          {
+            "key": "cat_id",
+            "start": 20,
+            "length": 10
+          },
+          {
+            "key": "merchant_gb",
+            "start": 30,
+            "length": 10
+          },
+          {
+            "key": "key_gb",
+            "start": 40,
+            "length": 4
+          },
+          {
+            "key": "model_cd",
+            "start": 76,
+            "length": 4
+          },
+          {
+            "key": "firmware_ver",
+            "start": 80,
+            "length": 4
+          },
+          {
+            "key": "serial_no",
+            "start": 84,
+            "length": 12
+          },
+          {
+            "key": "protocol_ver",
+            "start": 96,
+            "length": 2
+          },
+          {
+            "key": "inst_code",
+            "start": 98,
+            "length": 4
+          },
+          {
+            "key": "pk_ver",
+            "start": 102,
+            "length": 4
+          }
+        ]
+      },
+      "psti_response_key": {
+        "name": "PSTI 우정국 키 다운로드 응답",
+        "merchant": "PSTI",
+        "direction": "response",
+        "source_total_length": 227,
+        "source_documents": [
+          "[EK]키 다운로드 응답.xls"
+        ],
+        "excluded_sensitive_or_opaque_fields": [
+          "enc_data"
+        ],
+        "fields": [
+          {
+            "key": "option",
+            "start": 5,
+            "length": 9
+          },
+          {
+            "key": "message_type",
+            "start": 14,
+            "length": 4,
+            "source_key": "msgty"
+          },
+          {
+            "key": "req_type",
+            "start": 18,
+            "length": 2
+          },
+          {
+            "key": "response_code",
+            "start": 20,
+            "length": 4,
+            "source_key": "resp_cd"
+          },
+          {
+            "key": "inst_code",
+            "start": 24,
+            "length": 4
+          },
+          {
+            "key": "key_gb",
+            "start": 28,
+            "length": 2
+          },
+          {
+            "key": "key_ver",
+            "start": 30,
+            "length": 4
+          }
+        ]
+      }
+    },
+    "rules": [
+      {
+        "schema": "kkor_request_isp",
+        "priority": 10,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICKKID"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0200"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "5E"
+              ]
+            }
+          ],
+          "length": [
+            896
+          ]
+        }
+      },
+      {
+        "schema": "kkor_request_standard",
+        "priority": 20,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICKKID"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0200",
+                "0420"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "10",
+                "13",
+                "14",
+                "1E",
+                "4E",
+                "AE",
+                "BE",
+                "30",
+                "3E"
+              ]
+            }
+          ],
+          "length": [
+            396
+          ]
+        }
+      },
+      {
+        "schema": "kkor_response",
+        "priority": 30,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICKKID"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0210",
+                "0430"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "10",
+                "13",
+                "14",
+                "1E",
+                "4E",
+                "5E",
+                "AE",
+                "BE",
+                "30",
+                "3E"
+              ]
+            }
+          ],
+          "length": [
+            496,
+            475
+          ],
+          "declared_length": [
+            496
+          ]
+        }
+      },
+      {
+        "schema": "npg4_request_check",
+        "priority": 40,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0200"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "20"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "npg4_request_cash",
+        "priority": 41,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0200",
+                "0420"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "21"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "npg4_request_isp_cancel",
+        "priority": 42,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0420"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "31"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "npg4_request_approval",
+        "priority": 43,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0200"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "10",
+                "12",
+                "13",
+                "14",
+                "A6"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "npg4_request_cancel",
+        "priority": 44,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0420"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "10",
+                "30",
+                "G4"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "npg4_response_check",
+        "priority": 45,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0210"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "20"
+              ]
+            }
+          ],
+          "length": [
+            96
+          ]
+        }
+      },
+      {
+        "schema": "npg4_response_cash",
+        "priority": 46,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0210",
+                "0430"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "21"
+              ]
+            }
+          ],
+          "length": [
+            343
+          ]
+        }
+      },
+      {
+        "schema": "npg4_response_standard",
+        "priority": 47,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 7,
+              "values": [
+                "NICCCOP",
+                "NICKMPY",
+                "NICBMIN",
+                "NICE000",
+                "NICTOSS",
+                "NICNVPY",
+                "NICDGPY",
+                "NICEPAY",
+                "NICPAYU",
+                "NICDINM"
+              ]
+            },
+            {
+              "start": 28,
+              "length": 4,
+              "values": [
+                "0210",
+                "0430"
+              ]
+            },
+            {
+              "start": 32,
+              "length": 2,
+              "values": [
+                "10",
+                "12",
+                "13",
+                "14",
+                "A6",
+                "30",
+                "31",
+                "G4"
+              ]
+            }
+          ],
+          "length": [
+            377
+          ]
+        }
+      },
+      {
+        "schema": "nvrr_request_approval",
+        "priority": 60,
+        "when": {
+          "fields": [
+            {
+              "start": 5,
+              "length": 3,
+              "values": [
+                "KCP"
+              ]
+            },
+            {
+              "start": 17,
+              "length": 4,
+              "values": [
+                "0100"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "nvrr_response_approval",
+        "priority": 61,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 3,
+              "values": [
+                "KCP"
+              ]
+            },
+            {
+              "start": 13,
+              "length": 4,
+              "values": [
+                "0110"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "nvrr_request_cancel",
+        "priority": 62,
+        "when": {
+          "fields": [
+            {
+              "start": 5,
+              "length": 3,
+              "values": [
+                "KCP"
+              ]
+            },
+            {
+              "start": 17,
+              "length": 4,
+              "values": [
+                "0420"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "nvrr_response_cancel",
+        "priority": 63,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 3,
+              "values": [
+                "KCP"
+              ]
+            },
+            {
+              "start": 13,
+              "length": 4,
+              "values": [
+                "0430"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "psti_request_ms",
+        "priority": 70,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 1,
+              "values": [
+                "\u0002"
+              ]
+            },
+            {
+              "start": 4,
+              "length": 3,
+              "values": [
+                "CAT"
+              ]
+            },
+            {
+              "start": 12,
+              "length": 2,
+              "values": [
+                "D1"
+              ]
+            },
+            {
+              "start": 14,
+              "length": 2,
+              "values": [
+                "PI"
+              ]
+            },
+            {
+              "start": 22,
+              "length": 1,
+              "values": [
+                "\u001c"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "psti_request_ic",
+        "priority": 71,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 1,
+              "values": [
+                "\u0002"
+              ]
+            },
+            {
+              "start": 4,
+              "length": 3,
+              "values": [
+                "CAT"
+              ]
+            },
+            {
+              "start": 12,
+              "length": 2,
+              "values": [
+                "I1"
+              ]
+            },
+            {
+              "start": 14,
+              "length": 2,
+              "values": [
+                "PI"
+              ]
+            },
+            {
+              "start": 22,
+              "length": 1,
+              "values": [
+                "\u001c"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "psti_response_ms_fs",
+        "priority": 72,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 1,
+              "values": [
+                "\u0002"
+              ]
+            },
+            {
+              "start": 4,
+              "length": 3,
+              "values": [
+                "CAT"
+              ]
+            },
+            {
+              "start": 12,
+              "length": 2,
+              "values": [
+                "D1"
+              ]
+            },
+            {
+              "start": 14,
+              "length": 2,
+              "values": [
+                "QA"
+              ]
+            },
+            {
+              "start": 22,
+              "length": 1,
+              "values": [
+                "\u001c"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "psti_response_ic",
+        "priority": 73,
+        "when": {
+          "fields": [
+            {
+              "start": 1,
+              "length": 1,
+              "values": [
+                "\u0002"
+              ]
+            },
+            {
+              "start": 4,
+              "length": 3,
+              "values": [
+                "CAT"
+              ]
+            },
+            {
+              "start": 12,
+              "length": 2,
+              "values": [
+                "I1"
+              ]
+            },
+            {
+              "start": 14,
+              "length": 2,
+              "values": [
+                "QA"
+              ]
+            },
+            {
+              "start": 22,
+              "length": 1,
+              "values": [
+                "\u001c"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "schema": "psti_request_key",
+        "priority": 75,
+        "when": {
+          "fields": [
+            {
+              "start": 14,
+              "length": 4,
+              "values": [
+                "0200"
+              ]
+            },
+            {
+              "start": 18,
+              "length": 2,
+              "values": [
+                "EK"
+              ]
+            }
+          ],
+          "length": [
+            621
+          ]
+        }
+      },
+      {
+        "schema": "psti_response_key",
+        "priority": 76,
+        "when": {
+          "fields": [
+            {
+              "start": 14,
+              "length": 4,
+              "values": [
+                "0210"
+              ]
+            },
+            {
+              "start": 18,
+              "length": 2,
+              "values": [
+                "EK"
+              ]
+            }
+          ],
+          "length": [
+            227
+          ]
+        }
+      }
+    ]
+  },
   "integrated_tag": {
     "header": {
       "stx": {
@@ -7477,25 +10851,7 @@
       "P",
       "Z"
     ],
-    "_section_start": "===== 통합스펙 TAG-VALUE 시작 =====",
     "tag_specs": {
-      "_INSERT_NEW_TAG_BELOW": {
-        "_note": "▼▼▼ 기존 통합 TAG-VALUE 형식의 신규 TAG는 이 마커 바로 아래에 추가 ▼▼▼",
-        "_how": "실제 TAG 3자리 키(A01, Pxx, Zxx 등)로 request/response 정의를 추가. 기존 일반 TAG 또는 P/Z Length TAG 형식이면 RB 수정 없음."
-      },
-      "Q99": {
-        "_GUIDE_D03": "새 일반 TAG 객체 추가 위치. Q99ABC123 + FS → detail.coupon_code. 기존 A01 바로 위.",
-        "request": {
-          "key": "coupon_code",
-          "attribute": "A/N",
-          "max_length": 12
-        },
-        "response": {
-          "key": "coupon_code",
-          "attribute": "A/N",
-          "max_length": 12
-        }
-      },
       "A01": {
         "request": {
           "key": "A01_wcc",
@@ -9810,7 +13166,6 @@
           "source_row": 340
         }
       }
-    },
-    "_section_end": "===== 통합스펙 TAG-VALUE 끝 ====="
+    }
   }
 }
