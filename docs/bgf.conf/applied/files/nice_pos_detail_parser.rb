@@ -1,12 +1,8 @@
 # frozen_string_literal: true
-# GUIDE_START: 원본 처리 로직 그대로, JSON 예시와 연결되는 위치에 주석만 추가한 가이드 사본.
-# GUIDE_D01 새 NICE / D02 사설 / D03 TAG / D04 기존 코드 / D05 가변길이.
 
 require "json"
 require "time"
 
-
-# [1~4] 시작 시 1회: JSON을 읽고 Schema/Rule/TAG/Version을 Lookup 형태로 준비해 메모리에 보관합니다.
 def register(params)
   spec_path = params["spec_path"].to_s
   raise "script_params.spec_path is required" if spec_path.empty?
@@ -22,9 +18,6 @@ def register(params)
     hash[path.delete_prefix("detail.")] = type
   end.freeze
 
-# >>> GUIDE_D01_LOAD / GUIDE_D04: 수정 불필요 — detail JSON nice_fixed 전체를 이미 읽습니다.
-# 새 merchant/schema/rule 또는 기존 text 배열은 JSON에서 추가하세요.
-# <<< GUIDE_D01_LOAD
   nice = spec.fetch("nice_fixed")
   @nice_schemas, nice_rules = load_schema_rule_merchants(nice)
   compile_schema_fields!(@nice_schemas)
@@ -33,8 +26,6 @@ def register(params)
     %w[text trade message_type direction message_length]
   )
 
-  # 미등록 text_code fallback도 시작 시 1회 Lookup으로 컴파일합니다.
-  # 정상 Rule 매칭이 실패한 이벤트에만 사용하며, 이벤트마다 Rule 전체를 순회하지 않습니다.
   fallback_config = nice.fetch("unregistered_text_fallback", {})
   @nice_unregistered_text_fallback_enabled = fallback_config.fetch("enabled", true) == true
   @nice_unresolved_format = fallback_config.fetch("unresolved_format", "UNKNOWN").to_s
@@ -47,17 +38,13 @@ def register(params)
   @nice_profile_min_score = fallback_config.fetch("profile_min_score", 5.0).to_f
   @nice_profile_min_margin = fallback_config.fetch("profile_min_margin", 2.0).to_f
   @nice_profile_min_evidence = fallback_config.fetch("profile_min_evidence", 2).to_i
-  # 전체 Schema 상세파싱 fallback은 공통필드 fallback보다 더 엄격한 구조 검증을 통과해야 합니다.
   @nice_schema_validation_min_score = fallback_config.fetch("schema_validation_min_score", 8.0).to_f
   @nice_schema_validation_min_margin = fallback_config.fetch("schema_validation_min_margin", 3.0).to_f
   @nice_schema_validation_min_evidence = fallback_config.fetch("schema_validation_min_evidence", 3).to_i
   @nice_schema_validation_require_unique_structure = fallback_config.fetch("schema_validation_require_unique_structure", true) == true
-  # JSON에 등록되지 않은 text_code는 정상 Rule이 매칭되더라도 추적 가능하도록 항상 별도 태그를 남깁니다.
   @nice_unregistered_text_seen_tag = "_nice_pos_unregistered_text_seen".freeze
   @nice_text_code_lookup = build_explicit_condition_lookup(nice_rules, "text").freeze
 
-  # v7: 정상 Rule 불일치 시에도 기존 규격을 최대한 재사용할 수 있도록
-  # text 중심 / trade 중심 완화 Lookup과 공통필드 구조 Profile을 시작 시 1회 생성합니다.
   @nice_text_relaxed_lookup = build_rule_candidate_lookup(
     nice_rules.select { |rule| explicit_condition?(rule, "text") },
     %w[text message_type direction message_length]
@@ -71,7 +58,6 @@ def register(params)
     nice_rules,
     @common_detail_types
   )
-  # 완화 Rule 후보가 실제 어느 Schema/Profile인지 O(1)로 확인할 수 있도록 시작 시 역 Lookup도 생성합니다.
   @nice_schema_id_by_object_id = @nice_schemas.each_with_object({}) do |(schema_id, schema), lookup|
     lookup[schema.object_id] = schema_id.to_s
   end.freeze
@@ -96,6 +82,47 @@ def register(params)
     {"key" => "device_number", "start" => 36, "length" => 10},
     {"key" => "cat_id", "start" => 46, "length" => 10}
   ])
+
+  external = spec.fetch("external_fixed", {})
+  @external_root_field_lookup = %w[external_version message_type trade_code cat_id response_code].each_with_object({}) do |key, lookup|
+    lookup[key] = true
+  end.freeze
+  @external_schemas = external.fetch("schemas", {}).each_with_object({}) do |(schema_id, schema), active|
+    active[schema_id] = schema unless schema["runtime_enabled"] == false
+  end
+  compile_external_schema_fields!(@external_schemas)
+  external_common = external.fetch("common_fallback", {})
+  @external_common_enabled = external_common.fetch("enabled", true) == true
+  @external_common_format = external_common.fetch("format", "UNKNOWN").to_s
+  @external_common_tag = external_common.fetch("tag", "_nice_pos_common_fields_fallback").to_s
+  @external_common_profiles,
+    @external_common_profiles_by_merchant_length,
+    @external_common_profiles_by_merchant_any_length = compile_external_common_profiles(
+    external_common,
+    @external_schemas
+  )
+  @external_rules_by_merchant_length,
+    @external_rules_by_merchant_any_length,
+    @external_rules_by_merchant_all,
+    @external_short_transport_lookup = compile_external_rules(
+    external,
+    @external_schemas
+  )
+  @external_source_route_lookup = external.fetch("source_routes", {}).each_with_object({}) do |(source_id, merchant), lookup|
+    lookup[source_id.to_s] = merchant.to_s
+  end.freeze
+  @external_source_route_pattern = if @external_source_route_lookup.empty?
+                                     nil
+                                   else
+                                     alternatives = @external_source_route_lookup.keys.map { |source_id| Regexp.escape(source_id) }
+                                     Regexp.new("(?:#{alternatives.join('|')})(?=[^A-Za-z0-9]|$)").freeze
+                                   end
+  @external_prefix_names = external.fetch("prefix_names", {}).each_with_object({}) do |(prefix, name), lookup|
+    lookup[prefix.to_s] = name.to_s
+  end
+  @external_allowed_trailer_lookup = external.fetch("allowed_transport_trailer_lengths", [0]).each_with_object({}) do |length, lookup|
+    lookup[length.to_i] = true
+  end
 
   private_spec = spec.fetch("private_fixed")
   @private_schemas, private_rules, private_versions = load_private_merchants(private_spec)
@@ -151,6 +178,19 @@ def register(params)
   @nice_known_code_mismatch_tag.freeze
   @nice_unregistered_text_seen_tag.freeze
   @nice_header_fields.freeze
+  @external_schemas.freeze
+  @external_common_profiles.freeze
+  @external_common_profiles_by_merchant_length.freeze
+  @external_common_profiles_by_merchant_any_length.freeze
+  @external_common_format.freeze
+  @external_common_tag.freeze
+  @external_rules_by_merchant_length.freeze
+  @external_rules_by_merchant_any_length.freeze
+  @external_rules_by_merchant_all.freeze
+  @external_short_transport_lookup.freeze
+  @external_source_route_lookup.freeze
+  @external_prefix_names.freeze
+  @external_allowed_trailer_lookup.freeze
   @private_schemas.freeze
   @private_lookup.freeze
   @private_version_lookup.freeze
@@ -164,7 +204,6 @@ def register(params)
   @common_type_converters.freeze
   @common_date_timezone.freeze
 end
-
 
 def load_common_field_types(section)
   converters = {"root" => [], "detail" => []}
@@ -186,8 +225,6 @@ def load_common_field_types(section)
   [converters.freeze, timezone]
 end
 
-
-# [3~4] 초기화 보조: JSON의 Schema/Rule/Version을 register에서 사용할 메모리 구조로 정리합니다.
 def load_schema_rule_merchants(section)
   schemas = {}
   rules = []
@@ -206,7 +243,6 @@ def load_schema_rule_merchants(section)
 
   [schemas, rules]
 end
-
 
 def load_private_merchants(section)
   schemas = {}
@@ -233,7 +269,6 @@ def load_private_merchants(section)
   [schemas, rules, versions.uniq]
 end
 
-
 def compile_fields(fields)
   compiled = []
   previous_start = 0
@@ -252,26 +287,213 @@ def compile_fields(fields)
   compiled.freeze
 end
 
-
 def compile_schema_fields!(schemas)
   schemas.each_value do |schema|
     schema["_compiled_fields"] = compile_fields(schema.fetch("fields", []))
   end
 end
 
+def compile_external_schema_fields!(schemas)
+  schemas.each_value do |schema|
+    compiled_fields = compile_fields(schema.fetch("fields", []))
+    schema["_compiled_external_fields"] = compiled_fields.map do |key, start_byte, length, end_byte|
+      [key, start_byte, length, end_byte, @external_root_field_lookup.key?(key)].freeze
+    end.freeze
 
-# [5~9] 이벤트마다 실행: b_body 추출 -> Wrapper 제거 -> 전문 형식 판별 -> 상세 파싱 -> nice_pos 기록 순서입니다.
+    compiled_delimiter_fields = schema.fetch("delimiter_fields", []).map do |field|
+      key = field.fetch("key").to_s
+      [field.fetch("index").to_i, key, @external_root_field_lookup.key?(key)].freeze
+    end.freeze
+    schema["_compiled_external_delimiter_fields"] = compiled_delimiter_fields
+    default_minimum_length = compiled_fields.empty? ? 0 : compiled_fields[-1][3]
+    schema["_compiled_external_minimum_length"] = schema.fetch("min_required_length", default_minimum_length).to_i
+    default_minimum_parts = if compiled_delimiter_fields.empty?
+                              0
+                            else
+                              compiled_delimiter_fields.map(&:first).max + 1
+                            end
+    schema["_compiled_external_minimum_parts"] = schema.fetch("min_required_parts", default_minimum_parts).to_i
+  end
+end
+
+def compile_external_common_profiles(section, schemas)
+  profiles = {}
+  by_merchant_length = {}
+  by_merchant_any_length = {}
+
+  section.fetch("profiles", []).each_with_index do |definition, index|
+    profile_id = definition.fetch("id").to_s
+    raise "duplicate external common profile: #{profile_id}" if profiles.key?(profile_id)
+
+    base_schema_id = definition.fetch("base_schema").to_s
+    base_schema = schemas[base_schema_id]
+    raise "unknown external common base schema: #{base_schema_id}" if base_schema.nil?
+
+    merchant = definition.fetch("merchant").to_s
+    raise "external common merchant mismatch: #{profile_id}" unless base_schema.fetch("merchant").to_s == merchant
+
+    included = definition.fetch("include_fields", []).each_with_object({}) do |key, lookup|
+      lookup[key.to_s] = true
+    end
+    fixed_fields = base_schema.fetch("fields", []).select { |field| included.key?(field.fetch("key").to_s) }
+    delimiter_fields = base_schema.fetch("delimiter_fields", []).select do |field|
+      included.key?(field.fetch("key").to_s)
+    end
+    available = (fixed_fields + delimiter_fields).each_with_object({}) do |field, lookup|
+      lookup[field.fetch("key").to_s] = true
+    end
+    missing = included.keys.reject { |key| available.key?(key) }
+    raise "unknown external common field #{profile_id}: #{missing.join(',')}" unless missing.empty?
+
+    profile = {
+      "id" => profile_id,
+      "merchant" => merchant,
+      "direction" => definition.fetch("direction").to_s,
+      "priority" => (definition.key?("priority") ? definition["priority"].to_i : index),
+      "base_schema" => base_schema_id,
+      "wire_format" => base_schema["wire_format"],
+      "fields" => fixed_fields,
+      "delimiter_fields" => delimiter_fields
+    }
+    %w[
+      delimiter delimiter_start min_required_length min_required_parts
+      approval_datetime_trim_trailing_zero_length
+    ].each do |key|
+      profile[key] = base_schema[key] if base_schema.key?(key)
+    end
+
+    condition = definition.fetch("when", {})
+    profile["_compiled_conditions"] = condition.fetch("fields", []).map do |field|
+      values = field.fetch("values", []).each_with_object({}) do |value, lookup|
+        lookup[value.to_s] = true
+      end.freeze
+      [field.fetch("start").to_i, field.fetch("length").to_i, values].freeze
+    end.freeze
+    profile["_declared_length_lookup"] = condition.fetch("declared_length", []).each_with_object({}) do |length, lookup|
+      lookup[length.to_i] = true
+    end.freeze
+    lengths = condition.fetch("length", []).map(&:to_i)
+    profile["_length_lookup"] = lengths.each_with_object({}) { |length, lookup| lookup[length] = true }.freeze
+    profiles[profile_id] = profile
+
+    if lengths.empty?
+      (by_merchant_any_length[merchant] ||= []) << profile
+    else
+      merchant_lengths = (by_merchant_length[merchant] ||= {})
+      lengths.each { |length| (merchant_lengths[length] ||= []) << profile }
+    end
+  end
+
+  compile_external_schema_fields!(profiles)
+  by_merchant_length.each_value do |length_lookup|
+    length_lookup.each_value do |items|
+      items.sort_by! { |profile| profile["priority"] }
+      items.freeze
+    end
+    length_lookup.freeze
+  end
+  by_merchant_any_length.each_value do |items|
+    items.sort_by! { |profile| profile["priority"] }
+    items.freeze
+  end
+  profiles.each_value(&:freeze)
+  [profiles.freeze, by_merchant_length.freeze, by_merchant_any_length.freeze]
+end
+
+def compile_external_rules(section, schemas)
+  by_merchant_length = {}
+  by_merchant_any_length = {}
+  by_merchant_all = {}
+  short_transport_by_merchant = {}
+
+  section.fetch("rules", []).each_with_index do |rule, index|
+    schema_id = rule.fetch("schema").to_s
+    schema = schemas[schema_id]
+    next if schema.nil?
+
+    merchant = schema.fetch("merchant").to_s
+    merchant_lengths = (by_merchant_length[merchant] ||= {})
+    merchant_any_length = (by_merchant_any_length[merchant] ||= [])
+    merchant_all = (by_merchant_all[merchant] ||= [])
+
+    condition = rule.fetch("when", {})
+    compiled_conditions = condition.fetch("fields", []).map do |field|
+      values = field.fetch("values", []).each_with_object({}) do |value, lookup|
+        lookup[value.to_s] = true
+      end.freeze
+      [field.fetch("start").to_i, field.fetch("length").to_i, values].freeze
+    end.freeze
+    declared_length_lookup = condition.fetch("declared_length", []).each_with_object({}) do |length, lookup|
+      lookup[length.to_i] = true
+    end.freeze
+
+    compiled = {
+      "schema" => schema_id,
+      "priority" => (rule.key?("priority") ? rule["priority"].to_i : index),
+      "_compiled_conditions" => compiled_conditions,
+      "_declared_length_lookup" => declared_length_lookup
+    }.freeze
+    merchant_all << compiled
+
+    lengths = condition["length"]
+    if lengths.nil? || lengths.empty?
+      merchant_any_length << compiled
+    else
+      lengths.each do |length|
+        merchant_lengths[length.to_i] ||= []
+        merchant_lengths[length.to_i] << compiled
+      end
+
+      declared_lengths = condition.fetch("declared_length", [])
+      unless declared_lengths.empty?
+        short_lookup = (short_transport_by_merchant[merchant] ||= {})
+        declared_lengths.each do |declared_length|
+          lengths.each do |body_length|
+            declared = declared_length.to_i
+            actual = body_length.to_i
+            short_lookup[[declared, actual].freeze] = true if actual < declared
+          end
+        end
+      end
+    end
+  end
+
+  by_merchant_length.each_value do |length_lookup|
+    length_lookup.each_value do |rules|
+      rules.sort_by! { |rule| rule["priority"] }
+      rules.freeze
+    end
+    length_lookup.freeze
+  end
+  by_merchant_any_length.each_value do |rules|
+    rules.sort_by! { |rule| rule["priority"] }
+    rules.freeze
+  end
+  by_merchant_all.each_value do |rules|
+    rules.sort_by! { |rule| rule["priority"] }
+    rules.freeze
+  end
+  short_transport_by_merchant.each_value(&:freeze)
+  [by_merchant_length, by_merchant_any_length, by_merchant_all, short_transport_by_merchant]
+end
+
 def filter(event)
   body = event.get("b_body")
   return [event] if body.nil? || body.to_s.empty?
 
-  # [5] b_body 원본은 유지하고 파싱에 필요한 실제 전문(raw)만 따로 추출합니다.
-  raw = extract_professional(body.to_s)
+  external_merchant = external_source_merchant(event)
+  raw = extract_professional(body.to_s, external_merchant)
   return [event] if raw.nil?
 
   begin
-    # [6] 통합 TAG -> SK/S-OIL 사설 -> 그 외 NICE 순서로 사용할 파서를 결정합니다.
-    if integrated_message?(raw)
+    external_match = external_merchant.nil? ? nil : match_external_message(raw, external_merchant)
+    if external_match && external_match["incomplete"]
+      reject_incomplete_external(event, external_match, external_merchant)
+    elsif external_match
+      parse_external_fixed(event, external_match)
+    elsif !external_merchant.nil?
+      mark_unmatched_external(event, raw, external_merchant)
+    elsif integrated_message?(raw)
       parse_integrated(event, raw)
     elsif private_message?(raw)
       parse_private(event, raw)
@@ -283,18 +505,11 @@ def filter(event)
     event.set("[nice_pos][parse_error]", "#{error.class}: #{error.message}")
   end
 
-  # 파싱 로직은 v8 그대로 유지하고, 마지막 단계에서 NICE 내부 진단 태그만
-  # 운영용 fallback / error 상태로 단순화합니다.
   normalize_nice_pos_operational_tags(event)
 
   [event]
 end
 
-
-# v10 태그 단순화 전용 후처리.
-# 중요: nice_pos 필드/Schema/Rule/공통필드 fallback 결과에는 손대지 않습니다.
-# 기존 파이프라인 태그(in_beat 등)는 그대로 두고 _nice_pos_* 내부 진단 태그만 제거한 뒤
-# 최종 상태를 fallback 또는 error 하나로 치환합니다.
 def normalize_nice_pos_operational_tags(event)
   tags = event.get("tags")
   return if tags.nil?
@@ -303,11 +518,6 @@ def normalize_nice_pos_operational_tags(event)
   internal = current.select { |tag| tag.start_with?("_nice_pos_") }
   return if internal.empty?
 
-  # error는 실제 비정상 전문/파싱 예외에만 사용합니다.
-  # - incomplete_message: Header 선언 길이보다 실제 전문이 짧음
-  # - parse_error: Ruby 파싱 중 예외 발생
-  # - truncated: 통합 TAG의 후행 가변 TAG가 잘린 경우. 단, 이미 공통 Detail 필드가
-  #   정상 추출된 통합 전문은 운영상 실패가 아니므로 fallback으로 분류합니다.
   parse_error = internal.include?("_nice_pos_parse_error")
   incomplete_message = internal.include?("_nice_pos_incomplete_message")
   truncated = internal.include?("_nice_pos_truncated")
@@ -325,9 +535,6 @@ def normalize_nice_pos_operational_tags(event)
 
   hard_error = parse_error || incomplete_message || (truncated && !integrated_common_recovered)
 
-  # 정상 완전 전문에서 Rule/코드/Format이 미등록 또는 미확정인 경우와,
-  # 통합 TAG 후행부가 일부 잘렸더라도 공통 Detail 필드가 이미 정상 추출된 경우는
-  # 운영상 fallback으로 분류합니다. 내부 진단 태그는 제거하고 최종 상태만 남깁니다.
   fallback_state = !hard_error && (integrated_common_recovered || internal.any? do |tag|
     [
       "_nice_pos_unregistered_text_seen",
@@ -346,8 +553,6 @@ def normalize_nice_pos_operational_tags(event)
   event.set("tags", filtered)
 end
 
-
-# [3] Rule 전체 순회를 줄이기 위해 시작 시 Header 조건별 Hash Lookup을 미리 생성합니다.
 def build_rule_lookup(rules, dimensions)
   root = {}
 
@@ -360,7 +565,7 @@ def build_rule_lookup(rules, dimensions)
       values.nil? || values.empty? ? ["*"] : values.map(&:to_s)
     end
 
-    value_sets[0].product(*value_sets[1..]).each do |combination|
+    value_sets[0].product(*value_sets[1..-1]).each do |combination|
       node = root
       combination.each do |value|
         node[value] ||= {}
@@ -375,9 +580,6 @@ def build_rule_lookup(rules, dimensions)
   root
 end
 
-
-# 미등록 text_code fallback용: text 이외의 Header 조건으로 후보 Schema를 미리 Lookup 형태로 구성합니다.
-# 동일 Header 조건에서 서로 다른 Schema가 후보가 되면 안전을 위해 자동 상세파싱하지 않습니다.
 def build_rule_candidate_lookup(rules, dimensions)
   root = {}
 
@@ -390,7 +592,7 @@ def build_rule_candidate_lookup(rules, dimensions)
       values.nil? || values.empty? ? ["*"] : values.map(&:to_s)
     end
 
-    value_sets[0].product(*value_sets[1..]).each do |combination|
+    value_sets[0].product(*value_sets[1..-1]).each do |combination|
       node = root
       combination.each do |value|
         node[value] ||= {}
@@ -404,7 +606,6 @@ def build_rule_candidate_lookup(rules, dimensions)
 
   root
 end
-
 
 def build_explicit_condition_lookup(rules, dimension)
   rules.each_with_object({}) do |rule, lookup|
@@ -420,9 +621,6 @@ def explicit_condition?(rule, dimension)
   !values.nil? && !values.empty?
 end
 
-
-# Schema 전체 Detail 구조가 실제로 동일한지 비교하기 위한 사전 Signature입니다.
-# 필드명/위치/길이와 Dynamic 규격까지 포함하여, 공통필드 위치만 같고 나머지 Detail이 다른 Schema는 구분합니다.
 def nice_schema_structure_signature(schema)
   fields = schema.fetch("_compiled_fields", []).map do |key, start_byte, length, _end_byte|
     "#{key}@#{start_byte}:#{length}"
@@ -437,10 +635,6 @@ def nice_schema_structure_signature(schema)
   ].join("|")
 end
 
-
-# v8 공통필드 구조 fallback용 Profile을 시작 시 1회 생성합니다.
-# Profile은 정확한 format을 추측하기 위한 것이 아니라, 정상 완전 전문에서 공통필드 위치가
-# 동일한 Schema들을 하나로 묶어 안전하게 공통필드만 추출하기 위한 메모리 구조입니다.
 def build_nice_common_profiles(schemas, rules, common_detail_types)
   rule_hints = build_schema_rule_hints(rules)
   profiles = {}
@@ -497,7 +691,6 @@ def build_nice_common_profiles(schemas, rules, common_detail_types)
   profiles.values.freeze
 end
 
-
 def build_schema_rule_hints(rules)
   hints = {}
 
@@ -533,7 +726,6 @@ def build_schema_rule_hints(rules)
   hints.freeze
 end
 
-
 def empty_schema_rule_hints
   @empty_schema_rule_hints ||= {
     "texts" => {}.freeze,
@@ -542,7 +734,6 @@ def empty_schema_rule_hints
     "message_type_wildcard" => true
   }.freeze
 end
-
 
 def approval_datetime_aux_fields(compiled_fields, common_fields)
   return [] if common_fields.any? { |field| field[0] == "approval_datetime" }
@@ -563,8 +754,7 @@ def approval_datetime_aux_fields(compiled_fields, common_fields)
   []
 end
 
-# [5] [OUT]/[IN], 대괄호, 길이값 등 외부 Wrapper를 제거해 실제 전문만 반환합니다.
-def extract_professional(body)
+def extract_professional(body, external_merchant = nil)
   text = body.sub(/\A\[(?:OUT|IN)\]\s*/, "")
 
   payload = if (match = text.match(/\A\[\d{1,8}\]\[(.*)\]\s*\z/m))
@@ -572,7 +762,7 @@ def extract_professional(body)
             elsif (match = text.match(/\A\[\d{1,8}\]\[(.*)\z/m))
               match[1]
             elsif text.start_with?("[")
-              value = text[1..] || ""
+              value = text[1..-1] || ""
               value = value.sub(/\]\[\d{1,8}\]\s*\z/m, "")
               value.sub(/\]\s*\z/m, "")
             else
@@ -582,35 +772,420 @@ def extract_professional(body)
   stx_index = payload.index("\u0002")
   if !stx_index.nil? && stx_index.positive?
     prefix = payload[0...stx_index]
-    payload = payload[stx_index..] if prefix.match?(/\AEA\d{10}\z/)
+    payload = payload[stx_index..-1] if prefix.match?(/\AEA\d{10}\z/)
   end
 
+  return payload unless external_merchant.nil?
   return payload if payload.start_with?("\u0002")
   return payload if payload.match?(/\A\d{4}/m)
 
   nil
 end
 
+def external_source_merchant(event)
+  return nil if @external_source_route_pattern.nil?
 
-# [6] 전문 형식 판별: STX+Length이면 통합 TAG 전문인지 확인합니다.
+  path = event.get("[log][file][path]")
+  return nil if path.nil?
+
+  match = @external_source_route_pattern.match(path.to_s)
+  match.nil? ? nil : @external_source_route_lookup[match[0]]
+end
+
+def match_external_message(raw, external_merchant)
+  return nil if external_merchant.nil?
+  return nil if @external_rules_by_merchant_length.nil? || @external_rules_by_merchant_any_length.nil?
+
+  candidates = external_message_candidates(raw, external_merchant)
+  incomplete_candidate = nil
+  candidates.each do |candidate|
+    body = candidate["body"]
+    body_length = logical_byte_length(body)
+    rule, incomplete_rule = choose_external_rule(body, body_length, candidate["declared_length"].to_i, external_merchant)
+    if !rule.nil? && candidate["force_incomplete"]
+      incomplete_rule = rule
+      rule = nil
+    end
+    if rule.nil? && !incomplete_rule.nil?
+      incomplete_candidate ||= candidate.merge(
+        "rule" => incomplete_rule,
+        "schema" => @external_schemas[incomplete_rule["schema"]],
+        "incomplete" => true
+      )
+    end
+    next if rule.nil?
+
+    schema = @external_schemas[rule["schema"]]
+    next if schema.nil?
+
+    candidate["rule"] = rule
+    candidate["schema"] = schema
+    candidate["incomplete"] = false
+    return candidate
+  end
+
+  incomplete_candidate
+end
+
+def external_message_candidates(raw, external_merchant)
+  candidates = []
+  raw_length = logical_byte_length(raw)
+  length_text = logical_byte_slice(raw, 1, 4)
+
+  if length_text.match?(/\A\d{4}\z/)
+    declared_length = length_text.to_i
+    available_length = raw_length - 4
+    trailer_length = available_length - declared_length
+    if declared_length.positive? && trailer_length >= 0 && @external_allowed_trailer_lookup.key?(trailer_length)
+      candidates << {
+        "body" => logical_byte_slice(raw, 5, declared_length),
+        "declared_length" => declared_length,
+        "transport_prefix_length" => 4,
+        "transport_trailer_length" => trailer_length,
+        "transport_missing_length" => 0
+      }
+    elsif declared_length.positive? && available_length.positive? && available_length < declared_length
+      allowed_short = (@external_short_transport_lookup[external_merchant] || {}).key?([declared_length, available_length])
+      candidates << {
+        "body" => logical_byte_slice(raw, 5, available_length),
+        "declared_length" => declared_length,
+        "transport_prefix_length" => 4,
+        "transport_trailer_length" => 0,
+        "transport_missing_length" => declared_length - available_length,
+        "force_incomplete" => !allowed_short
+      }
+    end
+  end
+
+  candidates << {
+    "body" => raw,
+    "declared_length" => raw_length,
+    "transport_prefix_length" => 0,
+    "transport_trailer_length" => 0,
+    "transport_missing_length" => 0
+  }
+  candidates
+end
+
+def choose_external_rule(body, body_length, declared_length, external_merchant)
+  incomplete_rule = nil
+  merchant_lengths = @external_rules_by_merchant_length[external_merchant]
+  exact_rules = merchant_lengths.nil? ? nil : merchant_lengths[body_length]
+  unless exact_rules.nil?
+    exact_rules.each do |rule|
+      status = external_rule_match_status(body, body_length, rule, declared_length)
+      return [rule, nil] if status == :complete
+      incomplete_rule ||= rule if status == :incomplete
+    end
+  end
+
+  any_length_rules = @external_rules_by_merchant_any_length[external_merchant] || []
+  any_length_rules.each do |rule|
+    status = external_rule_match_status(body, body_length, rule, declared_length)
+    return [rule, nil] if status == :complete
+    incomplete_rule ||= rule if status == :incomplete
+  end
+
+  if incomplete_rule.nil?
+    (@external_rules_by_merchant_all[external_merchant] || []).each do |rule|
+      if external_rule_identity_match?(body, rule, declared_length)
+        incomplete_rule = rule
+        break
+      end
+    end
+  end
+
+  [nil, incomplete_rule]
+end
+
+def external_rule_match_status(body, body_length, rule, declared_length)
+  return :none unless external_rule_identity_match?(body, rule, declared_length)
+
+  schema = @external_schemas[rule["schema"]]
+  external_schema_complete?(body, body_length, schema) ? :complete : :incomplete
+end
+
+def external_rule_identity_match?(body, rule, declared_length)
+  declared_lookup = rule.fetch("_declared_length_lookup", {})
+  return false if !declared_lookup.empty? && !declared_lookup.key?(declared_length)
+
+  rule.fetch("_compiled_conditions", []).all? do |start_byte, length, allowed_values|
+    value = logical_byte_slice(body, start_byte, length)
+    allowed_values.key?(value)
+  end
+end
+
+def external_schema_complete?(body, body_length, schema)
+  return false if schema.nil?
+  return false if body_length < schema.fetch("_compiled_external_minimum_length", 0).to_i
+
+  minimum_parts = schema.fetch("_compiled_external_minimum_parts", 0).to_i
+  return true if minimum_parts <= 0
+
+  delimiter = schema.fetch("delimiter", "\u001c").to_s
+  delimiter_start = schema.fetch("delimiter_start", 1).to_i
+  segment = logical_byte_drop(body, delimiter_start - 1)
+  segment.split(delimiter, -1).length >= minimum_parts
+end
+
+def match_external_common_profile(raw, external_merchant)
+  return nil unless @external_common_enabled
+
+  merchant_lengths = @external_common_profiles_by_merchant_length[external_merchant]
+  merchant_any_length = @external_common_profiles_by_merchant_any_length[external_merchant] || []
+  return nil if merchant_lengths.nil? && merchant_any_length.empty?
+
+  candidates = external_message_candidates(raw, external_merchant)
+  normalized = candidates.select do |candidate|
+    candidate["transport_prefix_length"].to_i.positive? && !candidate["force_incomplete"]
+  end
+  candidates = normalized unless normalized.empty?
+
+  candidates.each do |candidate|
+    next if candidate["force_incomplete"]
+
+    body = candidate["body"]
+    body_length = logical_byte_length(body)
+    profiles = []
+    profiles.concat(merchant_lengths[body_length]) unless merchant_lengths.nil? || merchant_lengths[body_length].nil?
+    profiles.concat(merchant_any_length)
+    matched = profiles.select do |profile|
+      external_common_profile_match?(body, body_length, candidate["declared_length"].to_i, profile)
+    end
+    next if matched.empty?
+
+    return nil unless matched.length == 1
+
+    return candidate.merge("schema" => matched.first, "incomplete" => false)
+  end
+
+  nil
+end
+
+def external_common_profile_match?(body, body_length, declared_length, profile)
+  declared_lookup = profile.fetch("_declared_length_lookup", {})
+  return false if !declared_lookup.empty? && !declared_lookup.key?(declared_length)
+
+  identity_match = profile.fetch("_compiled_conditions", []).all? do |start_byte, length, allowed_values|
+    value = logical_byte_slice(body, start_byte, length)
+    allowed_values.key?(value)
+  end
+  return false unless identity_match
+
+  external_schema_complete?(body, body_length, profile)
+end
+
+def reject_incomplete_external(event, match, external_merchant)
+  body = match.fetch("body", "")
+  schema = match["schema"] || {}
+  event.set("[nice_pos]", {
+    "parser_type" => "external_rejected",
+    "format" => schema["name"].to_s,
+    "merchant" => external_merchant.to_s,
+    "message_length" => logical_byte_length(body),
+    "declared_message_length" => match["declared_length"].to_i,
+    "parse_error" => "incomplete external message"
+  })
+  event.tag("_nice_pos_incomplete_message")
+end
+
+def mark_unmatched_external(event, raw, external_merchant)
+  common_match = match_external_common_profile(raw, external_merchant)
+  unless common_match.nil?
+    parse_external_common(event, common_match, external_merchant)
+    return
+  end
+
+  event.set("[nice_pos]", {
+    "parser_type" => "external_unmatched",
+    "format" => "UNKNOWN",
+    "merchant" => external_merchant.to_s,
+    "direction" => professional_direction("", event.get("status")),
+    "message_length" => logical_byte_length(raw),
+    "detail" => {}
+  })
+  event.tag("_nice_pos_unmatched_format")
+end
+
+def parse_external_common(event, match, external_merchant)
+  body = match.fetch("body")
+  profile = match.fetch("schema")
+  root_fields, detail = extract_external_schema_fields(body, profile)
+  normalize_external_approval_datetime!(detail, profile)
+  detail.delete_if { |_key, value| value.nil? || match_value(value).empty? }
+
+  external_version = match_value(root_fields["external_version"])
+  message_type = match_value(root_fields["message_type"])
+  trade_code = match_value(root_fields["trade_code"])
+  cat_id = match_value(root_fields["cat_id"])
+  response_code = match_value(root_fields["response_code"])
+
+  merchant = @external_prefix_names[external_version]
+  merchant = external_merchant.to_s if merchant.nil? || merchant.empty?
+  direction = profile["direction"].to_s
+  direction = professional_direction(message_type, event.get("status")) if direction.empty? || direction == "both"
+
+  nice_pos = {
+    "parser_type" => "external_common",
+    "format" => @external_common_format,
+    "merchant" => merchant,
+    "direction" => direction,
+    "message_length" => logical_byte_length(body),
+    "detail" => detail
+  }
+  nice_pos["external_version"] = external_version unless external_version.empty?
+  nice_pos["message_type"] = message_type unless message_type.empty?
+  nice_pos["trade_code"] = trade_code unless trade_code.empty?
+  nice_pos["cat_id"] = cat_id unless cat_id.empty?
+  nice_pos["response_code"] = response_code unless response_code.empty?
+
+  declared_length = match["declared_length"].to_i
+  actual_length = logical_byte_length(body)
+  nice_pos["declared_message_length"] = declared_length if declared_length.positive? && declared_length != actual_length
+  trailer_length = match["transport_trailer_length"].to_i
+  nice_pos["transport_trailer_length"] = trailer_length if trailer_length.positive?
+  missing_length = match["transport_missing_length"].to_i
+  nice_pos["transport_missing_length"] = missing_length if missing_length.positive?
+
+  apply_common_field_types!(nice_pos, direction)
+  detail.delete_if { |_key, value| value.nil? || match_value(value).empty? }
+  event.set("[nice_pos]", nice_pos)
+  event.tag(@external_common_tag) unless @external_common_tag.empty?
+end
+
+def parse_external_fixed(event, match)
+  body = match.fetch("body")
+  schema = match.fetch("schema")
+  root_fields, detail = extract_external_schema_fields(body, schema)
+  normalize_external_approval_datetime!(detail, schema)
+  detail.delete_if { |_key, value| value.nil? || match_value(value).empty? }
+
+  external_version = match_value(root_fields["external_version"])
+  message_type = match_value(root_fields["message_type"])
+  trade_code = match_value(root_fields["trade_code"])
+  cat_id = match_value(root_fields["cat_id"])
+  response_code = match_value(root_fields["response_code"])
+
+  merchant = @external_prefix_names[external_version]
+  merchant = schema["merchant"].to_s if merchant.nil? || merchant.empty?
+  direction = schema["direction"].to_s
+  direction = professional_direction(message_type, event.get("status")) if direction.empty? || direction == "both"
+
+  nice_pos = {
+    "parser_type" => (schema["wire_format"].to_s == "field_separator" ? "external_delimited" : "external_fixed"),
+    "format" => schema["name"].to_s,
+    "merchant" => merchant,
+    "direction" => direction,
+    "message_length" => logical_byte_length(body),
+    "detail" => detail
+  }
+  nice_pos["external_version"] = external_version unless external_version.empty?
+  nice_pos["message_type"] = message_type unless message_type.empty?
+  nice_pos["trade_code"] = trade_code unless trade_code.empty?
+  nice_pos["cat_id"] = cat_id unless cat_id.empty?
+  nice_pos["response_code"] = response_code unless response_code.empty?
+
+  declared_length = match["declared_length"].to_i
+  actual_length = logical_byte_length(body)
+  nice_pos["declared_message_length"] = declared_length if declared_length.positive? && declared_length != actual_length
+  trailer_length = match["transport_trailer_length"].to_i
+  nice_pos["transport_trailer_length"] = trailer_length if trailer_length.positive?
+  missing_length = match["transport_missing_length"].to_i
+  nice_pos["transport_missing_length"] = missing_length if missing_length.positive?
+
+  apply_common_field_types!(nice_pos, direction)
+  detail.delete_if { |_key, value| value.nil? || match_value(value).empty? }
+  event.set("[nice_pos]", nice_pos)
+end
+
+def extract_external_schema_fields(body, schema)
+  fields = schema.fetch("_compiled_external_fields", [])
+  root_fields = {}
+  detail = {}
+
+  unless fields.empty?
+    text = body.to_s
+    if text.ascii_only?
+      fields.each do |key, start_byte, length, _end_byte, root_field|
+        target = root_field ? root_fields : detail
+        target[key] = text.byteslice(start_byte - 1, length) || ""
+      end
+    else
+      outputs = fields.map { +"" }
+      field_index = 0
+      position = 1
+      last_end = fields[-1][3]
+
+      text.each_char do |character|
+        width = character.ord <= 0x7f ? 1 : 2
+        character_start = position
+        character_end = position + width - 1
+
+        while field_index < fields.length && fields[field_index][3] < character_start
+          field_index += 1
+        end
+        break if field_index >= fields.length || character_start > last_end
+
+        index = field_index
+        while index < fields.length && fields[index][1] <= character_end
+          field_start = fields[index][1]
+          field_end = fields[index][3]
+          outputs[index] << character if field_end >= character_start && field_start <= character_end
+          index += 1
+        end
+        position += width
+      end
+
+      fields.each_with_index do |field, index|
+        target = field[4] ? root_fields : detail
+        target[field[0]] = outputs[index]
+      end
+    end
+  end
+
+  extract_external_delimited_fields(body, schema, root_fields, detail)
+  [root_fields, detail]
+end
+
+def extract_external_delimited_fields(body, schema, root_fields, detail)
+  fields = schema.fetch("_compiled_external_delimiter_fields", [])
+  return if fields.empty?
+
+  delimiter = schema.fetch("delimiter", "\u001c").to_s
+  delimiter_start = schema.fetch("delimiter_start", 1).to_i
+  segment = logical_byte_drop(body, delimiter_start - 1)
+  parts = segment.split(delimiter, -1)
+
+  fields.each do |index, key, root_field|
+    next if index.negative? || index >= parts.length
+
+    target = root_field ? root_fields : detail
+    target[key] = parts[index]
+  end
+end
+
+def normalize_external_approval_datetime!(detail, schema)
+  value = detail["approval_datetime"]
+  return if value.nil?
+
+  text = match_value(value)
+  digits = text.gsub(/[^0-9]/, "")
+  trim_length = schema.fetch("approval_datetime_trim_trailing_zero_length", 0).to_i
+  if trim_length.positive? && digits.length == trim_length && digits.end_with?("0")
+    digits = digits[0, 12]
+  end
+  detail["approval_datetime"] = digits if [12, 14].include?(digits.length)
+end
+
 def integrated_message?(raw)
   raw.start_with?("\u0002") && raw.byteslice(1, 4).to_s.match?(/\A\d{4}\z/)
 end
 
-
-# [6] 전문 형식 판별: 등록된 Version이면 SK/S-OIL 사설포스로 처리합니다.
-# >>> GUIDE_D02: 수정 불필요 — JSON versions에 추가한 ZGUIDE1을 아래에서 판별합니다.
-# <<< GUIDE_D02
 def private_message?(raw)
   version = match_value(logical_byte_slice(raw, 5, 7))
   @private_version_lookup.key?(version)
 end
 
-
-# [7~9] NICE: Header -> 정상 Rule -> 완화 Rule 후보 -> 구조검증 -> 공통필드 Profile 순서로 처리합니다.
-# Rule 완전일치가 아닌 경우에는 text/trade 유사성만으로 전체 Detail을 바로 적용하지 않습니다.
-# 정상 완전 전문 + 공통필드 구조 검증 + Schema 전체구조 유일성까지 통과한 경우에만 전체 Detail을 적용하고,
-# 그렇지 않으면 format=UNKNOWN 상태로 검증된 공통필드만 추출합니다. 잘린/비정상 전문은 Header-only입니다.
 def parse_nice(event, raw)
   header = extract_compiled_fields(raw, @nice_header_fields)
 
@@ -625,10 +1200,6 @@ def parse_nice(event, raw)
     event.tag(@nice_unregistered_text_seen_tag)
   end
 
-# >>> GUIDE_D01_SELECT / GUIDE_D04: 수정 불필요 — Q99/99/0200/request/0073으로 JSON rule 선택.
-# rule.schema → guide_d01_request, 또는 PTX → 기존 schema 21.
-# <<< GUIDE_D01_SELECT
-  # 1순위: 기존 JSON Rule 완전일치. 정상 등록 전문은 기존 동작을 그대로 유지합니다.
   schema = choose_schema(
     @nice_lookup,
     @nice_schemas,
@@ -653,7 +1224,6 @@ def parse_nice(event, raw)
     return
   end
 
-  # fallback 상세 파싱은 잘리거나 비정상 길이인 전문에는 적용하지 않습니다.
   complete, declared_length, effective_raw = complete_nice_message(raw, message_length)
   unless complete
     event.tag(@nice_incomplete_tag) unless @nice_incomplete_tag.empty?
@@ -663,9 +1233,6 @@ def parse_nice(event, raw)
     return
   end
 
-  # 2순위: Rule 일부 값만 새롭게 등장한 정상 전문은 기존 규격 후보를 역으로 찾습니다.
-  # 단, text/trade/Header가 비슷하다는 이유만으로 전체 Detail을 바로 적용하지 않습니다.
-  # 후보 Schema의 공통필드 구조가 실제 전문과 명확히 일치하고, 같은 Profile 안의 전체 Detail 구조까지 유일할 때만 전체 파싱합니다.
   inferred_schema = infer_nice_schema_from_relaxed_rules(
     text,
     trade,
@@ -699,9 +1266,6 @@ def parse_nice(event, raw)
     end
   end
 
-  # 3순위: 전체 Schema까지 확정하기 어렵더라도 정상 완전 전문이면 JSON Schema의 공통필드 위치 Profile을 비교합니다.
-  # 2순위의 엄격한 구조검증에서 이미 Profile을 확정했다면 그 결과를 재사용하여 동일 전문을 두 번 분석하지 않습니다.
-  # 정확한 format을 확정하지 못하더라도 Profile이 충분히 명확하면 21개 공통필드 중 해당 규격에 존재하는 값은 추출합니다.
   profile_result = validated_profile_result || choose_nice_common_profile(
     effective_raw,
     declared_length,
@@ -730,10 +1294,6 @@ def parse_nice(event, raw)
   write_nice_header_only(event, header, direction, @nice_unresolved_format)
 end
 
-
-# >>> GUIDE_D01_READ: 수정 불필요 — JSON fields의 start/length를 읽어 detail을 만듭니다.
-# D01 요청: 56~67 금액 / 68~69 할부 / 70~73 campaign_code.
-# <<< GUIDE_D01_READ
 def parse_nice_with_schema(event, raw, header, direction, schema)
   detail = extract_compiled_fields(raw, schema.fetch("_compiled_fields"))
 
@@ -755,7 +1315,6 @@ def parse_nice_with_schema(event, raw, header, direction, schema)
   event.set("[nice_pos]", nice_pos)
 end
 
-
 def build_nice_header_hash(header, direction, format_name)
   {
     "parser_type" => "nice_fixed",
@@ -772,7 +1331,6 @@ def build_nice_header_hash(header, direction, format_name)
   }
 end
 
-
 def complete_nice_message(raw, message_length)
   declared_length = match_value(message_length).to_i
   return [false, declared_length, raw] if declared_length < 56
@@ -782,7 +1340,6 @@ def complete_nice_message(raw, message_length)
 
   [true, declared_length, logical_byte_slice(raw, 1, declared_length)]
 end
-
 
 def infer_nice_schema_from_relaxed_rules(text, trade, message_type, direction, message_length)
   text_candidate = nil
@@ -811,7 +1368,6 @@ def infer_nice_schema_from_relaxed_rules(text, trade, message_type, direction, m
   nil
 end
 
-
 def choose_best_candidate_schema(lookup, schemas, values)
   states = traverse_candidate_lookup(lookup, values)
   return nil if states.empty?
@@ -837,7 +1393,6 @@ def choose_best_candidate_schema(lookup, schemas, values)
   schemas[best_schema_ids.keys.first]
 end
 
-
 def traverse_candidate_lookup(lookup, values)
   states = [lookup]
 
@@ -859,12 +1414,6 @@ def traverse_candidate_lookup(lookup, values)
   states
 end
 
-
-# 완화 Rule로 찾은 Schema를 전체 Detail 파싱에 사용하기 전 구조 안전성을 한 번 더 검증합니다.
-# 1) 후보 Schema의 공통필드 Profile이 구조점수 1위인지
-# 2) 공통필드 값/길이 증거가 충분한지
-# 3) 같은 Profile에서 현재 전문에 호환되는 Schema들의 전체 Detail 구조가 하나뿐인지
-# 를 모두 만족해야 true를 반환합니다.
 def validate_inferred_nice_schema_structure(raw, declared_length, direction, message_type, text, trade, schema)
   empty_result = {"full_schema_safe" => false, "profile_result" => nil}.freeze
   schema_id = @nice_schema_id_by_object_id[schema.object_id]
@@ -905,7 +1454,6 @@ def validate_inferred_nice_schema_structure(raw, declared_length, direction, mes
   {"full_schema_safe" => safe, "profile_result" => structural_result}
 end
 
-
 def choose_nice_common_profile(raw, declared_length, direction, message_type, text, trade, options = nil)
   options ||= {}
   min_score = options.fetch("min_score", @nice_profile_min_score).to_f
@@ -942,7 +1490,6 @@ def choose_nice_common_profile(raw, declared_length, direction, message_type, te
   best = scored[0]
   second = scored[1]
 
-  # 구조 증거가 약하거나 후보 간 점수 차이가 작으면 잘못된 공통필드 생성을 막기 위해 포기합니다.
   return nil if best[0] < min_score
   return nil if second && (best[0] - second[0]) < min_margin
 
@@ -954,7 +1501,6 @@ def choose_nice_common_profile(raw, declared_length, direction, message_type, te
   }
 end
 
-
 def nice_profile_variant_compatible?(variant, declared_length, message_type)
   return false if variant["static_end"].to_i > declared_length
 
@@ -964,7 +1510,6 @@ def nice_profile_variant_compatible?(variant, declared_length, message_type)
 
   message_types.key?(message_type.to_s)
 end
-
 
 def extract_nice_common_profile_values(raw, profile, direction)
   detail = extract_compiled_fields(raw, profile["common_fields"])
@@ -985,7 +1530,6 @@ def extract_nice_common_profile_values(raw, profile, direction)
 
   {"detail" => detail, "response_code" => response_code}
 end
-
 
 def score_nice_common_profile(values, profile, variants, declared_length, text, trade, message_type, include_header_hints = true)
   score = 0.0
@@ -1021,8 +1565,6 @@ def score_nice_common_profile(values, profile, variants, declared_length, text, 
     end
   end
 
-  # 길이 적합도는 항상 구조 점수에 포함합니다. text/trade/message_type 일치는 일반 공통필드 fallback의 보조 힌트로만 사용하며,
-  # 전체 Schema 상세파싱 검증 시에는 include_header_hints=false로 호출하여 Header 유사성이 구조 검증을 대신하지 못하게 합니다.
   best_variant_bonus = variants.map do |variant|
     bonus = 0.0
     if include_header_hints
@@ -1046,7 +1588,6 @@ def score_nice_common_profile(values, profile, variants, declared_length, text, 
   [score, evidence]
 end
 
-
 def common_profile_field_score(key, value, type, expected_length = nil)
   raw_text = value.to_s
   text = match_value(raw_text)
@@ -1056,8 +1597,6 @@ def common_profile_field_score(key, value, type, expected_length = nil)
   when "integer", "long"
     return [-4.0, 1] unless text.match?(/\A[+-]?\d+\z/)
 
-    # 고정길이 숫자 필드는 정상 전문에서 대부분 자리수를 채워 들어오므로,
-    # 다른 Profile의 중간 영역을 우연히 숫자로 읽은 경우(앞/뒤 공백 포함)는 낮은 점수만 부여합니다.
     full_width = expected_length.nil? || raw_text.length == expected_length.to_i && raw_text == text
     return full_width ? [2.0, 1] : [0.4, 1]
   when "date"
@@ -1079,14 +1618,12 @@ def common_profile_field_score(key, value, type, expected_length = nil)
   common_profile_printable?(text) ? [0.3, 1] : [-1.0, 1]
 end
 
-
 def common_profile_printable?(text)
   text.each_char.all? do |character|
     code = character.ord
     code >= 0x20 || character == "	"
   end
 end
-
 
 def write_nice_common_profile(event, header, direction, format_name, profile_result)
   nice_pos = build_nice_header_hash(header, direction, format_name)
@@ -1099,8 +1636,6 @@ def write_nice_common_profile(event, header, direction, format_name, profile_res
   event.set("[nice_pos]", nice_pos)
 end
 
-
-# [7~9] 사설포스: Version/Header로 Rule/Schema 선택 -> 필드 추출 -> nice_pos Hash 구성 -> event.set 합니다.
 def parse_private(event, raw)
   header = extract_compiled_fields(raw, @private_header_fields)
 
@@ -1144,8 +1679,6 @@ def parse_private(event, raw)
   event.set("[nice_pos]", nice_pos)
 end
 
-
-# [7~9] 통합 TAG: Header로 방향 확인 -> TAG 순차 파싱 -> nice_pos Hash 구성 -> event.set 합니다.
 def parse_integrated(event, raw)
   header = extract_compiled_fields(raw, @integrated_header_fields)
   direction = integrated_direction(header["send_receive"], event.get("status"))
@@ -1178,7 +1711,6 @@ def parse_integrated(event, raw)
   apply_common_field_types!(nice_pos, direction)
   event.set("[nice_pos]", nice_pos)
 end
-
 
 def parse_integrated_tags(data, direction)
   detail = {}
@@ -1240,9 +1772,6 @@ def parse_integrated_tags(data, direction)
   [detail, truncated]
 end
 
-
-# 최종 21개 공통필드 중, 단순 key rename만으로 만들 수 없는 공통 필드를 보완합니다.
-# 원문 파싱 위치/길이/Rule은 변경하지 않습니다. 숫자/date 타입 변환은 최종 nice_pos 단계에서만 수행합니다.
 def apply_common_detail_fields!(detail, direction)
   return unless direction == "response"
   return unless match_value(detail["approval_datetime"]).empty?
@@ -1259,20 +1788,15 @@ def apply_common_detail_fields!(detail, direction)
   end
 end
 
-
 def apply_common_integrated_fallbacks!(detail, direction)
   apply_common_detail_fields!(detail, direction)
   return unless direction == "response"
   return unless match_value(detail["display_message"]).empty?
 
-  # 일부 통합 전문은 대표 화면메시지가 A71 대신 B56에 존재합니다.
   fallback = detail["B56_응답메시지"]
   detail["display_message"] = fallback unless match_value(fallback).empty?
 end
 
-
-# 응답 화면메시지에 별도 필드인 승인번호가 뒤에 중복된 경우, 메시지에서만 제거합니다.
-# approval_number 필드는 변경하지 않고 그대로 유지합니다.
 def remove_approval_number_from_message!(detail, direction)
   return unless direction == "response"
 
@@ -1285,9 +1809,6 @@ def remove_approval_number_from_message!(detail, direction)
   detail["display_message"] = message_only unless message_only.empty?
 end
 
-
-# JSON의 요청/응답별 공통 타입 정의를 최종 nice_pos Hash에만 적용합니다.
-# keyword/text_keyword는 원문 문자열을 그대로 유지하고 숫자/date만 타입에 맞게 변환합니다.
 def apply_common_field_types!(nice_pos, direction = nil)
   @common_type_converters["root"].each do |key, type|
     next unless nice_pos.key?(key)
@@ -1305,7 +1826,6 @@ def apply_common_field_types!(nice_pos, direction = nil)
   end
 end
 
-
 def convert_common_field_value(value, type)
   if value.is_a?(Array)
     converted = value.map { |item| convert_common_field_scalar(item, type) }.compact
@@ -1314,7 +1834,6 @@ def convert_common_field_value(value, type)
 
   convert_common_field_scalar(value, type)
 end
-
 
 def convert_common_field_scalar(value, type)
   return nil if value.nil?
@@ -1333,7 +1852,6 @@ def convert_common_field_scalar(value, type)
   end
 end
 
-
 def parse_common_integer(value, min_value, max_value)
   text = match_value(value)
   return nil if text.empty? || !text.match?(/\A[+-]?\d+\z/)
@@ -1346,12 +1864,10 @@ rescue ArgumentError, TypeError
   nil
 end
 
-
 def normalize_common_datetime(value)
   text = match_value(value)
   return nil if text.empty?
 
-  # 이미 ISO-8601 형식이면 의미를 바꾸지 않고 그대로 둡니다.
   begin
     return Time.iso8601(text).iso8601 if text.match?(/\A\d{4}-\d{2}-\d{2}T/)
   rescue ArgumentError
@@ -1363,17 +1879,15 @@ def normalize_common_datetime(value)
   candidates = []
   case text.length
   when 12
-    # 일반 승인: YYMMDDHHMMSS
     candidates << [
       2000 + text[0, 2].to_i, text[2, 2].to_i, text[4, 2].to_i,
       text[6, 2].to_i, text[8, 2].to_i, text[10, 2].to_i
     ]
-    # 현금IC 등 일부 전문: YYYYMMDDHHMM (초 없음)
     candidates << [
       text[0, 4].to_i, text[4, 2].to_i, text[6, 2].to_i,
       text[8, 2].to_i, text[10, 2].to_i, 0
     ]
-  when 14 # YYYYMMDDHHMMSS
+  when 14
     candidates << [
       text[0, 4].to_i, text[4, 2].to_i, text[6, 2].to_i,
       text[8, 2].to_i, text[10, 2].to_i, text[12, 2].to_i
@@ -1393,8 +1907,6 @@ def normalize_common_datetime(value)
   nil
 end
 
-# >>> GUIDE_D03: 수정 불필요 — JSON tag_specs.Q99의 request/response.key=coupon_code로 저장.
-# <<< GUIDE_D03
 def append_integrated_value(detail, definition, direction, value)
   return if definition.nil?
 
@@ -1404,13 +1916,10 @@ def append_integrated_value(detail, definition, direction, value)
   append_value(detail, field_spec.fetch("key"), value)
 end
 
-
 def restore_encoding(value, encoding)
   value.dup.force_encoding(encoding)
 end
 
-
-# [7] Header 식별값으로 미리 만든 Lookup을 조회해 적용할 Schema를 선택합니다.
 def choose_schema(lookup, schemas, values)
   states = [lookup]
 
@@ -1440,13 +1949,11 @@ def choose_schema(lookup, schemas, values)
   schemas[best[1]["schema"].to_s]
 end
 
-
 def write_nice_header_only(event, header, direction, format_name)
   nice_pos = build_nice_header_hash(header, direction, format_name)
   apply_common_field_types!(nice_pos, direction)
   event.set("[nice_pos]", nice_pos)
 end
-
 
 def extract_compiled_fields(value, fields)
   detail = {}
@@ -1491,8 +1998,6 @@ def extract_compiled_fields(value, fields)
   detail
 end
 
-
-# [7~8] JSON에 dynamic 규격이 있는 경우에만 가변길이 영역을 추가로 파싱해 detail Hash에 넣습니다.
 def parse_dynamic_fields(raw, cursor, definitions, detail)
   definitions.each do |field|
     case field["type"]
@@ -1500,9 +2005,6 @@ def parse_dynamic_fields(raw, cursor, definitions, detail)
       detail[field["key"]] = logical_byte_slice(raw, cursor, field["length"].to_i)
       cursor += field["length"].to_i
 
-# >>> GUIDE_D05: 수정 불필요 — JSON dynamic에 type=length_prefixed를 추가하면 이 기존 분기 사용.
-# length_size=3으로 003을 읽고 다음 ABC를 extra_data에 넣습니다.
-# <<< GUIDE_D05
     when "length_prefixed"
       length_text = logical_byte_slice(raw, cursor, field["length_size"].to_i)
       break if length_text.empty? && field["optional"]
@@ -1556,7 +2058,6 @@ def parse_dynamic_fields(raw, cursor, definitions, detail)
   end
 end
 
-
 def parse_nice_ifc_members(raw, cursor, field, detail)
   count = match_value(detail[field.fetch("count_key")]).to_i
   count = [count, field.fetch("max_count", 32).to_i].min
@@ -1576,7 +2077,6 @@ def parse_nice_ifc_members(raw, cursor, field, detail)
 
   cursor
 end
-
 
 def parse_nice_common_request_tail(raw, cursor, field, detail)
   total_length = logical_byte_length(raw)
@@ -1609,7 +2109,6 @@ def parse_nice_common_request_tail(raw, cursor, field, detail)
   cursor + logical_byte_length(tail)
 end
 
-
 def parse_nice_royalty_ic_tail(raw, cursor, field, detail)
   total_length = logical_byte_length(raw)
   return total_length + 1 if cursor > total_length
@@ -1618,7 +2117,6 @@ def parse_nice_royalty_ic_tail(raw, cursor, field, detail)
   parse_nice_royalty_ic_segment(tail, field, detail)
   total_length + 1
 end
-
 
 def parse_nice_cash_ic_tail(raw, cursor, field, detail)
   total_length = logical_byte_length(raw)
@@ -1637,14 +2135,12 @@ def parse_nice_cash_ic_tail(raw, cursor, field, detail)
   cursor + logical_byte_length(tail)
 end
 
-
 def nice_moneyplus_block?(tail, cursor)
   return false unless logical_byte_slice(tail, cursor, 3) == "NVC"
 
   info_flag = match_value(logical_byte_slice(tail, cursor + 19, 1))
   info_flag == "Y" || info_flag == "N"
 end
-
 
 def parse_nice_moneyplus_block(tail, cursor, config, detail)
   detail[config.fetch("device_rom_key")] = logical_byte_slice(tail, cursor, 19)
@@ -1658,7 +2154,6 @@ def parse_nice_moneyplus_block(tail, cursor, config, detail)
 
   cursor + config.fetch("filler_length").to_i
 end
-
 
 def parse_nice_royalty_ic_segment(segment, field, detail)
   return if segment.nil? || segment.empty? || match_value(segment).empty?
@@ -1679,7 +2174,6 @@ def parse_nice_royalty_ic_segment(segment, field, detail)
   parse_nice_ic_block(segment, ic_start, field, detail)
 end
 
-
 def find_nice_ic_block_start(segment)
   total_length = logical_byte_length(segment)
   return nil if total_length < 4
@@ -1699,7 +2193,6 @@ def find_nice_ic_block_start(segment)
 
   nil
 end
-
 
 def nice_ic_suffix_valid?(segment, cursor, total_length)
   return true if cursor > total_length
@@ -1722,7 +2215,6 @@ def nice_ic_suffix_valid?(segment, cursor, total_length)
 
   match_value(logical_byte_slice(segment, cursor, total_length - cursor + 1)).empty?
 end
-
 
 def parse_nice_ic_block(segment, cursor, field, detail)
   total_length = logical_byte_length(segment)
@@ -1756,7 +2248,6 @@ def parse_nice_ic_block(segment, cursor, field, detail)
   cursor
 end
 
-
 def parse_private_ic_fields(detail, direction, message_type)
   ic_data = detail["IC데이터"]
   return if ic_data.nil? || ic_data.empty?
@@ -1775,7 +2266,6 @@ def parse_private_ic_fields(detail, direction, message_type)
   extract_compiled_fields(ic_data, fields).each { |key, value| detail[key] = value }
 end
 
-
 def append_value(hash, key, value)
   current = hash[key]
 
@@ -1788,7 +2278,6 @@ def append_value(hash, key, value)
   end
 end
 
-
 def professional_direction(message_type, status)
   return "request" if %w[0200 0300 0320 0420 0480].include?(message_type)
   return "response" if %w[0210 0310 0330 0430 0490].include?(message_type)
@@ -1797,7 +2286,6 @@ def professional_direction(message_type, status)
 
   "unknown"
 end
-
 
 def integrated_direction(send_receive, status)
   value = match_value(send_receive)
@@ -1809,14 +2297,12 @@ def integrated_direction(send_receive, status)
   "unknown"
 end
 
-
 def trim_to_declared_length(raw, length_text)
   length = match_value(length_text).to_i
   return raw if length <= 0
 
   logical_byte_slice(raw, 1, length)
 end
-
 
 def logical_byte_slice(value, start_byte, length)
   return "" if start_byte <= 0 || length <= 0
@@ -1840,7 +2326,6 @@ def logical_byte_slice(value, start_byte, length)
   output
 end
 
-
 def logical_byte_drop(value, byte_count)
   text = value.to_s
   return text.byteslice(byte_count, text.bytesize) || "" if text.ascii_only?
@@ -1858,14 +2343,12 @@ def logical_byte_drop(value, byte_count)
   output
 end
 
-
 def logical_byte_length(value)
   text = value.to_s
   return text.bytesize if text.ascii_only?
 
   text.each_char.sum { |character| character.ord <= 0x7f ? 1 : 2 }
 end
-
 
 def match_value(value)
   value.to_s.strip
