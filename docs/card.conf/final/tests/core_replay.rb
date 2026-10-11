@@ -20,13 +20,26 @@ report = {
   'workers' => workers,
   'files' => []
 }
+
+# Public outcome contract mirrors bgf.conf: a hard parse failure is `error`,
+# while a same-profile recovery that preserves common fields is `fallback`.
+hard_error_event = LogStash::Event.new(
+  'message' => 'get(data[)',
+  '@metadata' => { 'target_alias' => 's_service_bcc_ic' }
+)
+parser.filter(hard_error_event)
+hard_error_detail = hard_error_event.get('card_detail') || {}
+hard_error_tags = Array(hard_error_event.get('tags')).map(&:to_s)
+raise 'hard error status contract failed' unless hard_error_detail['status'] == 'error'
+raise 'hard error public tag contract failed' unless hard_error_tags.include?('error') && !hard_error_tags.include?('fallback')
+report['outcome_contract'] = { 'hard_error' => 'passed' }
 started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 queue = SizedQueue.new(2048)
 
 pool = workers.times.map do
   Thread.new do
     local = {
-      'counts' => Hash.new(0), 'errors' => Hash.new(0), 'warnings' => Hash.new(0),
+      'counts' => Hash.new(0), 'errors' => Hash.new(0), 'warnings' => Hash.new(0), 'tags' => Hash.new(0),
       'first_error_line' => {}, 'events' => 0, 'message_mutations' => 0,
       'route_mutations' => 0, 'events_with_exported_fields' => 0
     }
@@ -40,6 +53,14 @@ pool = workers.times.map do
       local['message_mutations'] += 1 unless event.get('message') == message
       local['route_mutations'] += 1 unless event.get('[@metadata][target_alias]') == route
       detail = event.get('card_detail') || {}
+      raise 'legacy result status leaked' if %w[partial failed warning].include?(detail['status'])
+      tags = Array(event.get('tags')).map(&:to_s)
+      raise 'legacy internal card tag leaked' if tags.any? { |tag| tag.start_with?('_card_detail_') }
+      raise 'conflicting public outcome tags' if tags.include?('error') && tags.include?('fallback')
+      expected_tag = %w[error fallback].include?(detail['status']) ? detail['status'] : nil
+      raise 'missing public outcome tag' if expected_tag && !tags.include?(expected_tag)
+      raise 'unexpected public outcome tag' if !expected_tag && tags.any? { |tag| %w[error fallback].include?(tag) }
+      tags.each { |tag| local['tags'][[filename, detail['profile'], tag].join('|')] += 1 }
       key = [filename, detail['profile'], detail['mti'], detail['record_type'], detail['status'], detail['frame_status']].join('|')
       local['counts'][key] += 1
       local['events_with_exported_fields'] += 1 if detail['fields'] && !detail['fields'].empty?
@@ -81,13 +102,13 @@ end
 
 workers.times { queue.push(nil) }
 merged = {
-  'counts' => Hash.new(0), 'errors' => Hash.new(0), 'warnings' => Hash.new(0),
+  'counts' => Hash.new(0), 'errors' => Hash.new(0), 'warnings' => Hash.new(0), 'tags' => Hash.new(0),
   'first_error_line' => {}, 'events' => 0, 'message_mutations' => 0,
   'route_mutations' => 0, 'events_with_exported_fields' => 0
 }
 pool.each do |thread|
   local = thread.value
-  %w[counts errors warnings].each { |key| local[key].each { |name, value| merged[key][name] += value } }
+  %w[counts errors warnings tags].each { |key| local[key].each { |name, value| merged[key][name] += value } }
   local['first_error_line'].each do |name, value|
     merged['first_error_line'][name] = [merged['first_error_line'].fetch(name, value), value].min
   end

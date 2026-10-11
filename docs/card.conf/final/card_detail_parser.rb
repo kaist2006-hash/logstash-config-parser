@@ -102,6 +102,7 @@ def register(params)
 
   @emv_export = document.fetch('emv_export')
   @bracket_envelope_re = /len\[([0-9]+)\]\[([SR])\]==>\[(.*)\]\s*\z/m.freeze
+  @bracket_open_re = /len\[([0-9]+)\]\[([SR])\]==>\[(.*)\z/m.freeze
   @text_marker_re = /\b(get|put)\(data\[/.freeze
   @text_tail_re = /\] len\[([0-9]+)\](?: uid\[[^\]]*\])?(?: linename\[[^\]]*\])?\)\s*\z/.freeze
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
@@ -244,9 +245,8 @@ def card_transport(raw, profile, result)
     encoded_bytes = rule.fetch('payload_encoding', 'binary') == 'hex_ascii' ? count * 2 : count
     if body.bytesize < encoded_bytes
       card_error(result, 'truncated_transport_payload', nil, prefix_bytes, encoded_bytes, body.bytesize)
-      return nil
-    end
-    if body.bytesize > encoded_bytes
+      result['embedded_available_bytes'] = body.bytesize
+    elsif body.bytesize > encoded_bytes
       result['transport_trimmed_bytes'] = body.bytesize - encoded_bytes
       body = body.byteslice(0, encoded_bytes)
     end
@@ -470,15 +470,23 @@ def card_parse(raw, profile, result)
   result['remaining_bytes'] = raw.bytesize - pos
   result['frame_status'] = consumed_fields == active.length ? 'complete' : 'partial'
   if result['frame_status'] == 'complete' && pos != raw.bytesize
-    card_error(result, 'trailing_bytes', nil, pos, pos, raw.bytesize)
-    result['frame_status'] = 'partial'
+    trailing = raw.byteslice(pos, raw.bytesize - pos)
+    if result['outer_envelope_recovered']
+      # Every bitmap-announced field was consumed. The remaining bytes belong to
+      # the missing outer logger trailer/buffer, not to another ISO data element.
+      result['recovered_trailing_bytes'] = trailing.bytesize
+      card_warn(result, 'recovered_outer_trailing_bytes')
+    else
+      card_error(result, 'trailing_bytes', nil, pos, pos, raw.bytesize)
+      result['frame_status'] = 'partial'
+    end
   end
 end
 
 def filter(event)
-  result = { 'parser_version' => @version, 'status' => 'failed', 'frame_status' => 'invalid' }
+  result = { 'parser_version' => @version, 'status' => 'error', 'frame_status' => 'invalid' }
   if event.include?('[card_detail]')
-    event.tag('_card_detail_target_collision')
+    event.tag('error')
     return [event]
   end
 
@@ -523,7 +531,24 @@ def filter(event)
         result['direction'] = match[2] == 'S' ? 'OUT' : 'IN'
         result['log_encoding'] = 'hex'
       else
-        card_error(result, 'invalid_bracket_envelope')
+        open_match = @bracket_open_re.match(wire_message)
+        if open_match && bracket_encoding == 'text'
+          raw = open_match[3]
+          result['declared_bytes'] = open_match[1].to_i
+          result['direction'] = open_match[2] == 'S' ? 'OUT' : 'IN'
+          result['log_encoding'] = 'bracket_text'
+          result['outer_envelope_recovered'] = true
+          card_warn(result, 'missing_bracket_envelope_tail')
+        elsif open_match && open_match[3].bytesize.even? && /\A[0-9a-fA-F]*\z/.match?(open_match[3])
+          raw = [open_match[3]].pack('H*')
+          result['declared_bytes'] = open_match[1].to_i
+          result['direction'] = open_match[2] == 'S' ? 'OUT' : 'IN'
+          result['log_encoding'] = 'hex'
+          result['outer_envelope_recovered'] = true
+          card_warn(result, 'missing_bracket_envelope_tail')
+        else
+          card_error(result, 'invalid_bracket_envelope')
+        end
       end
     else
       marker = @text_marker_re.match(wire_message)
@@ -533,6 +558,12 @@ def filter(event)
         result['declared_bytes'] = tail[1].to_i
         result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
         result['log_encoding'] = 'text'
+      elsif marker
+        raw = wire_message.byteslice(marker.end(0), wire_message.bytesize - marker.end(0))
+        result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
+        result['log_encoding'] = 'text'
+        result['outer_envelope_recovered'] = true
+        card_warn(result, 'missing_text_envelope_tail')
       else
         card_error(result, 'incomplete_text_envelope')
       end
@@ -541,7 +572,7 @@ def filter(event)
     if raw
       result['logged_bytes'] = raw.bytesize
       embedded_rule = profile.fetch('transport', {}).fetch('embedded_length', {})[result['log_encoding']]
-      if !embedded_rule && raw.bytesize != result['declared_bytes']
+      if result['declared_bytes'] && !embedded_rule && raw.bytesize != result['declared_bytes']
         if profile['trim_to_declared_length'] && raw.bytesize > result['declared_bytes']
           result['trimmed_bytes'] = raw.bytesize - result['declared_bytes']
           raw = raw.byteslice(0, result['declared_bytes'])
@@ -563,11 +594,12 @@ def filter(event)
   if result['status'] == 'ignored'
     # Control/health frames are recognized but intentionally not business-parsed.
   elsif result['errors'] && !result['errors'].empty?
-    result['status'] = result['parsed_field_count'].to_i > 0 ? 'partial' : 'failed'
-    event.tag('_card_detail_parse_failure')
+    common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
+    result['status'] = common_recovered ? 'fallback' : 'error'
+    event.tag(common_recovered ? 'fallback' : 'error')
   elsif result['warnings'] && !result['warnings'].empty?
-    result['status'] = 'warning'
-    event.tag('_card_detail_warning')
+    result['status'] = 'fallback'
+    event.tag('fallback')
   else
     result['status'] = 'ok'
   end
@@ -575,15 +607,15 @@ def filter(event)
   [event]
 rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
   card_error(result, 'input_encoding_not_reversible')
-  result['status'] = 'failed'
+  result['status'] = 'error'
   event.set('[card_detail]', result)
-  event.tag('_card_detail_parse_failure')
+  event.tag('error')
   [event]
 rescue StandardError
   result ||= { 'parser_version' => @version }
-  result['status'] = 'failed'
+  result['status'] = 'error'
   card_error(result, 'unexpected_parser_exception')
   event.set('[card_detail]', result)
-  event.tag('_card_detail_exception')
+  event.tag('error')
   [event]
 end
