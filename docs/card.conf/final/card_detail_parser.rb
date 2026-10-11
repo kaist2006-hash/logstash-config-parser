@@ -63,6 +63,12 @@ def register(params)
         raise ArgumentError, 'invalid fixed record business flag' unless [true, false].include?(record.fetch('business'))
       end
     end
+    profile.fetch('control_records', []).each do |record|
+      raise ArgumentError, 'invalid control record direction' unless %w[IN OUT].include?(record.fetch('direction'))
+      raise ArgumentError, 'invalid control record marker' unless record.fetch('marker').is_a?(String) && !record['marker'].empty?
+      raise ArgumentError, 'invalid control record offsets' unless record.fetch('offsets').all? { |n| n.is_a?(Integer) && (0..64).cover?(n) }
+      raise ArgumentError, 'invalid control record lengths' unless record.fetch('lengths').all? { |n| n.is_a?(Integer) && (1..4096).cover?(n) }
+    end
 
     compiled = Array.new(193)
     profile.fetch('fields', {}).each do |key, spec|
@@ -297,9 +303,11 @@ def card_parse_fixed(raw, profile, result)
     result['remaining_bytes'] = 0
     result['frame_status'] = 'complete'
   else
-    result['status'] = 'ignored'
-    result['frame_status'] = 'not_parsed'
+    result['status'] = 'control'
+    result['frame_status'] = 'complete'
     result['control_frame'] = true
+    result['consumed_bytes'] = raw.bytesize
+    result['remaining_bytes'] = 0
   end
 end
 
@@ -311,10 +319,19 @@ def card_parse(raw, profile, result)
     expected_headers ? expected_headers.include?(header) : @iso_header_re.match?(header)
   end
   unless offset && raw.bytesize >= offset + 12
-    if profile['ignore_non_business']
-      result['status'] = 'ignored'
-      result['frame_status'] = 'not_parsed'
+    control = profile.fetch('control_records', []).find do |candidate|
+      next false unless candidate['direction'] == result['direction'] && candidate['lengths'].include?(raw.bytesize)
+      candidate['offsets'].any? do |candidate_offset|
+        raw.byteslice(candidate_offset, candidate['marker'].bytesize) == candidate['marker']
+      end
+    end
+    if control
+      result['status'] = 'control'
+      result['frame_status'] = 'complete'
       result['control_frame'] = true
+      result['record_type'] = control['name']
+      result['consumed_bytes'] = raw.bytesize
+      result['remaining_bytes'] = 0
       return
     end
     card_error(result, 'missing_iso_header')
@@ -591,8 +608,8 @@ def filter(event)
     end
   end
 
-  if result['status'] == 'ignored'
-    # Control/health frames are recognized but intentionally not business-parsed.
+  if result['status'] == 'control'
+    # Control/health frames are structurally validated but not business-parsed.
   elsif result['errors'] && !result['errors'].empty?
     common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
     result['status'] = common_recovered ? 'fallback' : 'error'

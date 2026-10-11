@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "2026-10-11.final5",
+  "version": "2026-10-11.final6",
   "emv_export": {
     "95": {"name": "terminal_verification_results", "length": 5},
     "9F33": {"name": "terminal_capabilities", "length": 3},
@@ -18,7 +18,11 @@
   "profiles": [
     {
       "id":"bcc_ic","alias":"s_service_bcc_ic","issuer":"비씨카드","service":"IC/통합","wire":"binary","enabled":true,
-      "validation_stage":"real_log_replay","header_offsets":[0],"max_bitmaps":3,"expected_headers":["BCINTMSG0001"],"ignore_non_business":true,
+      "validation_stage":"real_log_replay","header_offsets":[0],"max_bitmaps":3,"expected_headers":["BCINTMSG0001"],
+      "control_records":[
+        {"name":"network_request","direction":"OUT","marker":"0800","offsets":[0],"lengths":[71]},
+        {"name":"network_response","direction":"IN","marker":"0810","offsets":[0],"lengths":[73]}
+      ],
       "transport":{"bracket_encoding":"hex","embedded_length":{"hex":{"prefix":"bcd2","payload_encoding":"binary"},"text":{"prefix":"ascii4","payload_encoding":"hex_ascii"}}},
       "mtis":["0300","0310","0400","0410"],
       "fields":{

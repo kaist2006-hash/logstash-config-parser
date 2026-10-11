@@ -2,24 +2,24 @@
 
 검증일: 2026-10-11
 
-대상 parser version: `2026-10-11.final5`
+대상 parser version: `2026-10-11.final6`
 
 런타임: Logstash 8.17.6 내장 JRuby + 실제 `LogStash::Event`
 
 ## 결론
 
 - 카드사별 profile은 분리되어 있다. BC는 `bcc_ic`/`bcc_ms`, 삼성은 `samsung_ic`/`samsung_ms`이며 서로 필드 규격을 공유하지 않는다.
-- 593,335개 후보 로그 행을 재생했다. `ok` 565,920건, 공통필드 복구 `fallback` 12,493건, 제어전문 `ignored` 14,922건이며 실로그 `error`는 0건이다.
+- 593,335개 후보 로그 행을 재생했다. `ok` 565,920건, 공통필드 복구 `fallback` 12,493건, 정상 제어전문 `control` 14,880건, 규격 불일치 `error` 42건이다.
 - `fallback` 12,493건은 모두 같은 카드사 profile의 내부 길이/Bitmap을 사용했고, 모든 건에 `card_detail.fields.*` 공통필드가 남았다.
 - 닫는 envelope가 없거나 선언 길이보다 짧아도 같은 규격에서 공통필드를 안전하게 확보하면 공개 tag `fallback`을 붙인다. 공통필드도 확보할 수 없는 hard failure만 `error` tag를 붙인다.
-- 별도의 손상 전문 계약 테스트로 `error` 경로도 확인했다. 다른 카드사 profile로 재시도하지 않는다.
+- `ISO023400053`/`0540·0550` 42건은 BC 통합 규격과 다르므로 다른 카드사 profile로 넘기지 않고 `error`로 보존했다. 별도의 손상 전문 계약 테스트도 통과했다.
 - `card.conf`는 Logstash의 `--config.test_and_exit`에서 `Configuration OK`를 통과했다.
 
 ## 카드사별 재생 결과
 
-| 로그 | Profile | 후보 행 | `ok` | `fallback` | `ignored` | `error` |
+| 로그 | Profile | 후보 행 | `ok` | `fallback` | `control` | `error` |
 |---|---|---:|---:|---:|---:|---:|
-| `bcc_ic` | `bcc_ic` | 56,134 | 48,892 | 0 | 7,242 | 0 |
+| `bcc_ic` | `bcc_ic` | 56,134 | 48,892 | 0 | 7,200 | 42 |
 | `bcc_ms` | `bcc_ms` | 13,456 | 5,776 | 0 | 7,680 | 0 |
 | `din_ic` | `hyundai_ic` | 5,474 | 5,474 | 0 | 0 | 0 |
 | `din_ms` | `hyundai_ms` | 13,180 | 12,324 | 856 | 0 | 0 |
@@ -36,8 +36,15 @@
 - 정상 전문: `card_detail.status=ok`, `error`/`fallback` tag 없음.
 - 같은 카드사 규격에서 공통필드를 확보한 불완전 전문: `card_detail.status=fallback`, tag `fallback`.
 - 공통필드도 확보할 수 없는 비정상 전문: `card_detail.status=error`, tag `error`.
-- `partial`, `failed`, `_card_detail_parse_failure`, `_card_detail_warning`은 공개 결과로 사용하지 않는다. `frame_status`는 완전/부분 프레임 진단값으로만 유지한다.
-- 실제 수집 로그의 `fallback` 12,493건 전부 공통필드가 존재했다. 손상 전문 계약 테스트에서 `error` tag 경로도 통과했다.
+- 정상 제어전문: `card_detail.status=control`, `control_frame=true`, 구체적 `record_type`; 업무 공통필드 및 `error`/`fallback` tag 없음.
+- `partial`, `failed`, `warning`, `ignored`, `_card_detail_*`은 공개 결과로 사용하지 않는다. `frame_status`는 완전/부분 프레임 진단값으로만 유지한다.
+- 실제 수집 로그의 `fallback` 12,493건 전부 공통필드가 존재했고 `control` 14,880건은 모두 구조 검증을 통과했다.
+
+제어전문 상세:
+
+- BC IC: `network_request` 3,600건, `network_response` 3,600건.
+- BC MS: `health_request` 2,400건, `health_response` 2,400건, `network_request` 1,440건, `network_response` 1,440건.
+- BC IC 로그 안의 `ISO023400053` 헤더 42건은 BC profile의 제어전문으로 인정하지 않았다. 이 헤더는 기존 KB IC profile에도 사용되지만 MTI `0540/0550`은 현재 확인된 KB IC 허용 목록에도 없어 자동 재라우팅하지 않는다.
 
 ## BC 전용 정의
 

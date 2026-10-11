@@ -135,7 +135,7 @@ EMV TLV가 존재하는 프로파일은 카드사별 원본 DE 위치가 달라�
 
 - 2026-10-11 수령 묶음은 Logstash 8.17.6의 실제 JRuby/`LogStash::Event`로 593,335개 후보 행을 재생했다.
 - BGF 방식과 같이 정상 전문은 tag 없이 `ok`, 같은 카드사 규격에서 공통필드를 복구한 전문은 tag `fallback`, 공통필드도 복구할 수 없는 전문은 tag `error`로 구분한다.
-- 실로그 `fallback` 12,493건은 모두 `card_detail.fields.*` 공통필드를 보존했다. 실로그 hard `error`는 0건이며 별도 손상 전문 계약 테스트에서 `error` 경로를 검증했다.
+- 실로그 `fallback` 12,493건은 모두 `card_detail.fields.*` 공통필드를 보존했다. BC의 정상 헬스체크/망관리 14,880건은 `control`, BC 규격과 다른 `ISO023400053`/`0540·0550` 42건은 `error`로 분리했다.
 - 신한 MS 3건과 우리 38건은 길이부/코드 마스킹 또는 비정상 값 이후의 필드는 중단하지만, 앞에서 검증된 공통필드는 `fallback`으로 보존한다.
 - 현대 MS 379건은 선언 payload보다 실제 로그 행이 164~180 byte 짧다. 추정 padding은 하지 않고 실제 남은 bytes에서 안전하게 읽힌 공통필드만 `fallback`으로 보존한다.
 - 닫는 envelope가 없는 행은 같은 profile의 내부 길이/Bitmap으로 경계를 확정할 수 있을 때만 복구한다. 다른 카드사 profile로 재시도하지 않는다.
