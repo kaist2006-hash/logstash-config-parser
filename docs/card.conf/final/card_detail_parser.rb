@@ -33,15 +33,39 @@ def register(params)
   document.fetch('profiles').each do |profile|
     id = profile.fetch('id')
     raise ArgumentError, 'duplicate profile alias' if @profiles.key?(profile.fetch('alias'))
+    profile['format'] ||= 'iso8583'
+    raise ArgumentError, 'invalid profile format' unless %w[iso8583 fixed].include?(profile['format'])
     raise ArgumentError, 'invalid wire format' unless %w[ascii binary].include?(profile.fetch('wire'))
-    raise ArgumentError, 'invalid header offsets' unless profile.fetch('header_offsets').all? { |n| n.is_a?(Integer) && (0..32).cover?(n) }
-    raise ArgumentError, 'invalid bitmap bound' unless (1..3).cover?(profile.fetch('max_bitmaps'))
+    if profile['format'] == 'iso8583'
+      raise ArgumentError, 'invalid header offsets' unless profile.fetch('header_offsets').all? { |n| n.is_a?(Integer) && (0..32).cover?(n) }
+      raise ArgumentError, 'invalid bitmap bound' unless (1..3).cover?(profile.fetch('max_bitmaps'))
+    end
     profile['enabled'] = enabled.include?(id) unless enabled.nil?
     raise ArgumentError, 'invalid enabled flag' unless [true, false].include?(profile['enabled'])
     profile['_binary'] = profile['wire'] == 'binary'
 
+    transport = profile.fetch('transport', {})
+    if transport['bracket_encoding']
+      raise ArgumentError, 'invalid bracket encoding' unless %w[hex text].include?(transport['bracket_encoding'])
+    end
+    transport.fetch('embedded_length', {}).each do |encoding, rule|
+      raise ArgumentError, 'invalid embedded envelope encoding' unless %w[hex text bracket_text].include?(encoding)
+      raise ArgumentError, 'invalid embedded length prefix' unless %w[bcd2 ascii4].include?(rule.fetch('prefix'))
+      raise ArgumentError, 'invalid embedded payload encoding' unless %w[binary hex_ascii].include?(rule.fetch('payload_encoding', 'binary'))
+    end
+
+    if profile['format'] == 'fixed'
+      profile.fetch('records').each do |record|
+        raise ArgumentError, 'invalid fixed record direction' unless %w[IN OUT].include?(record.fetch('direction'))
+        raise ArgumentError, 'invalid fixed record marker' unless record.fetch('marker').is_a?(String) && !record['marker'].empty?
+        raise ArgumentError, 'invalid fixed record offsets' unless record.fetch('offsets').all? { |n| n.is_a?(Integer) && (0..64).cover?(n) }
+        raise ArgumentError, 'invalid fixed record lengths' unless record.fetch('lengths').all? { |n| n.is_a?(Integer) && (1..4096).cover?(n) }
+        raise ArgumentError, 'invalid fixed record business flag' unless [true, false].include?(record.fetch('business'))
+      end
+    end
+
     compiled = Array.new(193)
-    profile.fetch('fields').each do |key, spec|
+    profile.fetch('fields', {}).each do |key, spec|
       bit = Integer(key, 10)
       raise ArgumentError, 'invalid data element' unless (2..192).cover?(bit) && ![65, 129].include?(bit)
       raise ArgumentError, 'invalid field kind' unless %w[fixed var blocked].include?(spec.fetch('kind'))
@@ -55,6 +79,12 @@ def register(params)
       end
       if spec['allow_omitted_when_last_mtis']
         raise ArgumentError, 'invalid omitted-MTI rule' unless spec['allow_omitted_when_last_mtis'].is_a?(Array)
+      end
+      if spec['skip_when_mtis']
+        raise ArgumentError, 'invalid skipped-MTI rule' unless spec['skip_when_mtis'].is_a?(Array)
+      end
+      if spec['length_includes_prefix']
+        raise ArgumentError, 'inclusive length is valid only for variable fields' unless spec['kind'] == 'var'
       end
       ([spec] + spec.fetch('parts', [])).each do |part|
         next unless part['emit']
@@ -71,9 +101,9 @@ def register(params)
   end
 
   @emv_export = document.fetch('emv_export')
-  @hex_envelope_re = /len\[([0-9]+)\]\[([SR])\]==>\[([0-9a-fA-F]*)\]\s*\z/.freeze
+  @bracket_envelope_re = /len\[([0-9]+)\]\[([SR])\]==>\[(.*)\]\s*\z/m.freeze
   @text_marker_re = /\b(get|put)\(data\[/.freeze
-  @text_tail_re = /\] len\[([0-9]+)\] uid\[[^\]]*\](?: linename\[[^\]]*\])?\)\s*\z/.freeze
+  @text_tail_re = /\] len\[([0-9]+)\](?: uid\[[^\]]*\])?(?: linename\[[^\]]*\])?\)\s*\z/.freeze
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   card_freeze(@profiles)
@@ -181,15 +211,117 @@ def card_optional_tail_omission?(spec, mti, pos, raw_size, field_index, active_s
   mtis && field_index == active_size - 1 && pos == raw_size && mtis.include?(mti)
 end
 
+def card_transport(raw, profile, result)
+  transport = profile.fetch('transport', {})
+  rule = transport.fetch('embedded_length', {})[result['log_encoding']]
+  if rule
+    prefix_bytes = rule['prefix'] == 'bcd2' ? 2 : 4
+    if raw.bytesize < prefix_bytes
+      card_error(result, 'truncated_transport_length', nil, 0, prefix_bytes, raw.bytesize)
+      return nil
+    end
+    prefix = raw.byteslice(0, prefix_bytes)
+    if rule['prefix'] == 'bcd2'
+      digits = prefix.unpack1('H*')
+      unless /\A[0-9]{4}\z/.match?(digits)
+        card_error(result, 'invalid_transport_length', nil, 0)
+        return nil
+      end
+      count = digits.to_i
+    else
+      unless /\A[0-9]{4}\z/.match?(prefix)
+        card_error(result, 'invalid_transport_length', nil, 0)
+        return nil
+      end
+      count = prefix.to_i
+    end
+    body = raw.byteslice(prefix_bytes, raw.bytesize - prefix_bytes)
+    response_prefix = transport['response_prefix']
+    if response_prefix && body.start_with?(response_prefix)
+      body = body.byteslice(response_prefix.bytesize, body.bytesize - response_prefix.bytesize)
+      result['response_prefix_bytes'] = response_prefix.bytesize
+    end
+    encoded_bytes = rule.fetch('payload_encoding', 'binary') == 'hex_ascii' ? count * 2 : count
+    if body.bytesize < encoded_bytes
+      card_error(result, 'truncated_transport_payload', nil, prefix_bytes, encoded_bytes, body.bytesize)
+      return nil
+    end
+    if body.bytesize > encoded_bytes
+      result['transport_trimmed_bytes'] = body.bytesize - encoded_bytes
+      body = body.byteslice(0, encoded_bytes)
+    end
+    if rule.fetch('payload_encoding', 'binary') == 'hex_ascii'
+      unless body.bytesize.even? && /\A[0-9a-fA-F]*\z/.match?(body)
+        card_error(result, 'invalid_transport_hex_payload')
+        return nil
+      end
+      body = [body].pack('H*')
+    end
+    result['embedded_bytes'] = count
+    raw = body
+  else
+    response_prefix = transport['response_prefix']
+    if response_prefix && raw.start_with?(response_prefix)
+      raw = raw.byteslice(response_prefix.bytesize, raw.bytesize - response_prefix.bytesize)
+      result['response_prefix_bytes'] = response_prefix.bytesize
+    end
+  end
+
+  suffix = transport['strip_suffix_hex']
+  if suffix
+    bytes = [suffix].pack('H*')
+    if raw.end_with?(bytes)
+      raw = raw.byteslice(0, raw.bytesize - bytes.bytesize)
+      result['transport_suffix_bytes'] = bytes.bytesize
+    end
+  end
+  raw
+end
+
+def card_parse_fixed(raw, profile, result)
+  result['payload_bytes'] = raw.bytesize
+  direction = result['direction']
+  record = profile['records'].find do |candidate|
+    next false unless candidate['direction'] == direction && candidate['lengths'].include?(raw.bytesize)
+    candidate['offsets'].any? do |offset|
+      raw.byteslice(offset, candidate['marker'].bytesize) == candidate['marker']
+    end
+  end
+  unless record
+    card_error(result, 'unknown_fixed_record')
+    return
+  end
+  result['record_type'] = record['name']
+  if record['business']
+    result['consumed_bytes'] = raw.bytesize
+    result['remaining_bytes'] = 0
+    result['frame_status'] = 'complete'
+  else
+    result['status'] = 'ignored'
+    result['frame_status'] = 'not_parsed'
+    result['control_frame'] = true
+  end
+end
+
 def card_parse(raw, profile, result)
   result['payload_bytes'] = raw.bytesize
-  offset = profile['header_offsets'].find { |o| raw.byteslice(o, 3) == 'ISO' }
+  expected_headers = profile['expected_headers']
+  offset = profile['header_offsets'].find do |candidate|
+    header = raw.byteslice(candidate, 12)
+    expected_headers ? expected_headers.include?(header) : @iso_header_re.match?(header)
+  end
   unless offset && raw.bytesize >= offset + 12
+    if profile['ignore_non_business']
+      result['status'] = 'ignored'
+      result['frame_status'] = 'not_parsed'
+      result['control_frame'] = true
+      return
+    end
     card_error(result, 'missing_iso_header')
     return
   end
   header = raw.byteslice(offset, 12)
-  unless @iso_header_re.match?(header)
+  unless expected_headers ? expected_headers.include?(header) : @iso_header_re.match?(header)
     card_error(result, 'invalid_iso_header')
     return
   end
@@ -256,6 +388,12 @@ def card_parse(raw, profile, result)
       break
     end
 
+    if spec['skip_when_mtis'] && spec['skip_when_mtis'].include?(mti)
+      card_warn(result, "bitmap_field_omitted_f#{bit}")
+      consumed_fields += 1
+      next
+    end
+
     if card_optional_tail_omission?(spec, mti, pos, raw.bytesize, field_index, active.length)
       card_warn(result, "omitted_document_field_f#{bit}")
       consumed_fields += 1
@@ -274,7 +412,7 @@ def card_parse(raw, profile, result)
       else
         prefix = raw.byteslice(pos, prefix_bytes)
         unless /\A[0-9]+\z/.match?(prefix)
-          card_error(result, 'invalid_length_prefix', bit, pos)
+          card_error(result, /\A\*+\z/.match?(prefix) ? 'redacted_length_prefix' : 'invalid_length_prefix', bit, pos)
           break
         end
         count = prefix.to_i
@@ -284,6 +422,13 @@ def card_parse(raw, profile, result)
         break
       end
       card_warn(result, "document_length_deviation_f#{bit}") if spec['document_max'] && count > spec['document_max']
+      if spec['length_includes_prefix']
+        if count < prefix_bytes
+          card_error(result, 'invalid_inclusive_length', bit, pos, prefix_bytes, count)
+          break
+        end
+        count -= prefix_bytes
+      end
       length = spec['unit'] == 'digits' ? (count + 1) / 2 : count
       pos += prefix_bytes
     end
@@ -365,14 +510,20 @@ def filter(event)
     wire_message = message.encode(@text_encoding).b
     raw = nil
     if wire_message.include?('==>[')
-      match = @hex_envelope_re.match(wire_message)
-      if match && match[3].bytesize.even?
+      match = @bracket_envelope_re.match(wire_message)
+      bracket_encoding = profile.fetch('transport', {}).fetch('bracket_encoding', 'hex')
+      if match && bracket_encoding == 'text'
+        raw = match[3]
+        result['declared_bytes'] = match[1].to_i
+        result['direction'] = match[2] == 'S' ? 'OUT' : 'IN'
+        result['log_encoding'] = 'bracket_text'
+      elsif match && match[3].bytesize.even? && /\A[0-9a-fA-F]*\z/.match?(match[3])
         raw = [match[3]].pack('H*')
         result['declared_bytes'] = match[1].to_i
         result['direction'] = match[2] == 'S' ? 'OUT' : 'IN'
         result['log_encoding'] = 'hex'
       else
-        card_error(result, 'invalid_hex_envelope')
+        card_error(result, 'invalid_bracket_envelope')
       end
     else
       marker = @text_marker_re.match(wire_message)
@@ -389,23 +540,29 @@ def filter(event)
 
     if raw
       result['logged_bytes'] = raw.bytesize
-      if raw.bytesize != result['declared_bytes']
-        card_warn(result, 'declared_length_mismatch')
+      embedded_rule = profile.fetch('transport', {}).fetch('embedded_length', {})[result['log_encoding']]
+      if !embedded_rule && raw.bytesize != result['declared_bytes']
         if profile['trim_to_declared_length'] && raw.bytesize > result['declared_bytes']
           result['trimmed_bytes'] = raw.bytesize - result['declared_bytes']
           raw = raw.byteslice(0, result['declared_bytes'])
-          card_warn(result, 'trimmed_to_declared_length')
+        else
+          card_warn(result, 'declared_length_mismatch')
         end
       end
-      if raw.start_with?('RESPDATA') && profile['response_prefix'] == 'RESPDATA'
-        raw = raw.byteslice(8, raw.bytesize - 8)
-        result['response_prefix_bytes'] = 8
+      raw = card_transport(raw, profile, result)
+      if raw
+        if profile['format'] == 'fixed'
+          card_parse_fixed(raw, profile, result)
+        else
+          card_parse(raw, profile, result)
+        end
       end
-      card_parse(raw, profile, result)
     end
   end
 
-  if result['errors'] && !result['errors'].empty?
+  if result['status'] == 'ignored'
+    # Control/health frames are recognized but intentionally not business-parsed.
+  elsif result['errors'] && !result['errors'].empty?
     result['status'] = result['parsed_field_count'].to_i > 0 ? 'partial' : 'failed'
     event.tag('_card_detail_parse_failure')
   elsif result['warnings'] && !result['warnings'].empty?

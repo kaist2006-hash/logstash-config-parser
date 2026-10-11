@@ -1,0 +1,11 @@
+{
+  "bcc_ic": "s_service_bcc_ic",
+  "bcc_ms": "s_service_bcc_ms",
+  "din_ic": "s_service_din_ic",
+  "din_ms": "s_service_din_ms",
+  "keb_통합": "s_service_keb_sum",
+  "lgc_ic": "s_service_lgc_ic",
+  "lgc_ms": "s_service_lgc_ms",
+  "win_ic": "s_service_win_ic",
+  "wrc": "s_service_wrc_sum"
+}
