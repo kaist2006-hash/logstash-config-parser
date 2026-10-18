@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "2026-10-11.final6",
+  "version": "2026-10-18.final7",
   "emv_export": {
     "95": {"name": "terminal_verification_results", "length": 5},
     "9F33": {"name": "terminal_capabilities", "length": 3},

@@ -8,7 +8,9 @@ Thread.abort_on_exception = true
 directory = ENV.fetch('CARD_PARSER_DIR')
 parser = Object.new
 parser.instance_eval(File.read(File.join(directory, 'card_detail_parser.rb')), 'card_detail_parser.rb')
-parser.register('specs_path' => File.join(directory, 'card_detail_specs.json'), 'text_encoding' => 'ISO-8859-1')
+params = { 'specs_path' => File.join(directory, 'card_detail_specs.json') }
+params['text_encoding'] = ENV['CARD_TEXT_ENCODING'] if ENV['CARD_TEXT_ENCODING']
+parser.register(params)
 workers = Integer(ENV.fetch('CARD_CORE_WORKERS', '1'))
 raise 'workers must be 1..8' unless (1..8).cover?(workers)
 

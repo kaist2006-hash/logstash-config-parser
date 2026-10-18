@@ -18,7 +18,9 @@ def register(params)
 
   @max_message_bytes = Integer(params.fetch('max_message_bytes', 65_536))
   raise ArgumentError, 'invalid max_message_bytes' unless (1024..1_048_576).cover?(@max_message_bytes)
-  @text_encoding = Encoding.find(params.fetch('text_encoding', 'UTF-8'))
+  # The captured text envelopes carry arbitrary 8-bit payload bytes.  The
+  # one-to-one Latin-1 round trip was used by the real-log replay as well.
+  @text_encoding = Encoding.find(params.fetch('text_encoding', 'ISO-8859-1'))
 
   enabled = params['enabled_profiles']
   enabled = enabled.split(',').map(&:strip).reject(&:empty?) if enabled.is_a?(String)
