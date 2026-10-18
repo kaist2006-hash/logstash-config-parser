@@ -4,7 +4,7 @@
 
 ## 파일
 
-- [digital.conf](../../digital.conf): 신규 epay 요청·응답 처리 보완본을 포함한 전체 설정.
+- [digital.conf](digital.conf): 신규 epay 요청·응답 처리 보완본을 포함한 전체 설정.
 - [설정 가이드](GUIDE.md): 코드 조각, 그룹별 동작, 보완 전후 차이.
 - [검증 요약](VALIDATION.md): 완료한 검증과 미검증 범위.
 
