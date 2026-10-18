@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "2026-10-18.final7",
+  "version": "2026-10-18.final8",
   "emv_export": {
     "95": {"name": "terminal_verification_results", "length": 5},
     "9F33": {"name": "terminal_capabilities", "length": 3},
@@ -88,7 +88,7 @@
     },
     {
       "id": "kb_ic", "alias": "s_service_cnb_ic", "issuer": "국민카드", "service": "IC", "wire": "binary", "enabled": true,
-      "validation_stage": "sample_test", "header_offsets": [0], "max_bitmaps": 3,
+      "validation_stage": "real_log_replay", "header_offsets": [0], "max_bitmaps": 3,
       "mtis": ["0200","0210","0420","0430","0500","0600","0610","0800","0810"],
       "fields": {
         "3":{"kind":"fixed","length":3,"emit":"processing_code","encoding":"bcd","numeric":true},
@@ -132,8 +132,8 @@
         "35":{"kind":"var","prefix":"binary","unit":"digits","max":37},
         "44":{"kind":"var","prefix":"binary","unit":"bytes","max":8},
         "47":{"kind":"var","prefix":"binary","unit":"bytes","max":203},
-        "55":{"kind":"var","prefix":"binary","unit":"bytes","max":255,"tlv":true,"document_max":134},
-        "60":{"kind":"var","prefix":"binary","unit":"bytes","max":5,"document_max":4},
+        "55":{"kind":"var","prefix":"binary","unit":"bytes","max":255,"tlv":true},
+        "60":{"kind":"var","prefix":"binary","unit":"bytes","max":5},
         "118":{"kind":"var","prefix":"binary","unit":"bytes","max":255,"parts":[
           {"emit":"domestic_country","offset":0,"length":2,"encoding":"bcd","numeric":false},
           {"emit":"installment_months","offset":2,"length":2,"encoding":"ascii","numeric":true},
@@ -151,8 +151,10 @@
       "expected_headers": ["ISO023400053"]
     },
     {
-      "id":"kb_ms","alias":"s_service_cnb_ms","issuer":"국민카드","service":"MS","wire":"ascii","enabled":false,
-      "validation_stage":"document_verified_no_real_log","header_offsets":[0],"max_bitmaps":2,
+      "id":"kb_ms","alias":"s_service_cnb_ms","issuer":"국민카드","service":"MS","wire":"ascii","enabled":true,
+      "validation_stage":"real_log_replay","header_offsets":[0,8],"max_bitmaps":2,"trim_to_declared_length":true,
+      "expected_headers":["ISO023400053","ISO025000053"],
+      "transport":{"outbound_declared_trailer_bytes":8},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
       "fields":{
         "3":{"kind":"fixed","length":6,"emit":"processing_code","encoding":"ascii","numeric":true},
@@ -181,7 +183,8 @@
     },
     {
       "id":"lotte_ms","alias":"s_service_ltc_ms","issuer":"롯데카드","service":"MS","wire":"ascii","enabled":true,
-      "validation_stage":"sample_test","header_offsets":[0],"max_bitmaps":2,
+      "validation_stage":"real_log_replay","header_offsets":[0,8],"max_bitmaps":2,
+      "expected_headers":["ISO023400053"],
       "mtis":["0200","0210","0420","0430","0800","0810"],"trim_to_declared_length":true,
       "fields":{
         "3":{"kind":"fixed","length":6,"emit":"processing_code","encoding":"ascii","numeric":true},
@@ -215,56 +218,52 @@
         "63":{"kind":"var","prefix":"ascii3","unit":"bytes","max":80},
         "112":{"kind":"var","prefix":"ascii3","unit":"bytes","max":32}
       },
-      "response_prefix":"RESPDATA"
+      "transport":{"response_prefix":"RESPDATA","outbound_declared_trailer_bytes":8}
     },
     {
-      "id":"lotte_ic","alias":"s_service_ltc_ic","issuer":"롯데카드","service":"IC","wire":"binary","enabled":false,
-      "validation_stage":"document_verified_no_real_log","header_offsets":[0,9],"max_bitmaps":3,
+      "id":"lotte_ic","alias":"s_service_ltc_ic","issuer":"롯데카드","service":"IC","wire":"ascii","enabled":true,
+      "validation_stage":"real_log_ascii_layout","header_offsets":[0,8],"max_bitmaps":2,"trim_to_declared_length":true,
+      "expected_headers":["ISO023400053"],
+      "transport":{"response_prefix":"RESPDATA","outbound_declared_trailer_bytes":8},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
       "fields":{
-        "3":{"kind":"fixed","length":3,"emit":"processing_code","encoding":"bcd","numeric":true},
-        "4":{"kind":"fixed","length":6,"emit":"transaction_amount","encoding":"bcd","numeric":true},
-        "7":{"kind":"fixed","length":5,"emit":"transmission_datetime","encoding":"bcd","numeric":true},
-        "11":{"kind":"fixed","length":3,"emit":"trace_number","encoding":"bcd","numeric":true},
-        "12":{"kind":"fixed","length":3,"emit":"local_time","encoding":"bcd","numeric":true},
-        "13":{"kind":"fixed","length":2,"emit":"local_date","encoding":"bcd","numeric":true},
-        "14":{"kind":"fixed","length":2},
-        "18":{"kind":"fixed","length":2,"emit":"merchant_type","encoding":"bcd","numeric":true},
-        "19":{"kind":"fixed","length":2,"emit":"acquirer_country","encoding":"bcd","numeric":true},
-        "22":{"kind":"fixed","length":2,"emit":"pos_entry_mode","encoding":"bcd","numeric":true},
-        "23":{"kind":"fixed","length":2,"emit":"card_sequence","encoding":"bcd","numeric":true},
-        "25":{"kind":"fixed","length":1,"emit":"pos_condition","encoding":"bcd","numeric":true},
+        "3":{"kind":"fixed","length":6,"emit":"processing_code","encoding":"ascii","numeric":true},
+        "4":{"kind":"fixed","length":12,"emit":"transaction_amount","encoding":"ascii","numeric":true},
+        "5":{"kind":"fixed","length":12,"emit":"settlement_amount","encoding":"ascii","numeric":true},
+        "6":{"kind":"fixed","length":12,"emit":"billing_amount","encoding":"ascii","numeric":true},
+        "7":{"kind":"fixed","length":10,"emit":"transmission_datetime","encoding":"ascii","numeric":true},
+        "11":{"kind":"fixed","length":6,"emit":"trace_number","encoding":"ascii","numeric":true},
+        "12":{"kind":"fixed","length":6,"emit":"local_time","encoding":"ascii","numeric":true},
+        "13":{"kind":"fixed","length":4,"emit":"local_date","encoding":"ascii","numeric":true},
+        "22":{"kind":"fixed","length":3,"emit":"pos_entry_mode","encoding":"ascii","numeric":true},
+        "32":{"kind":"fixed","length":8,"parts":[{"emit":"acquirer_code","offset":2,"length":6,"encoding":"ascii","numeric":false}]},
+        "35":{"kind":"fixed","length":39},
         "37":{"kind":"fixed","length":12,"emit":"retrieval_reference","encoding":"ascii","numeric":false},
         "39":{"kind":"fixed","length":2,"emit":"response_code","encoding":"ascii","numeric":false},
+        "41":{"kind":"fixed","length":16,"emit":"terminal_id","encoding":"ascii","numeric":false},
         "42":{"kind":"fixed","length":15,"emit":"merchant_number","encoding":"ascii","numeric":false},
-        "49":{"kind":"fixed","length":2,"emit":"currency_code","encoding":"bcd","numeric":true},
-        "52":{"kind":"fixed","length":8},"53":{"kind":"fixed","length":8},
-        "70":{"kind":"fixed","length":2,"emit":"network_code","encoding":"bcd","numeric":true},
-        "90":{"kind":"fixed","length":21},"128":{"kind":"fixed","length":234},
-        "130":{"kind":"fixed","length":3},"131":{"kind":"fixed","length":5},"132":{"kind":"fixed","length":4},
-        "136":{"kind":"fixed","length":8},"137":{"kind":"fixed","length":2},"138":{"kind":"fixed","length":2},"139":{"kind":"fixed","length":10},
-        "144":{"kind":"fixed","length":1},"146":{"kind":"fixed","length":3},"147":{"kind":"fixed","length":6},"148":{"kind":"fixed","length":2},"149":{"kind":"fixed","length":6},"150":{"kind":"fixed","length":4},
-        "2":{"kind":"var","prefix":"binary","unit":"digits","max":19},
-        "32":{"kind":"var","prefix":"binary","unit":"digits","max":11},
-        "44":{"kind":"var","prefix":"binary","unit":"bytes","max":25},
-        "48":{"kind":"var","prefix":"binary","unit":"bytes","max":4},
-        "55":{"kind":"var","prefix":"binary","unit":"bytes","max":255,"tlv":true},
-        "60":{"kind":"var","prefix":"binary","unit":"bytes","max":5},
-        "61":{"kind":"var","prefix":"binary","unit":"bytes","max":10},
-        "118":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
-        "126":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
-        "134":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
-        "135":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
-        "140":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
-        "142":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
-        "143":{"kind":"var","prefix":"binary","unit":"bytes","max":20},
-        "35":{"kind":"blocked","reason":"평문 nibble 길이와 암호문 byte 길이 판별에 실로그 필요"},
-        "145":{"kind":"blocked","reason":"문서 M열 K 오기: 해당 필드 번호 확인 전 보류"}
+        "43":{"kind":"fixed","length":40,"parts":[{"emit":"business_id","offset":0,"length":10,"encoding":"ascii","numeric":false}]},
+        "49":{"kind":"fixed","length":3,"emit":"currency_code","encoding":"ascii","numeric":true},
+        "52":{"kind":"fixed","length":16},
+        "70":{"kind":"fixed","length":3,"emit":"network_code","encoding":"ascii","numeric":true},
+        "48":{"kind":"var","prefix":"ascii2","unit":"bytes","max":4,"emit":"merchant_fee_rate_raw","encoding":"ascii","numeric":true},
+        "55":{"kind":"var","prefix":"ascii3","unit":"bytes","max":2,"emit":"installment_months","encoding":"ascii","numeric":true},
+        "56":{"kind":"var","prefix":"ascii3","unit":"bytes","max":8,"emit":"approval_number","encoding":"ascii"},
+        "57":{"kind":"var","prefix":"ascii3","unit":"bytes","max":16,"parts":[
+          {"emit":"deposit_sale_type","offset":0,"length":2,"encoding":"ascii","numeric":false},
+          {"emit":"deposit_amount","offset":2,"length":14,"encoding":"ascii","numeric":true}
+        ]},
+        "60":{"kind":"var","prefix":"ascii3","unit":"bytes","max":50},
+        "61":{"kind":"fixed","length":234,"allow_omitted_when_last_mtis":["0420"]},
+        "63":{"kind":"var","prefix":"ascii3","unit":"bytes","max":80},
+        "112":{"kind":"var","prefix":"ascii3","unit":"bytes","max":32}
       }
     },
     {
-      "id":"nh_ms","alias":"s_service_nlc_ms","issuer":"농협카드","service":"MS","wire":"ascii","enabled":false,
-      "validation_stage":"document_verified_no_real_log","header_offsets":[0,9],"max_bitmaps":2,
+      "id":"nh_ms","alias":"s_service_nlc_ms","issuer":"농협카드","service":"MS","wire":"ascii","enabled":true,
+      "validation_stage":"real_log_replay","header_offsets":[9,13],"max_bitmaps":2,"trim_to_declared_length":true,
+      "expected_headers":["ISO000000000"],
+      "transport":{"outbound_declared_trailer_bytes":8},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
       "fields":{
         "2":{"kind":"fixed","length":21},
@@ -304,8 +303,10 @@
       }
     },
     {
-      "id":"nh_ic","alias":"s_service_nlc_ic","issuer":"농협카드","service":"IC","wire":"ascii","enabled":false,
-      "validation_stage":"document_verified_no_real_log","header_offsets":[0,9],"max_bitmaps":2,
+      "id":"nh_ic","alias":"s_service_nlc_ic","issuer":"농협카드","service":"IC","wire":"ascii","enabled":true,
+      "validation_stage":"real_log_replay","header_offsets":[9,17],"max_bitmaps":2,"trim_to_declared_length":true,
+      "expected_headers":["ISO000000000"],
+      "transport":{"extended_text_marker":true,"outbound_declared_trailer_bytes":8},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
       "fields":{
         "2":{"kind":"fixed","length":21},
@@ -341,7 +342,7 @@
         "120":{"kind":"var","prefix":"ascii3","unit":"bytes","max":512},
         "124":{"kind":"var","prefix":"ascii3","unit":"bytes","max":512,"tlv":true,"tlv_hex_ascii":true},
         "126":{"kind":"var","prefix":"ascii3","unit":"bytes","max":512},
-        "127":{"kind":"var","prefix":"ascii3","unit":"bytes","max":282}
+        "127":{"kind":"var","prefix":"ascii3","unit":"bytes","max":282,"skip_when_mtis":["0110","0410"]}
       }
     },
     {

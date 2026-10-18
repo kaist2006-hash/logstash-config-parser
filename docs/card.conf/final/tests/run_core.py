@@ -47,6 +47,8 @@ def main():
         str(java),
         "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
         "--add-opens=java.base/java.io=ALL-UNNAMED",
+        "-Djruby.native.enabled=false",
+        "-Djruby.jit.threshold=-1",
         f"-Djruby.home={home / 'vendor/jruby'}",
         "-Xms256m",
         "-Xmx1536m",

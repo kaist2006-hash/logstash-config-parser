@@ -47,6 +47,13 @@ def register(params)
     profile['_binary'] = profile['wire'] == 'binary'
 
     transport = profile.fetch('transport', {})
+    if transport.key?('extended_text_marker')
+      raise ArgumentError, 'invalid extended text marker flag' unless [true, false].include?(transport['extended_text_marker'])
+    end
+    if transport.key?('outbound_declared_trailer_bytes')
+      n = transport['outbound_declared_trailer_bytes']
+      raise ArgumentError, 'invalid outbound trailer width' unless n.is_a?(Integer) && (1..64).cover?(n)
+    end
     if transport['bracket_encoding']
       raise ArgumentError, 'invalid bracket encoding' unless %w[hex text].include?(transport['bracket_encoding'])
     end
@@ -112,9 +119,14 @@ def register(params)
   @bracket_envelope_re = /len\[([0-9]+)\]\[([SR])\]==>\[(.*)\]\s*\z/m.freeze
   @bracket_open_re = /len\[([0-9]+)\]\[([SR])\]==>\[(.*)\z/m.freeze
   @text_marker_re = /\b(get|put)\(data\[/.freeze
+  @extended_text_marker_re = /\b(get|put)\([^\r\n)]{0,128}?data\[/.freeze
   @text_tail_re = /\] len\[([0-9]+)\](?: uid\[[^\]]*\])?(?: linename\[[^\]]*\])?\)\s*\z/.freeze
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
+  @recoverable_error_codes = {
+    'truncated_field' => true, 'truncated_length_prefix' => true,
+    'truncated_transport_payload' => true, 'trailing_bytes' => true
+  }.freeze
   card_freeze(@profiles)
   card_freeze(@emv_export)
   @version.freeze
@@ -570,7 +582,8 @@ def filter(event)
         end
       end
     else
-      marker = @text_marker_re.match(wire_message)
+      marker_re = profile.fetch('transport', {})['extended_text_marker'] ? @extended_text_marker_re : @text_marker_re
+      marker = marker_re.match(wire_message)
       tail = @text_tail_re.match(wire_message)
       if marker && tail && tail.begin(0) >= marker.end(0)
         raw = wire_message.byteslice(marker.end(0), tail.begin(0) - marker.end(0))
@@ -591,7 +604,12 @@ def filter(event)
     if raw
       result['logged_bytes'] = raw.bytesize
       embedded_rule = profile.fetch('transport', {}).fetch('embedded_length', {})[result['log_encoding']]
-      if result['declared_bytes'] && !embedded_rule && raw.bytesize != result['declared_bytes']
+      trailer_bytes = profile.fetch('transport', {})['outbound_declared_trailer_bytes']
+      if result['declared_bytes'] && !embedded_rule && result['direction'] == 'OUT' &&
+         trailer_bytes && raw.bytesize == result['declared_bytes'] + trailer_bytes
+        result['transport_trailer_bytes'] = trailer_bytes
+        raw = raw.byteslice(0, result['declared_bytes'])
+      elsif result['declared_bytes'] && !embedded_rule && raw.bytesize != result['declared_bytes']
         if profile['trim_to_declared_length'] && raw.bytesize > result['declared_bytes']
           result['trimmed_bytes'] = raw.bytesize - result['declared_bytes']
           raw = raw.byteslice(0, result['declared_bytes'])
@@ -614,8 +632,9 @@ def filter(event)
     # Control/health frames are structurally validated but not business-parsed.
   elsif result['errors'] && !result['errors'].empty?
     common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
-    result['status'] = common_recovered ? 'fallback' : 'error'
-    event.tag(common_recovered ? 'fallback' : 'error')
+    recoverable = result['errors'].all? { |item| @recoverable_error_codes[item['code']] }
+    result['status'] = common_recovered && recoverable ? 'fallback' : 'error'
+    event.tag(result['status'])
   elsif result['warnings'] && !result['warnings'].empty?
     result['status'] = 'fallback'
     event.tag('fallback')
