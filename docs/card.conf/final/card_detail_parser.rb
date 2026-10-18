@@ -125,7 +125,7 @@ def register(params)
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   @recoverable_error_codes = {
     'truncated_field' => true, 'truncated_length_prefix' => true,
-    'truncated_transport_payload' => true, 'trailing_bytes' => true
+    'truncated_transport_payload' => true
   }.freeze
   card_freeze(@profiles)
   card_freeze(@emv_export)
@@ -636,8 +636,12 @@ def filter(event)
     result['status'] = common_recovered && recoverable ? 'fallback' : 'error'
     event.tag(result['status'])
   elsif result['warnings'] && !result['warnings'].empty?
-    result['status'] = 'fallback'
-    event.tag('fallback')
+    common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
+    unless common_recovered
+      card_error(result, 'no_common_fields_recovered')
+    end
+    result['status'] = common_recovered ? 'fallback' : 'error'
+    event.tag(result['status'])
   else
     result['status'] = 'ok'
   end

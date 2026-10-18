@@ -1,6 +1,6 @@
 # 카드사별 공통 필드 정의 및 검증 범위
 
-기준: `card_detail_specs.json`의 `2026-10-18.final8` 및 제공 실로그 재생 결과. 이 문서는 실제 RB가 출력하는 경로와 JSON의 `emit` 정의를 기준으로 한다. 이전 정리표의 `card_detail.header.*`, `card_detail.detail.*` 경로는 현재 구현의 출력 경로가 **아니다**.
+기준: `card_detail_specs.json`의 `2026-10-18.final9` 및 제공 실로그 재생 결과. 이 문서는 실제 RB가 출력하는 경로와 JSON의 `emit` 정의를 기준으로 한다. 이전 정리표의 `card_detail.header.*`, `card_detail.detail.*` 경로는 현재 구현의 출력 경로가 **아니다**.
 
 ## 먼저 알아야 할 점
 
@@ -8,6 +8,8 @@
 - 카드사끼리 필드 이름을 통일했지만 비트맵·헤더·길이·전송형식의 규격은 카드사와 서비스 프로필마다 독립 정의한다. 동일한 이름은 동일한 업무 의미를 뜻하지 동일한 바이트 위치를 뜻하지 않는다.
 - Ruby 블록만 적용하면 출력값은 원칙적으로 문자열이다. 함께 제공한 전체 `card.conf`의 `mutate convert`를 적용할 때에만 금액·할부개월수 등 일부가 정수로 변환된다. 코드·식별자·시각은 선행 0 보존을 위해 문자열로 둔다.
 - PAN(카드번호), Track II, PIN/PIN block, 암호문 및 의미가 확정되지 않은 보안 데이터는 길이 계산에는 쓰더라도 공통 업무 필드로 출력하지 않는다.
+
+운영 타입 기준도 BGF와 같이 필드명 기준으로 고정한다. 전체 `card.conf`에는 `transaction_amount`, `settlement_amount`, `billing_amount`, `point_balance`, `installment_months`, `tax_amount`, `service_charge`, `deposit_amount`의 8개만 정수 변환이 정의돼 있다. **Ruby 블록만 넣는 운영 방식에서는 이 변환이 실행되지 않으므로** Elasticsearch 매핑에서 숫자 타입이 필요하면 별도 매핑/변환을 적용해야 한다. 나머지 코드·식별자·일시·원문 필드는 문자열로 유지한다.
 
 ## 모든 활성 ISO 프로필에 공통으로 정의된 8개 이름
 
@@ -60,15 +62,17 @@ EMV TLV 필드가 있는 경우에는 JSON의 `emv_export` 정의에 따라 별�
 | `card_detail.status` | 공개 tag | 현재 RB의 판정 |
 |---|---|---|
 | `ok` | 없음 | 알려진 프로필에서 처리 중 기록된 오류·경고가 없음. **BC MS의 `ok`는 마커·방향·전체 길이만 맞춘 구조 확인**이며 내부 필드 파싱을 뜻하지 않는다. |
-| `fallback` | `fallback` | 오류가 `truncated_field`, `truncated_length_prefix`, `truncated_transport_payload`, `trailing_bytes`만으로 구성되고 하나 이상의 `fields`가 추출됐거나, 오류는 없지만 경고가 있음. 즉 **짧은 로그만을 뜻하지 않는다**. |
-| `error` | `error` | 그 밖의 형식 오류, 또는 회복 가능한 절단 오류여도 추출된 업무 필드가 없음. |
+| `fallback` | `fallback` | 하나 이상의 `fields`가 있고, 오류가 `truncated_field`, `truncated_length_prefix`, `truncated_transport_payload`만으로 구성되거나 오류 없이 봉투·문서 편차 경고만 있음. 정확한 원인은 `card_detail.errors` / `warnings`에 남는다. |
+| `error` | `error` | 그 밖의 형식 오류, 또는 경고·절단 오류가 있어도 추출된 업무 필드가 없음. |
 | `control` | 없음 | 확인된 제어/상태 전문. 거래 상세 파싱 대상이 아니다. |
 | `disabled` / `unconfigured` | 없음 | 비활성 프로필 / 라우팅되지 않은 별칭. 거래 파싱을 하지 않는다. |
 
-따라서 현재 `fallback`을 “짧지만 규격이 확실한 정상 로그”와 동일시하면 안 된다. 특히 `trailing_bytes`는 선언된 필드 뒤에 해석되지 않은 데이터가 남았다는 뜻이어서, 전문 규격과의 일치가 입증되지 않는다. 제공 로그의 농협 IC에는 이런 잔여 바이트가 대량으로 있으며 일부는 비공백 데이터다. 이를 무조건 패딩으로 버려 `ok`로 만들지 않았다. 사용자가 원하는 엄격한 BGF 의미로 맞추려면 `trailing_bytes`의 분류와 해당 전문의 확정 규격을 별도로 결정한 뒤 재검증해야 한다.
+`trailing_bytes`는 선언된 필드 뒤에 해석되지 않은 데이터가 남았다는 뜻이므로 **final9부터 `error`**다. 제공 로그의 농협 IC에는 이런 잔여 바이트가 대량으로 있으며 일부는 비공백 데이터다. 이를 무조건 패딩으로 버려 `ok`로 만들지 않았다. `fallback`도 모든 필드의 업무 의미가 검증됐다는 뜻은 아니며, 경고가 있는 복구 결과는 `card_detail.warnings`와 함께 검토해야 한다.
+
+여기서 `error`는 **파서가 전문 규격에 맞는 구조라고 보증하지 못한다**는 뜻이다. 카드사 거래가 실제로 거절됐거나 운영 장애였다는 판정과는 다르다.
 
 ## 실로그가 증명한 것과 증명하지 못한 것
 
-전체 재생 대상 1,152,346건의 status는 `ok` 1,037,170건, `fallback` 99,761건, `control` 14,880건, `error` 535건이었다. 이 숫자는 **현재 JSON 프로필에 대한 구조적 재생 결과**이며, 모든 카드사의 모든 거래유형·필드값이 문서와 100% 일치한다는 증명이 아니다. BC MS는 내부 업무 필드 0개, 삼성 MS는 실제 자료 0건이다. 롯데 IC 제공 로그는 최신 바이너리 IC 문서와 다른 ASCII 형태이며, 농협 IC 응답의 잔여 구간은 미확정이다. 운영 Beats 인코딩·멀티라인·라우팅은 별도 검증이 필요하다.
+전체 재생 대상 1,152,346건의 status는 `ok` 1,037,170건, `fallback` 43,069건, `control` 14,880건, `error` 57,227건이었다. 이 숫자는 **현재 JSON 프로필에 대한 구조적 재생 결과**이며, 모든 카드사의 모든 거래유형·필드값이 문서와 100% 일치한다는 증명이 아니다. BC MS는 내부 업무 필드 0개, 삼성 MS는 실제 자료 0건이다. 롯데 IC 제공 로그는 최신 바이너리 IC 문서와 다른 ASCII 형태이며, 농협 IC 응답의 잔여 구간은 미확정이다. 운영 Beats 인코딩·멀티라인·라우팅은 별도 검증이 필요하다.
 
 세부 카드사별 status 건수는 `VALIDATION_2026-10-18.md`를 참조한다. 현재 구현의 최종 근거는 같은 폴더의 `card_detail_parser.rb`와 `card_detail_specs.json`이며, 과거 `card_field_reference_excel.xml`은 2026-10-11 시점 자료라 현 버전의 근거로 사용하지 않는다.

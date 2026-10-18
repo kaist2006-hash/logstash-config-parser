@@ -59,6 +59,23 @@ parser.filter(invalid_event)
 raise 'malformed length did not hard error' unless invalid_event.get('[card_detail][status]') == 'error'
 raise 'malformed length error tag missing' unless Array(invalid_event.get('tags')).include?('error')
 report['outcome_contract']['malformed_error'] = 'passed'
+
+complete_body = 'ISO02340005302002000000000000000' + '000000'
+trailing_event = LogStash::Event.new('message' => "put(data[#{complete_body}X] len[#{complete_body.bytesize + 1}])",
+                                    '@metadata' => { 'target_alias' => 's_service_cnb_ms' })
+parser.filter(trailing_event)
+raise 'unexplained trailing bytes did not hard error' unless trailing_event.get('[card_detail][status]') == 'error'
+raise 'trailing bytes error tag missing' unless Array(trailing_event.get('tags')).include?('error')
+raise 'validated common field was lost' unless trailing_event.get('[card_detail][fields][processing_code]') == '000000'
+report['outcome_contract']['trailing_bytes_error'] = 'passed'
+
+empty_body = 'ISO02340005302000000000000000000'
+no_common_event = LogStash::Event.new('message' => "put(data[#{empty_body}",
+                                      '@metadata' => { 'target_alias' => 's_service_cnb_ms' })
+parser.filter(no_common_event)
+raise 'warning-only frame without common fields did not hard error' unless no_common_event.get('[card_detail][status]') == 'error'
+raise 'warning-only no-common frame error tag missing' unless Array(no_common_event.get('tags')).include?('error')
+report['outcome_contract']['no_common_error'] = 'passed'
 started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 queue = SizedQueue.new(2048)
 
