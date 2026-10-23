@@ -1,0 +1,15 @@
+# Merge this input into filebeat.inputs, or use as an inputs.d list.
+# Replace /CHANGE_ME/epay.out with the actual path.
+# Preserve the existing input type, ID, encoding and registry strategy when possible.
+- type: filestream
+  id: epay-url-response
+  paths:
+    - /CHANGE_ME/epay.out
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}'
+        negate: true
+        match: after
+        timeout: 5s
+  include_lines: ['(?m)^(REQUEST DATA|POST RESPONSE DATA)\r?$']

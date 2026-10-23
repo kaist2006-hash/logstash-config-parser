@@ -1,0 +1,12 @@
+# Alternative ONLY for an existing Filebeat version/input using type: log.
+# Use one input variant, not both. Merge into the existing filebeat.inputs list.
+# Replace /CHANGE_ME/epay.out and preserve the current encoding.
+- type: log
+  paths:
+    - /CHANGE_ME/epay.out
+  multiline.type: pattern
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}'
+  multiline.negate: true
+  multiline.match: after
+  multiline.timeout: 5s
+  include_lines: ['(?m)^(REQUEST DATA|POST RESPONSE DATA)\r?$']
