@@ -9,4 +9,4 @@
   multiline.negate: true
   multiline.match: after
   multiline.timeout: 5s
-  include_lines: ['(?m)^(REQUEST DATA|POST RESPONSE DATA)\r?$']
+  include_lines: ['(?m)^(REQUEST DATA|RESULT DATA)\r?$']

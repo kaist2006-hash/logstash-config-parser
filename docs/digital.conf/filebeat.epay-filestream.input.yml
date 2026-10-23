@@ -12,4 +12,4 @@
         negate: true
         match: after
         timeout: 5s
-  include_lines: ['(?m)^(REQUEST DATA|POST RESPONSE DATA)\r?$']
+  include_lines: ['(?m)^(REQUEST DATA|RESULT DATA)\r?$']

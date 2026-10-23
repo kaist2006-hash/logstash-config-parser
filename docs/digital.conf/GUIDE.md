@@ -4,9 +4,11 @@
 
 ## 1. 이번 변경의 핵심
 
-Filebeat가 같은 로그 레코드의 여러 줄을 하나의 message로 만들어 보냅니다. Logstash는 이벤트 한 개 안에서 REQUEST DATA 하위 URL 또는 POST RESPONSE DATA 하위 JSON을 추출합니다.
+응답 수집 대상은 RESULT DATA입니다. 이전 POST RESPONSE DATA 수집은 제외합니다. 첨부에서 두 구간의 건수·내용이 완전히 같지는 않으므로, 이번 변경은 응답의 수집 위치를 바꾸는 작업입니다.
 
-- Filebeat: 날짜·시간 시작 줄을 경계로 합친 후, 요청·POST 응답 제목이 포함된 메시지만 전송.
+Filebeat가 같은 로그 레코드의 여러 줄을 하나의 message로 만들어 보냅니다. Logstash는 이벤트 한 개 안에서 REQUEST DATA 하위 URL 또는 RESULT DATA 하위 JSON을 추출합니다.
+
+- Filebeat: 날짜·시간 시작 줄을 경계로 합친 후, 요청·RESULT 응답 제목이 포함된 메시지만 전송.
 - Logstash: 파일 조건 → grok으로 구간·본문 추출 → 요청 kv 또는 응답 JSON → 응답 TR_ID URL 인코딩.
 - Logstash의 aggregate, 파일별 상태, timeout, 본문 조합 버퍼를 제거.
 - 신규 필터는 이벤트 간 상태가 없어 worker 1·ordered true를 요구하지 않음. 기존 worker 2 사용 가능. 기존의 다른 필터가 순서를 요구한다면 그 조건은 별도 확인.
@@ -32,7 +34,7 @@ parsers:
       negate: true
       match: after
       timeout: 5s
-include_lines: ['(?m)^(REQUEST DATA|POST RESPONSE DATA)\r?$']
+include_lines: ['(?m)^(REQUEST DATA|RESULT DATA)\r?$']
 ~~~
 
 위 parsers 문법은 filestream용입니다. type: log용 multiline.* 문법은 별도 파일을 참고합니다. 현재 설치 버전·input 유형을 확인하고 맞는 문법을 사용하세요. 이번 변경 때문에 type이나 ID를 무조건 교체하는 작업은 아닙니다.
@@ -42,14 +44,14 @@ include_lines: ['(?m)^(REQUEST DATA|POST RESPONSE DATA)\r?$']
 | pattern | 날짜·시간으로 시작하면 새 로그 레코드 시작 |
 | negate: true / match: after | 날짜·시간으로 시작하지 않는 줄은 앞 레코드에 연결 |
 | timeout: 5s | 다음 경계가 안 와도 대기 중인 메시지를 timeout 후 내보냄 |
-| include_lines | multiline 이후 REQUEST DATA 또는 POST RESPONSE DATA라는 제목 행이 들어 있는 메시지만 전송 |
+| include_lines | multiline 이후 REQUEST DATA 또는 RESULT DATA라는 제목 행이 들어 있는 메시지만 전송 |
 
 예를 들어 아래 전체가 Filebeat 이벤트 한 개가 됩니다.
 
 ~~~text
 2026-10-01 12:00:00,000 INFO [PostManager]
 ************************
-POST RESPONSE DATA
+RESULT DATA
 ************************
 [{"RESULT_CODE":"0000","RESULT_MSG":"성공","TR_ID":"ABC+123="}
 ]
@@ -60,7 +62,7 @@ POST RESPONSE DATA
 
 별표는 시작·종료에 같은 형태로 반복되므로 별표만 flush_pattern으로 쓰면 본문 전의 구분선에서 먼저 끊깁니다. 이 설정은 날짜 경계로 합치고, Logstash에서 제목·별표·본문 구조를 검증합니다.
 
-multiline 버퍼는 Filebeat에 존재합니다. 이번 변경은 조합 위치를 Filebeat로 옮기는 것이며 전체 시스템에서 버퍼를 없애는 것은 아닙니다. 본문 작성 중 5초 이상 지연되면 부분 메시지가 먼저 나갈 수 있으므로 실제 수집 시험에서 확인해야 합니다. 이 예시는 Filebeat의 기본 최대 줄·최대 바이트 제한을 변경하지 않습니다. 첨부 원본의 대상 레코드는 최대 7줄·2,737 UTF-8바이트였고 전체 레코드는 최대 51줄이었습니다.
+multiline 버퍼는 Filebeat에 존재합니다. 이번 변경은 조합 위치를 Filebeat로 옮기는 것이며 전체 시스템에서 버퍼를 없애는 것은 아닙니다. 본문 작성 중 5초 이상 지연되면 부분 메시지가 먼저 나갈 수 있으므로 실제 수집 시험에서 확인해야 합니다. 이 예시는 Filebeat의 기본 최대 줄·최대 바이트 제한을 변경하지 않습니다. 첨부 원본의 대상 레코드는 최대 11줄·1,124 UTF-8바이트였고 전체 레코드는 최대 51줄이었습니다.
 
 참고: [multiline 공식 문서](https://www.elastic.co/docs/reference/beats/filebeat/multiline-examples), [filestream include_lines](https://www.elastic.co/docs/reference/beats/filebeat/filebeat-input-filestream).
 
@@ -97,9 +99,11 @@ if [log][file][path] =~ /(?:^|[\\\/])epay\.out$/ {
 grok의 match 배열에는 두 패턴이 있습니다. 실제 전문은 [digital.conf](digital.conf)를 참고하세요.
 
 - 요청 패턴: REQUEST DATA → 별표 구분선 → [url=…] 한 줄 → 별표 구분선.
-- 응답 패턴: POST RESPONSE DATA → 별표 구분선 → JSON 본문 전체 → 별표 구분선.
+- 응답 패턴: RESULT DATA → 별표 구분선 → JSON 본문 전체 → 별표 구분선.
 
-grok이 한 이벤트의 문자열을 보는 동안 그 안의 여러 줄에 접근합니다. 따라서 이전 이벤트를 기억하거나 다음 이벤트를 기다리지 않습니다. 구간 제목과 별표의 독립 행을 기준으로 선택하므로 단독 URL, RESULT DATA, 일반 로그는 해당 패턴으로 통과하지 않습니다.
+응답 본문 캡처에는 DATA를 사용해 첫 종료 별표 행까지만 가져옵니다. 종료 별표가 연속으로 나오는 실로그에서도 뒤의 구분선을 JSON에 포함하지 않도록 했습니다.
+
+grok이 한 이벤트의 문자열을 보는 동안 그 안의 여러 줄에 접근합니다. 따라서 이전 이벤트를 기억하거나 다음 이벤트를 기다리지 않습니다. 구간 제목과 별표의 독립 행을 기준으로 선택하므로 단독 URL, POST RESPONSE DATA, 일반 로그는 해당 패턴으로 통과하지 않습니다.
 
 (?m)은 이 grok 정규식에서 점(.)이 개행까지 포함하도록 하므로 응답의 여러 줄을 캡처할 수 있습니다. 요청 URL·query는 기존과 같은 분리 규칙을 사용합니다.
 
@@ -146,7 +150,7 @@ json {
 }
 ~~~
 
-JSON 원문만 metadata에서 읽으므로 제목·일반 로그를 JSON 파서에 넣지 않습니다. 본문이 여러 줄이거나 ]가 다음 줄이어도 같은 source 문자열 안에 들어 있습니다. 특정 RESULT_CODE 필드의 존재는 요구하지 않습니다.
+JSON 원문만 metadata에서 읽으므로 제목·일반 로그를 JSON 파서에 넣지 않습니다. 본문이 5~6줄로 나뉘거나 ]가 다음 줄이어도 같은 source 문자열 안에 들어 있습니다. 빈 배열 []도 정상 JSON으로 보존합니다. 특정 RESULT_CODE 필드의 존재는 요구하지 않습니다.
 
 실패한 JSON은 drop합니다. 성공하면 첫 번째 배열 객체에 대문자 TR_ID가 있을 때만 Java URLEncoder로 UTF-8 URL 인코딩합니다.
 
