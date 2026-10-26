@@ -57,3 +57,10 @@ Filebeat 날짜·시간 시작 경계, 빈 줄 제외 및 REQUEST DATA/RESULT DA
 - 정적 괄호 검사는 실제 Logstash -t를 대신하지 않습니다.
 - 실제 Filebeat/Logstash 실행, 부하, 파일 회전·registry·재시작·본문 도착 간격과 timeout은 검증하지 않았습니다.
 - 실제 Filebeat input 유형·ID·경로·encoding을 확인해 예시를 병합해야 합니다.
+
+
+## 2026-10-26 가변 형식 추가 확인
+
+URL·query 키·순서·구분자·빈 값, JSON 키·중첩·여러 줄·객체 개수, 별표 길이·공백 변화 및 허용하지 않는 제목·URL 행 들여쓰기 등 12개 합성 사례가 예상 결과와 일치했습니다. 이는 grok/kv 상당 동작·JSON 파싱 검사이며 실제 제품 실행이나 합성 사례의 Ruby 인코딩 검사는 아닙니다.
+
+원문 1,056건 요청·946건 응답 검증 결과 및 현재 수집 설정은 변경하지 않았습니다. 상세 사례와 지원 범위는 [VARIABLE_FORMATS.md](VARIABLE_FORMATS.md)를 참고하세요.

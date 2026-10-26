@@ -1,6 +1,6 @@
 # digital.conf 진행 현황
 
-업데이트: 2026-10-23
+업데이트: 2026-10-26
 
 ## 현재 수집 대상
 
@@ -15,7 +15,10 @@ Filebeat가 날짜·시간 경계로 multiline 메시지를 완성한 후 위 �
 - [digital.conf](digital.conf): 현재 전체 Logstash 설정.
 - [Filebeat filestream input 예시](filebeat.epay-filestream.input.yml).
 - [Filebeat 기존 log input 예시](filebeat.epay-log.input.yml).
-- [설정 가이드](GUIDE.md).
+- [통합 가이드](GUIDE.md).
+- [Filebeat 설정 가이드](FILEBEAT_GUIDE.md).
+- [Logstash 설정 가이드](LOGSTASH_GUIDE.md).
+- [가변 형식 지원 범위](VARIABLE_FORMATS.md).
 - [검증 요약](VALIDATION.md).
 
 Filebeat 파일은 기존 filebeat.inputs에 합칠 input 목록 조각입니다. 현재 input 유형에 맞는 하나를 고르고 실제 경로·기존 encoding·ID·읽기 상태에 맞춰 병합합니다. 신규 파일을 기존 input과 중복해서 읽지 않도록 분리하며 공용 VAN input에는 이 include_lines를 적용하지 않습니다.
@@ -39,3 +42,5 @@ aggregate·구간 상태·Logstash 본문 버퍼는 사용하지 않습니다. �
 - 2026-10-18: Logstash aggregate로 구간 기억·본문 조합.
 - 2026-10-23: Filebeat multiline으로 조합 위치 이동.
 - 2026-10-23: 사용자 변경 방향에 따라 POST RESPONSE DATA를 제외하고 RESULT DATA 응답 수집으로 전환.
+
+- 2026-10-26: type: log 기준 가이드를 정리하고, 가변 형식 지원·제약 및 추가 12개 사례 검증을 문서화. 수집 설정은 변경하지 않음.
