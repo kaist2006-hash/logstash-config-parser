@@ -1,46 +1,51 @@
-# digital.conf 진행 현황
+# digital.conf — 한 줄 OUTBOUND 로그 최종 설정
 
-업데이트: 2026-10-26
+업데이트: 2026-10-29
 
-## 현재 수집 대상
+현재 기준은 **시간값까지 같은 줄에 기록된 OUTBOUND 로그**입니다. 예전 REQUEST DATA / RESULT DATA 멀티라인 방식은 현재 설정에 사용하지 않습니다.
 
-- 요청: REQUEST DATA 하위 [url=…].
-- 응답: RESULT DATA 하위 JSON.
-- POST RESPONSE DATA: 수집 제외.
+## 바로 사용할 파일
 
-Filebeat가 날짜·시간 경계로 multiline 메시지를 완성한 후 위 두 제목이 있는 레코드만 전송합니다. Logstash는 한 이벤트 안에서 요청 URL·query 또는 응답 JSON을 파싱하고 응답 첫 객체의 TR_ID만 URL 인코딩합니다.
+- [전체 digital.conf](digital.conf): input → 신규 OUTBOUND → 기존 VAN → 공통 처리 → output 전체.
+- [설정·적용 가이드](GUIDE.md)
+- [Logstash 필터 설명과 괄호 배치](LOGSTASH_GUIDE.md)
+- [Filebeat 단일 행 입력 가이드](FILEBEAT_GUIDE.md)
+- [실로그 재현 검증 결과](VALIDATION.md)
+- [가변 형식과 지원 범위](VARIABLE_FORMATS.md)
 
-## 파일
+**비밀번호 4곳은 보안상 00000000입니다. 적용 전에 기존 실제 비밀번호로 교체하세요.** 공개 저장소에 실제 비밀번호·원본 로그·실제 거래값은 올리지 않았습니다.
 
-- [digital.conf](digital.conf): 현재 전체 Logstash 설정.
-- [Filebeat filestream input 예시](filebeat.epay-filestream.input.yml).
-- [Filebeat 기존 log input 예시](filebeat.epay-log.input.yml).
-- [통합 가이드](GUIDE.md).
-- [Filebeat 설정 가이드](FILEBEAT_GUIDE.md).
-- [Logstash 설정 가이드](LOGSTASH_GUIDE.md).
-- [가변 형식 지원 범위](VARIABLE_FORMATS.md).
-- [검증 요약](VALIDATION.md).
+## 현재 동작
 
-Filebeat 파일은 기존 filebeat.inputs에 합칠 input 목록 조각입니다. 현재 input 유형에 맞는 하나를 고르고 실제 경로·기존 encoding·ID·읽기 상태에 맞춰 병합합니다. 신규 파일을 기존 input과 중복해서 읽지 않도록 분리하며 공용 VAN input에는 이 include_lines를 적용하지 않습니다.
+- 파일 조건: [log][file][path]에 epay가 포함된 경우. 필터와 Elasticsearch output에 같은 조건을 사용합니다.
+- 요청: 시간·레벨·로거·status·헤더 업체코드·헤더 TR_ID·URL을 추출하고, URL 뒤의 모든 key=value를 request_data.*에 저장합니다.
+- 응답: 공통 헤더를 추출하고, 표시용 바깥 대괄호를 제외한 JSON 객체 전체를 result_data.*에 저장합니다.
+- URL 필드는 첫 & 앞까지입니다. 뒤의 파라미터는 버리지 않고 request_data에 파싱합니다.
+- 공통 헤더 TR_ID는 요청·응답 매칭용입니다. 본문 TR_ID와 혼동하지 않습니다.
+- 원문 값은 인코딩·디코딩하지 않습니다. 요청의 URL 인코딩과 응답의 디코딩 상태를 그대로 보존합니다.
+- log_timestamp를 날짜로 변환합니다. **@timestamp에는 복사하지 않습니다.** 따라서 @timestamp 기반 Kibana 조회·인덱스 날짜는 입력 이벤트의 기존 시간을 사용합니다.
+- 일반 로그만 제외합니다. 대상의 grok / kv / json / date 실패는 태그와 원문을 보존합니다.
+- 멀티라인·aggregate·구간 버퍼·Ruby 필터를 사용하지 않습니다. 이 신규 분기는 워커 1을 요구하지 않습니다.
 
-## 이번 변경
+## 검증 범위
 
-Filebeat include_lines와 Logstash 응답 grok의 제목을 RESULT DATA로 바꿨습니다. 종료 별표가 반복되는 실로그에 맞춰 응답 본문은 첫 종료 구분선까지만 추출합니다.
+최신 첨부 로그 1,229개 물리적 줄 중 요청 2건·응답 2건 모두 추출·날짜 해석 성공, 공통 헤더 매칭 2쌍 일치입니다. 비대상 1,225줄은 선택 대상에서 제외됐습니다.
 
-aggregate·구간 상태·Logstash 본문 버퍼는 사용하지 않습니다. 이번 신규 필터는 worker 1을 요구하지 않아 기존 worker 2를 사용할 수 있습니다. 요청 처리, 응답 배열 구조·TR_ID 인코딩, 기존 VAN·input·output은 유지합니다. 공개용 접속 password는 00000000 네 곳입니다.
+이는 **오프라인 정규식·KV·JSON·날짜 변환 재현 검사**입니다. 실제 Logstash/JRuby 실행, Elasticsearch 매핑 적용, 운영 처리량 시험은 완료한 것이 아닙니다. 사용자는 앞선 저장 미표시 현상이 Kibana 시간 범위 차이였음을 확인했습니다.
 
-## 검증 상태
+## 적용 전 필수 확인
 
-첨부 실로그 순차 재현에서 요청 1,056건과 RESULT 응답 946건을 정상 추출했습니다. 응답은 한 줄 758건, 5줄 181건, 6줄 7건입니다. 빈 배열 응답 7건도 그대로 보존합니다. POST RESPONSE DATA는 0건 선택했습니다.
+1. 현재 conf를 백업하고 비밀번호를 복원합니다.
+2. 실제 원본 로그 경로가 필터/output의 epay 조건과 일치하는지 확인합니다. digital.conf라는 설정 파일명은 log.file.path 조건과 무관합니다.
+3. 기존 신규 파싱 분기를 교체합니다. 중복 추가하지 않습니다. 기존 VAN·공통 처리와 output은 유지합니다.
+4. Filebeat 전용 input의 예전 multiline과 REQUEST DATA/RESULT DATA용 include_lines를 제거합니다. 다른 파일 input은 변경하지 않습니다.
+5. log_timestamp의 Elasticsearch 매핑을 확인합니다. 기존 text 매핑은 Logstash date 필터로 date 타입으로 바뀌지 않습니다.
+6. 실제 Logstash 설치 폴더에서 다음 명령으로 검사합니다.
 
-이전 POST 응답 1,049건과 이번 RESULT 응답 946건은 서로 다른 수집 범위입니다. 같은 내용인 응답이 939건이며, RESULT의 빈 배열 7건과 POST 쪽 추가 내용 110건은 서로 일치하지 않습니다. 따라서 이전 응답 전체와 동일한 수집 결과라고 해석하면 안 됩니다.
+~~~bash
+./bin/logstash -t -f conf/digital.conf
+~~~
 
-실제 Filebeat/Logstash 실행·부하 시험 및 운영 서버 배포는 수행하지 않았습니다. 원본 로그·거래값은 공개하지 않았습니다.
+괄호 주석 [MESSAGE] END → [FILE] END 뒤에 기존 VAN else if가 이어지고, 전체 [FILTER] END는 모든 공통 처리 뒤에 있습니다.
 
-## 이력
-
-- 2026-10-18: Logstash aggregate로 구간 기억·본문 조합.
-- 2026-10-23: Filebeat multiline으로 조합 위치 이동.
-- 2026-10-23: 사용자 변경 방향에 따라 POST RESPONSE DATA를 제외하고 RESULT DATA 응답 수집으로 전환.
-
-- 2026-10-26: type: log 기준 가이드를 정리하고, 가변 형식 지원·제약 및 추가 12개 사례 검증을 문서화. 수집 설정은 변경하지 않음.
+이 폴더 밖의 bgf.conf / card.conf / frontback.conf 자료는 이번 업데이트에서 변경하지 않습니다.

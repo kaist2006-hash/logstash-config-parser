@@ -1,154 +1,90 @@
-# Logstash 신규 필터 가이드
+# Logstash 최종 필터 설명과 괄호 배치
 
-기준일: 2026-10-26 · 전제: Filebeat가 레코드 전체를 한 message로 조합해서 전송
+기준일: 2026-10-29. [전체 설정](digital.conf) · [적용 가이드](GUIDE.md)
 
-## 1. 현재 신규 필터
+## 1. 현재 필터 구성
 
-아래 코드는 신규 파일용 부분만 보여줍니다. 기존 VAN·input·output을 포함한 전체 설정은 [digital.conf](digital.conf)를 기준으로 합니다.
+1. 원본 log.file.path에 epay 포함 여부 확인.
+2. OUTBOUND REQUEST DATA / OUTBOUND RESULT TO JSON DATA 마커만 파싱.
+3. grok으로 시간·레벨·로거·status·공통 헤더와 URL/본문을 분리.
+4. date로 log_timestamp 자체를 날짜로 변환. @timestamp는 유지.
+5. 요청은 kv → request_data, 응답은 json → result_data.
+6. 해당 경로의 일반 로그만 drop. 대상의 파싱 실패 이벤트는 태그와 message 유지.
+7. 파일 조건이 불일치하면 기존 VAN else if로 이어짐.
+
+필터와 Elasticsearch output의 경로 조건은 반드시 같은 실제 원본을 가리켜야 합니다. 설정 파일명 digital.conf는 log.file.path와 무관합니다.
+
+## 2. 헷갈렸던 괄호
+
+아래는 배치 설명용 축약 코드입니다. 실제 전체 파일을 대체하는 설정은 아닙니다.
 
 ~~~logstash
-filter {
-        # Filebeat sends one complete timestamp-delimited record per event.
-        if [log][file][path] =~ /(?:^|[\\\/])epay\.out$/ {
-            grok {
-                match => {
-                    "message" => [
-                        "(?m)^REQUEST DATA\r?\n[ \t]*\*+[ \t]*\r?\n\[url=%{DATA:[data][request_url]}(?:[&?]%{DATA:[@metadata][request_query]})?\][ \t]*\r?\n[ \t]*\*+[ \t]*\r?$",
-                        "(?m)^RESULT DATA\r?\n[ \t]*\*+[ \t]*\r?\n%{DATA:[@metadata][response_json]}\r?\n[ \t]*\*+[ \t]*\r?$"
-                    ]
-                }
-                tag_on_failure => ["_epay_section_parse_failure"]
-            }
+filter {                                      # FILTER 열기
+    if [log][file][path] =~ /epay/ {           # FILE 열기
+        if [message] =~ /OUTBOUND/ {           # MESSAGE 참 분기 열기
+            # 실제 파싱
+        } else {                              # 참 분기 닫고 else 열기
+            drop {}
+        }                                     # else 닫기, MESSAGE if/else 완료
+    }                                         # FILE 닫기
 
-            if "_epay_section_parse_failure" in [tags] {
-                drop {}
-            } else if [@metadata][response_json] {
-                json {
-                    source => "[@metadata][response_json]"
-                    target => "[data][result_data]"
-                    tag_on_failure => ["_epay_response_json_failure"]
-                }
+    else if [message] =~ /RECV VAN MSG|SEND VAN MSG/ {
+        # 기존 VAN
+    } else {
+        drop {}
+    }
 
-                if "_epay_response_json_failure" in [tags] {
-                    drop {}
-                } else if [data][result_data][0][TR_ID] {
-                    ruby {
-                        code => '
-                            path = "[data][result_data][0][TR_ID]"
-                            event.set(path, java.net.URLEncoder.encode(event.get(path).to_s, "UTF-8"))
-                        '
-                    }
-                }
-            } else if [@metadata][request_query] {
-                kv {
-                    source => "[@metadata][request_query]"
-                    target => "[data][request_data]"
-                    field_split => "&"
-                    value_split => "="
-                    allow_empty_values => true
-                    whitespace => "strict"
-                }
-            }
-        }
-}
+    # 기존 공통 처리
+}                                             # FILTER 닫기
 ~~~
 
-기존 filter 전체를 위 코드로 덮어쓰면 VAN 분기가 빠집니다. 전체 설정에서는 신규 if 다음에 기존 VAN else if가 연결돼 있습니다.
+파일 조건과 메시지 조건을 하나의 괄호로 닫는 것이 아닙니다. MESSAGE의 참 분기는 "} else {"의 앞쪽 "}"에서 이미 닫혔습니다. else의 닫힘 뒤에 FILE 닫힘이 하나 더 있으며, 그 다음 기존 VAN else if가 연결됩니다. FILTER는 공통 처리 뒤에 별도로 닫힙니다.
 
-## 2. 그룹별 동작
+전체 digital.conf의 주석 [MESSAGE] END, [FILE] END, [FILTER] END를 확인하세요. mutate 바로 뒤에서 FILTER를 먼저 닫고 if를 블록 밖에 놓으면 최상위 input/filter/output을 기대한다는 컴파일 오류가 납니다.
 
-| 그룹 | 역할 |
-|---|---|
-| 파일 경로 if | epay.out 이벤트만 신규 파싱 |
-| grok 패턴 두 개 | 요청 URL 행 또는 RESULT JSON 본문 추출 |
-| 실패 조건 | 구간 추출 실패 이벤트 저장 제외 |
-| response_json 분기 | 추출한 응답 JSON을 구조화 |
-| JSON 실패 조건 | JSON 문법 오류 이벤트 저장 제외 |
-| TR_ID Ruby | 첫 번째 응답 객체의 TR_ID만 URL 인코딩 |
-| request_query kv | 요청 파라미터를 &와 = 기준으로 필드화 |
-
-정상 요청은 grok·kv, 정상 응답은 grok·JSON·필요할 때 Ruby를 실행합니다. grok은 기본 break_on_match: true이므로 첫 패턴에 성공하면 뒤의 패턴을 검사하지 않습니다.
-
-aggregate·이벤트 간 상태·본문 누적·Logstash timeout을 쓰지 않습니다. metadata는 현재 이벤트의 추출값을 잠깐 전달하는 필드이며 다음 이벤트를 기다리는 기억 공간이 아닙니다. 이 신규 필터 자체는 worker 1·순서 유지를 요구하지 않습니다.
-
-## 3. grok 패턴 읽기
-
-- (?m): Logstash grok에서 점(.)이 줄바꿈까지 포함해 응답 여러 줄을 캡처하도록 함.
-- ^REQUEST DATA / ^RESULT DATA: 해당 제목 행에서 시작.
-- \r?\n: LF 또는 CRLF 줄 구분 처리.
-- [ \t]*\*+[ \t]*: 별표 개수와 구분선 앞뒤 공백·탭 허용.
-- 요청의 DATA: URL 값과 query 문자열을 추출.
-- (?:[&?]…)? : 첫 query 구분자가 & 또는 ?인 경우, query 없는 경우 허용.
-- 응답의 DATA: 첫 종료 별표 행까지 JSON 본문을 추출. 키별로 패턴을 나열하지 않음.
-
-제목·구분선·본문의 배치는 고정하고, 그 안의 업무 값을 가변적으로 받습니다. 지원 범위와 한계는 [가변 형식 문서](VARIABLE_FORMATS.md)에 상세히 적었습니다.
-
-## 4. 요청 예시와 생성값
-
-설명용 식별값입니다.
+## 3. 정규식 안의 괄호는 설정 블록이 아님
 
 ~~~text
-[url=https://example.com/api&RESULT_CODE=0000&TR_ID=ABC%2B123%3D&PARTNER_CODE=TEST]
+\[(?=\{)%{DATA:[@metadata][response_json]}\]?\r?$
 ~~~
 
-~~~json
-{
-  "data": {
-    "request_url": "https://example.com/api",
-    "request_data": {
-      "RESULT_CODE": "0000",
-      "TR_ID": "ABC%2B123%3D",
-      "PARTNER_CODE": "TEST"
-    }
-  }
-}
+- \[ : 실제 대괄호 문자.
+- (?=\{) : 다음 문자가 중괄호인지 확인하는 정규식 lookahead. 입력을 소비하지 않음.
+- \{ : 실제 중괄호 문자. Logstash 설정 블록을 여는 문법이 아님.
+- %{DATA:...} : grok 패턴/필드 지정 문법.
+- \]? : 표시용 닫는 대괄호가 없어도 허용.
+- \r?$ : 선택적 CR 이후 메시지 끝.
+
+이 문자열 내부의 중괄호를 설정 블록의 열림/닫힘으로 세지 마세요. 편집기의 단순 괄호 강조 때문에 실제 균형과 다르게 보일 수 있습니다.
+
+## 4. 요청 kv 옵션
+
+~~~logstash
+target => "[request_data]"
+field_split => "&"
+value_split => "="
+allow_empty_values => true
+whitespace => "strict"
+include_brackets => false
 ~~~
 
-query 키 이름·개수·순서는 kv가 처리하므로 RESULT_CODE·TR_ID·PARTNER_CODE를 필수로 지정하지 않습니다. 요청 URL·값은 디코딩하거나 재인코딩하지 않습니다. KEY= 같은 빈 값을 보존하고 query가 없으면 kv를 건너뜁니다.
+- field_split / value_split: query를 &로 나누고 =로 키·값 분리.
+- allow_empty_values: A=&B=1에서 A도 빈 문자열로 보존. 원문에 없는 키를 생성하지 않음.
+- whitespace strict: = 주변 공백을 관대하게 무시하지 않음. 빈 값 수집을 위해 함께 사용.
+- include_brackets false: 값의 (), [], <>를 감싸는 기호라고 자동 제거하지 않음. 로그 바깥 대괄호를 제거하는 옵션은 아니며 바깥 프레임은 grok에서 분리.
+- 중복 키는 kv 기본 동작에 따라 배열이 될 수 있음.
+- URL 인코딩 문자열을 자동 디코딩하거나 다시 인코딩하지 않음.
 
-## 5. 응답 예시와 생성값
+## 5. JSON 대상 분리
 
-~~~json
-[{"RESULT_CODE":"0000","RESULT_MSG":"성공","TR_ID":"ABC+123="}]
-~~~
+result_data 전체를 JSON 구조로 생성합니다. 최상위 TR_ID / PARTNER_CODE를 JSON 값으로 덮어쓰지 않습니다. 중첩 객체·배열·숫자·boolean·null은 JSON 값의 구조와 타입에 따라 처리됩니다. 다만 현재 외곽 프레임은 JSON 객체 하나를 기준으로 합니다. 외곽 자체가 다중 객체 배열로 변경되는 경우는 별도 검토 대상입니다.
 
-JSON 파싱과 TR_ID 변환 뒤의 업무 필드:
+## 6. 날짜와 타임스탬프
 
-~~~json
-{
-  "data": {
-    "result_data": [
-      {
-        "RESULT_CODE": "0000",
-        "RESULT_MSG": "성공",
-        "TR_ID": "ABC%2B123%3D"
-      }
-    ]
-  }
-}
-~~~
+date target은 log_timestamp입니다. @timestamp 복사는 의도적으로 없습니다. Elasticsearch 매핑을 수정하는 필터가 아니므로 기존 text 필드의 타입은 그대로입니다.
 
-Logstash의 TR_ID 접근 경로는 [data][result_data][0][TR_ID]이며, Kibana에서는 data.result_data.TR_ID로 확인합니다. 원문 배열의 객체가 여러 개면 JSON 파싱은 전체를 하지만 TR_ID 인코딩은 첫 객체에만 적용합니다.
+Kibana 시간 필드 및 output의 %{+YYYY.MM.dd} 기준은 별개입니다. 날짜 인덱스는 @timestamp를 사용합니다. 자세한 매핑 확인 방법은 [GUIDE.md](GUIDE.md)를 보세요.
 
-EPayReturnReq·그 안의 카드 필드 등은 JSON 본문에 있으면 구조대로 추출됩니다. RESULT_CODE나 TR_ID가 없다고 응답 전체를 버리지는 않습니다. 빈 배열 []도 정상 JSON으로 유지합니다.
+## 7. 검증 수준
 
-## 6. 저장되는 내용과 실패 처리
-
-message는 Filebeat가 만든 날짜·제목·구분선·본문 전체로 유지합니다. 파싱된 업무 필드는 data 아래에 추가합니다. TR_ID 인코딩은 추출 필드만 바꾸므로 message의 원문 값은 유지합니다. metadata는 일반적인 Elasticsearch 출력에 포함되지 않습니다.
-
-에러 태그 _epay_section_parse_failure 또는 _epay_response_json_failure를 확인해 drop합니다. drop된 이벤트의 태그는 색인에서 검색할 수 없습니다. JSON 파서는 실패 경고를 남길 수 있지만 모든 grok 실패가 개별 경고 로그로 남는 것은 아니므로, 운영 실패 건수 집계가 필요하면 별도 관측 경로를 설계해야 합니다. 현재 설정에 오류 이벤트 전용 저장소는 포함되지 않았습니다.
-
-전체 설정의 접속 비밀번호는 공개용 임시값 00000000 네 곳입니다. 운영 목적지·인덱스·비밀번호는 실제 환경에서 확인합니다.
-
-## 7. 검증과 한계
-
-첨부 원문의 독립적인 구간 추출값과 비교하여 요청 1,056건·RESULT 응답 946건이 일치했습니다. POST RESPONSE DATA는 제외합니다. 응답 여러 줄 188건, 빈 배열 7건도 포함됩니다.
-
-이 검사는 Python 재현과 실제 Java URLEncoder 기준이며 실제 Filebeat·Logstash/JRuby 실행·부하 검사는 아닙니다. 업무 문서 간 TR_ID를 자동 결합하거나 전송 재시도 중복을 제거하는 설정도 아닙니다.
-
-- [Filebeat 가이드](FILEBEAT_GUIDE.md)
-- [가변 형식 지원 범위](VARIABLE_FORMATS.md)
-- [검증 결과](VALIDATION.md)
-- [grok 공식 문서](https://www.elastic.co/docs/reference/logstash/plugins/plugins-filters-grok)
-- [kv 공식 문서](https://www.elastic.co/docs/reference/logstash/plugins/plugins-filters-kv)
-- [JSON 공식 문서](https://www.elastic.co/docs/reference/logstash/plugins/plugins-filters-json)
+현재 실로그 요청 2건·응답 2건 재현 성공입니다. 실제 Logstash -t / JRuby 실행과 운영 부하 검증이 완료됐다는 의미는 아닙니다. 상태 없는 파싱이므로 이 신규 분기 때문에 workers 1을 강제할 필요는 없지만 전체 파이프라인의 다른 상태 의존 필터는 별도 확인해야 합니다.

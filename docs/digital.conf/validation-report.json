@@ -1,0 +1,40 @@
+{
+  "checked_on": "2026-10-29",
+  "validation_mode": "Offline Python regex/KV/JSON/datetime replay; NOT native Logstash/JRuby or Elasticsearch runtime",
+  "source_name": "catalina.out",
+  "source_bytes": 172354,
+  "source_physical_lines": 1229,
+  "source_encoding_used": "CP949 strict",
+  "source_sha256": "dffe2040a637991df41a3d93bda30feef97927df41ccc0e9effd40374dd6174a",
+  "counts": {
+    "excluded_physical_lines": 1225,
+    "date_success": 4,
+    "request_success": 2,
+    "response_success": 2
+  },
+  "header_matching_pairs": 2,
+  "grok_failures": 0,
+  "kv_unparsed_fragments": 0,
+  "json_failures": 0,
+  "date_failures": 0,
+  "request_payload_field_counts": [
+    4,
+    8
+  ],
+  "response_payload_field_counts": [
+    4,
+    4
+  ],
+  "wrapper_variant_checks_passed": 6,
+  "static_delimiter_balance": "pass, not a native compiler test",
+  "preserved_van_pattern_count": 48,
+  "original_van_and_common_filter_preserved": true,
+  "original_output_preserved_except_epay_path_condition": true,
+  "password_placeholders": 4,
+  "log_timestamp_date_target": "log_timestamp",
+  "copy_to_timestamp": false,
+  "config_sha256": "a763d15922702aa1e8477ec013a32ae6a8a9e3dbcf94a8e7d569c07bf0e375d0",
+  "native_logstash_test": "not performed",
+  "elasticsearch_mapping_verification": "not performed",
+  "load_test": "not performed"
+}

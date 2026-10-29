@@ -1,88 +1,53 @@
-# Filebeat 설정 가이드 — type: log
+# Filebeat — 멀티라인 없는 단일 행 수집
 
-기준일: 2026-10-26 · 수집 대상: REQUEST DATA와 RESULT DATA
+업데이트: 2026-10-29
 
-## 1. 적용할 설정
+로그 생성부에서 시간과 OUTBOUND 헤더·본문을 한 줄로 합친 최신 형식을 사용합니다. Filebeat에서 멀티라인 조합을 하지 않습니다.
 
-아래는 전체 filebeat.yml이 아니라 기존 filebeat.inputs에 합칠 신규 파일 전용 입력입니다.
+## 현재 type: log 입력
+
+[입력 예시 파일](filebeat.epay-log.input.yml)은 전체 filebeat.yml이 아니라 filebeat.inputs에 합치는 입력 목록입니다.
 
 ~~~yaml
 filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /실제/로그/경로/epay.out
-
-    multiline.type: pattern
-    multiline.pattern: '^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}'
-    multiline.negate: true
-    multiline.match: after
-    multiline.timeout: 5s
-
-    include_lines: ['(?m)^(REQUEST DATA|RESULT DATA)\r?$']
+      - /CHANGE_ME/epay.out
 ~~~
 
-이미 filebeat.inputs가 있으면 그 아래에 - type: log 블록만 병합합니다. input을 별도 파일로 로딩한다면 [입력 목록 조각](filebeat.epay-log.input.yml)을 참고하세요. 현재 운영 input이 log인지 실제 설정으로 확인해야 하며, 이번 예시는 input 유형을 전환하는 작업이 아닙니다.
+/CHANGE_ME/epay.out은 실제 원본 경로로 바꾸세요. 기존 encoding, input 식별자, registry 관련 정책, output.logstash와 접속 설정은 임의 변경하지 않습니다. 예시에는 encoding을 강제로 지정하지 않았습니다.
 
-## 2. 옵션별 의미
+현재 Logstash는 경로에 epay가 포함되는지 검사합니다. 실제 파일이 다른 이름/경로라면 필터와 Elasticsearch output의 조건도 같이 맞춰야 합니다.
 
-| 옵션 | 동작 |
-|---|---|
-| paths | 이 multiline·필터를 적용할 파일 범위 |
-| multiline.type | 정규식 기반으로 줄 연결 여부 판단 |
-| pattern | 날짜·시간으로 시작하는 줄을 새 레코드의 시작으로 판단 |
-| negate: true / match: after | 날짜로 시작하지 않는 줄을 앞 레코드에 연결 |
-| timeout: 5s | 새 경계가 없어도 timeout 후 대기 중인 메시지 전송 |
-| include_lines | 완성된 메시지에 REQUEST DATA 또는 RESULT DATA 독립 행이 있는 경우만 전송 |
+## 기존 설정에서 제거할 항목
 
-include_lines는 multiline 조합 뒤에 적용합니다. 제목 한 줄만 남기는 옵션이 아니라, 제목이 포함된 완성 메시지 전체의 전송 여부를 결정합니다. POST RESPONSE DATA만 있는 메시지와 일반 로그는 제외합니다.
+대상 파일 전용 input에 남은 예전 항목만 제거합니다.
 
-## 3. 실제 로그 형태와 전송 결과
+- multiline.type / pattern / negate / match / timeout
+- filestream의 multiline parser
+- REQUEST DATA 또는 RESULT DATA 독립행을 찾는 옛 include_lines
 
-아래는 첨부 RESULT 응답과 같은 구조이며 구분선 길이를 줄였습니다.
+현재 예시는 include_lines를 사용하지 않고 한 줄씩 전달하며, 대상 선별은 Logstash가 담당합니다. 다른 파일을 읽는 input의 설정은 변경하지 않습니다.
 
-~~~text
-2026-10-01 13:04:43,165 INFO [PostManager]
-********************
-RESULT DATA
-********************
-[{
-  "RESULT_CODE": "0000",
-  "RESULT_MSG": "성공",
-  "PARTNER_CODE": "MKED1"
-}]
-********************
-~~~
+## 다중 input
 
-다음 날짜·시간 시작 줄이 오면 위 전체가 message 필드 하나인 이벤트 한 건이 됩니다. 문자열 안의 줄바꿈은 유지합니다. 개행을 없애 한 줄 문자열로 붙이는 설정이 아닙니다.
+기존 VAN 파일 input과 신규 로그 input의 paths가 겹치지 않게 유지합니다. 같은 파일을 두 input에서 동시에 읽게 만들지 마세요. 새 입력 예시를 적용한다고 기존 파일을 다시 읽는 registry를 삭제하지 마세요.
 
-요청도 날짜 행·별표·REQUEST DATA·별표·[url=…]·별표가 하나의 message가 됩니다. 날짜 정규식은 레코드 경계 판단에 쓰이며 날짜를 별도 업무 필드로 파싱하는 설정은 아닙니다. 현재 Logstash는 전체 message를 보존하므로 날짜·제목·구분선도 message에는 남습니다.
+기존 input에 다른 파일도 함께 등록되어 있다면 대상 파일만 전용 input으로 분리하되, input 유형 변경이나 registry 초기화를 수집 변경과 동시에 임의 수행하지 않습니다.
 
-## 4. 기존 파일 수집에 영향 없게 적용
+## filestream 대안
 
-- 신규 epay.out 전용 input에만 적용합니다. 공용 VAN input에 include_lines를 넣으면 VAN 레코드가 제외될 수 있습니다.
-- 기존 input의 glob도 epay.out을 읽는다면 paths를 분리하거나 기존 input에서 이 파일을 제외합니다.
-- 기존 encoding, 업무 라우팅용 fields·tags·processors 중 필요한 항목을 유지합니다.
-- 기존 output.logstash를 사용합니다. 이번 입력 예시에 전역 output을 중복 추가하지 않습니다.
-- 실제 파일명과 Logstash의 epay.out 경로 조건을 함께 맞춥니다.
-- input 유형·식별자·registry 변경은 기존 읽기 위치와 재수집 여부에 영향을 줄 수 있으므로 기존 상태를 확인합니다.
+[filebeat.epay-filestream.input.yml](filebeat.epay-filestream.input.yml)은 이미 filestream을 사용하는 경우의 대안 예시입니다. 현재 log 입력을 이번 변경 때문에 filestream으로 이관하라는 뜻이 아닙니다. 두 예시 중 실제 사용 중인 유형 하나만 적용합니다.
 
-기존 log input에서 신규 파일을 제외할 때의 예시는 다음입니다. 이 옵션은 신규 epay 전용 input이 아니라 기존 중복 입력에 적용합니다.
+## 운영 확인
 
-~~~yaml
-exclude_files: ['(^|[\\/])epay\.out$']
-~~~
+- 원본 파일이 실제 한 줄인지 확인합니다. 편집기 자동 줄바꿈과 실제 줄바꿈은 다릅니다.
+- 파일의 문자 인코딩과 Filebeat encoding 설정을 일치시킵니다. 첨부 검증 파일은 CP949로 정상 해석됐으며 UTF-8 strict 해석은 실패했습니다. 운영 파일의 encoding이 같다고 단정하지 않습니다.
+- 출력 장애·전송 재시도로 인한 중복 가능성은 별개의 문제입니다. 이번 필터는 영구 중복 제거를 제공하지 않습니다.
+- 기존 포트 9900과 Logstash 연결 설정은 전체 digital.conf에 보존돼 있습니다.
+- 실제 Filebeat 환경에서 설정 검사와 전송 검증이 필요합니다.
 
-## 5. 적용 전 확인
+[Logstash 가이드](LOGSTASH_GUIDE.md) · [검증 결과](VALIDATION.md)
 
-기존 Filebeat 실행 명령의 설정 경로·옵션을 기준으로 설정 검사를 수행하고, 실제 전송 이벤트에 제목부터 마지막 별표까지 있는지 확인합니다. 날짜 형식이 바뀌거나 본문 완성 전에 timeout되면 메시지가 잘못 나뉠 수 있습니다. 최대 줄·바이트 제한 초과, 회전·재시작 동작도 실제 환경에서 확인해야 합니다.
-
-첨부 파일 재현에서는 요청 1,056건·RESULT 응답 946건이 선택됐고, RESULT의 여러 줄 본문 188건을 모두 처리했습니다. 실제 Filebeat 실행·부하 검사를 완료한 결과는 아닙니다.
-
-## 관련 문서
-
-- [Logstash 가이드](LOGSTASH_GUIDE.md)
-- [가변 형식 지원 범위](VARIABLE_FORMATS.md)
-- [검증 결과](VALIDATION.md)
-- [Filebeat log input 공식 문서](https://www.elastic.co/guide/en/beats/filebeat/8.17/filebeat-input-log.html)
-- [multiline 공식 문서](https://www.elastic.co/docs/reference/beats/filebeat/multiline-examples)
+참고: [Filebeat 8.17 log input](https://www.elastic.co/guide/en/beats/filebeat/8.17/filebeat-input-log.html)
