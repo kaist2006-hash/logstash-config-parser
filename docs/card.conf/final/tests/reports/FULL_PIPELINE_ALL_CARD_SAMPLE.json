@@ -1,17 +1,19 @@
 {
-  "runtime": "Logstash 8.17.6 real stdin/json_lines/Ruby/file pipeline",
-  "workers": 4,
-  "events": 518,
-  "mode": "JSON default minimal, only specs_path in script_params",
+  "runtime": "Actual Logstash 8.17.6 stdin/json_lines -> Ruby(specs_path only) -> file; 4 workers",
+  "events": 522,
+  "real_source_events": 520,
+  "synthetic_abnormal_events": 2,
   "result": "passed",
-  "result_differences": 0,
+  "differences": 0,
   "counts": {
     "control": 24,
     "ok": 446,
-    "fallback": 46,
-    "error": 2
+    "fallback": 49,
+    "error": 3
   },
-  "scope": "all 16 services plus NH padded cancellation and Samsung legacy/fragment samples; CP949 input simulation, not live Filebeat",
-  "parser_sha256": "832c795dd3bdb138628b52869e6ab327568a71ded0d3eb79d2b09e4780dab2de",
-  "specs_sha256": "19eadada09b11d2178b9f233903928d9f2646cd08b5123cbfe05b05c11f7765a"
+  "final_artifacts": {
+    "card_detail_parser.rb": "cff31b6db93288702913d36c64b71bbcb6cf7fe7f3902ff2d3795cec638f1a02",
+    "card_detail_specs.json": "31ff893bc797f317c4b235e8e0f1d6f5bee7a7b4ee58e4e4f230c5dbc26ee660"
+  },
+  "scope": "All 16 services, explicit Samsung F55 and NH network real cases, plus severe short/bad common negatives. CP949 input simulation; not live Filebeat."
 }

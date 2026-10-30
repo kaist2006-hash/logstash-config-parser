@@ -1,0 +1,15 @@
+{
+  "selected_error_events": 142,
+  "mti": {
+    "0800": 80,
+    "0810": 62
+  },
+  "first_error": {
+    "truncated_field|41": 142
+  },
+  "with_identifier": 0,
+  "with_context": 142,
+  "business_core_complete": 0,
+  "excluded_other_physical_lines": 52,
+  "scope": "NH MS: selected error candidates only; 52 non-envelope trace lines excluded from event totals. Aggregate-only inspection before business-field removal."
+}

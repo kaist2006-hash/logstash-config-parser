@@ -1,5 +1,7 @@
 # FINAL14 적용 안내
 
+> 현재 적용 파일과 분류 기준은 [FINAL15 안내](APPLY_GUIDE_FINAL15.md)를 따른다. 아래는 이전 버전 안내다.
+
 이 파일은 진단 출력을 줄이고 확인된 필드 경계를 보완한 검증본입니다. 전체 카드사 모든 전문의 상세 파싱이 완료된 버전으로 안내하지 않습니다. 남은 범위는 VALIDATION_FINAL14.md를 확인하세요.
 
 1. 같은 배포본의 card_detail_parser.rb와 card_detail_specs.json을 함께 교체합니다.

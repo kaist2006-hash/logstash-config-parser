@@ -1,6 +1,6 @@
 # 카드사별 공통 필드 정의 및 검증 범위
 
-기준: `2026-10-30.final14`. 카드사별 실제 출력 위치·관측 건수는 [FINAL14 필드표](CARD_FIELDS_FINAL14.md), 검증 범위와 남은 제한은 [검증서](VALIDATION_FINAL14.md), 적용은 [안내](APPLY_GUIDE_FINAL14.md)를 따른다. 아래는 공통 필드명 요약이며 모든 이벤트에서 값이 존재한다는 뜻은 아니다. 기존 card_detail.header/detail 경로는 현재 출력 경로가 아니다.
+기준: `2026-10-30.final15`. 카드사별 공통/상세 분류·출력 위치·관측 건수는 [FINAL15 필드표](CARD_FIELDS_FINAL15.md), 결과와 범위는 [검증서](VALIDATION_FINAL15.md), 적용은 [안내](APPLY_GUIDE_FINAL15.md)를 따른다. fallback은 공통필드만 추출하며 error에는 업무 값을 출력하지 않는다.
 
 ## 먼저 알아야 할 점
 
@@ -78,3 +78,5 @@ final10에서는 **농협 IC·MS에만** 규격으로 해석한 필드 뒤의 �
 세부 카드사별 status 건수와 적용 방법은 [final10 검증 및 적용 안내](VALIDATION_FINAL10.md)를 참조한다. [참고용 엑셀](CARD_CONF_공통필드_카드사별_FINAL10_20261018.xlsx)은 현재 출력 필드 정의를 정리한 문서다. 현재 구현의 최종 근거는 같은 폴더의 `card_detail_parser.rb`와 `card_detail_specs.json`이며, 과거 `card_field_reference_excel.xml`은 2026-10-11 시점 자료라 현 버전의 근거로 사용하지 않는다.
 
 FINAL14의 DE42 출력 경계: 하나 통합은 앞 11자리, 현대 MS·신한 MS는 앞 10자리만 가맹점번호로 출력하고 전체 15바이트를 소비·검증한다. 신한 IC는 문서상 15바이트 정의를 유지한다. 국민 IC의 DE42 HOST ID와 DE118 국내 가맹점번호는 별도 필드다.
+
+위 공통 8개 이름은 카드사 간 교집합이다. FINAL15의 fallback 공통 범위는 프로필별 emit 중 DE3~49와 network_code이며, 각 항목은 FINAL15 필드표의 공통/상세 열에 표시했다. 상세 규격 불일치라도 공통정보가 검증되면 fallback이며, 최소 공통정보가 부족하면 error다.

@@ -2,116 +2,274 @@
   "result": "passed",
   "cases": [
     {
-      "name": "error_stops_after_invalid_currency",
+      "name": "missing_iso_header",
       "status": "error",
-      "field_names": [
-        "processing_code"
+      "fields": [
+
       ],
-      "minimal_keys": [
-        "status",
-        "mti",
-        "direction",
-        "issuer",
-        "profile",
-        "errors",
-        "fields",
-        "service"
+      "codes": [
+        "missing_iso_header"
       ]
     },
     {
-      "name": "nh_document_slot_padding",
+      "name": "very_short_common_prefix",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "short_detail_valid_common",
       "status": "fallback",
-      "field_names": [
-        "pg_business_id",
-        "installment_months",
-        "tax_amount",
-        "business_id",
-        "service_charge",
-        "processing_code"
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
       ],
-      "minimal_keys": [
-        "status",
-        "mti",
-        "emv",
-        "direction",
-        "issuer",
-        "profile",
-        "fields",
-        "warnings",
-        "service"
+      "codes": [
+        "truncated_field"
       ]
     },
     {
-      "name": "nh_bad_padding_is_error",
-      "status": "error",
-      "field_names": [
-        "processing_code"
-      ],
-      "minimal_keys": [
-        "status",
-        "mti",
-        "direction",
-        "issuer",
-        "profile",
-        "errors",
-        "fields",
-        "service"
-      ]
-    },
-    {
-      "name": "nh_short_padding_falls_back",
+      "name": "samsung_blank_f55_length",
       "status": "fallback",
-      "field_names": [
-        "processing_code"
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime",
+        "merchant_number",
+        "currency_code",
+        "retrieval_reference"
       ],
-      "minimal_keys": [
-        "status",
-        "mti",
-        "direction",
-        "issuer",
-        "profile",
-        "errors",
-        "fields",
-        "service"
+      "codes": [
+        "invalid_length_prefix"
       ]
     },
     {
-      "name": "compound_field_atomic_failure",
+      "name": "invalid_required_common_0",
       "status": "error",
-      "field_names": [
-        "processing_code"
+      "fields": [
+
       ],
-      "minimal_keys": [
-        "status",
-        "mti",
-        "direction",
-        "issuer",
-        "profile",
-        "errors",
-        "fields",
-        "service"
+      "codes": [
+        "invalid_numeric_value"
       ]
     },
     {
-      "name": "merchant_subfield_hana_sum",
-      "identifier_bytes": 11,
-      "wire_field_bytes": 15,
+      "name": "invalid_required_common_1",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_numeric_value",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "invalid_required_common_2",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_numeric_value",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "unknown_trailer_valid_common",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "trailing_bytes"
+      ]
+    },
+    {
+      "name": "invalid_bitmap",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_bitmap"
+      ]
+    },
+    {
+      "name": "decoding_loss_after_common",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "input_decoding_loss",
+        "truncated_length_prefix"
+      ]
+    },
+    {
+      "name": "decoding_loss_before_common",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "input_decoding_loss",
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "invalid_currency_after_valid_common",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "invalid_numeric_value"
+      ]
+    },
+    {
+      "name": "network_detail_mismatch_common_only",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "network_code",
+        "trace_number"
+      ],
+      "codes": [
+        "invalid_length_prefix"
+      ]
+    },
+    {
+      "name": "very_short_network",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "network_without_transmission_date",
+      "status": "fallback",
+      "fields": [
+        "network_code",
+        "trace_number"
+      ],
+      "codes": [
+        "invalid_length_prefix"
+      ]
+    },
+    {
+      "name": "network_time_and_merchant_common",
+      "status": "fallback",
+      "fields": [
+        "merchant_number",
+        "local_time"
+      ],
+      "codes": [
+        "invalid_length_prefix"
+      ]
+    },
+    {
+      "name": "network_context_without_identifier",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_length_prefix",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "nh_padding_common_only",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "nh_bad_detail_padding_common_only",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "invalid_field_slot_padding"
+      ]
+    },
+    {
+      "name": "nh_short_detail_padding_common_only",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "truncated_field"
+      ]
+    },
+    {
+      "name": "compound_detail_failure_common_only",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "invalid_numeric_value"
+      ]
+    },
+    {
+      "name": "nh_accepted_rest_remains_ok",
+      "status": "ok",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "merchant_boundary_hana_sum",
       "result": "passed"
     },
     {
-      "name": "merchant_subfield_hyundai_ms",
-      "identifier_bytes": 10,
-      "wire_field_bytes": 15,
+      "name": "merchant_boundary_hyundai_ms",
       "result": "passed"
     },
     {
-      "name": "merchant_subfield_shinhan_ms",
-      "identifier_bytes": 10,
-      "wire_field_bytes": 15,
+      "name": "merchant_boundary_shinhan_ms",
       "result": "passed"
     },
     {
-      "name": "shinhan_ic_preserves_independent_15_byte_layout",
+      "name": "shinhan_ic_preserves_15_byte_definition",
       "result": "passed"
     }
   ]

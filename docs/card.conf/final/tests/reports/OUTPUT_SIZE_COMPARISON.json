@@ -1,9 +1,9 @@
 {
-  "events": 518,
-  "full_card_detail_bytes": 520974,
-  "minimal_card_detail_bytes": 302108,
-  "full_root_keys": 11329,
-  "minimal_root_keys": 3777,
-  "card_detail_bytes_reduction_percent": 42.01,
-  "scope": "same 518 real-source samples; serialized card_detail only, not total event size, Elasticsearch storage, or throughput"
+  "events": 520,
+  "full_card_detail_bytes": 521287,
+  "minimal_card_detail_bytes": 301497,
+  "full_root_keys": 11374,
+  "minimal_root_keys": 3792,
+  "card_detail_bytes_reduction_percent": 42.16,
+  "scope": "same 520 real-source samples; serialized card_detail only, not total event size, Elasticsearch storage, or throughput"
 }

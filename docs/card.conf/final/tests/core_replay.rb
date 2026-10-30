@@ -12,6 +12,7 @@ params = { 'specs_path' => File.join(directory, 'card_detail_specs.json') }
 # This reference runner creates byte-preserving Latin-1 input strings. Override
 # the deployed collector default accordingly; EUC-KR is audited separately.
 params['text_encoding'] = ENV.fetch('CARD_TEXT_ENCODING', 'ISO-8859-1')
+params['diagnostics'] = ENV.fetch('CARD_DIAGNOSTICS', 'full')
 params['enabled_profiles'] = ENV['CARD_ENABLED_PROFILES'] if ENV['CARD_ENABLED_PROFILES']
 parser.register(params)
 reference = nil
@@ -33,8 +34,8 @@ report = {
   'files' => []
 }
 
-# Public outcome contract mirrors bgf.conf: a hard parse failure is `error`,
-# while a same-profile recovery that preserves common fields is `fallback`.
+# BGF-style outcome: usable common fields survive a detail mismatch as fallback;
+# damaged/insufficient common input is error and exports no business fields.
 hard_error_event = LogStash::Event.new(
   'message' => 'get(data[)',
   '@metadata' => { 'target_alias' => 's_service_bcc_ic' }
@@ -46,7 +47,7 @@ raise 'hard error status contract failed' unless hard_error_detail['status'] == 
 raise 'hard error public tag contract failed' unless hard_error_tags.include?('error') && !hard_error_tags.include?('fallback')
 report['outcome_contract'] = { 'hard_error' => 'passed' }
 
-short_body = 'ISO02340005302003000000000000000' + '000000' + '0000'
+short_body = 'ISO02340005302003220000000000000' + '000000' + '000000001000' + '1030123456' + '12'
 short_event = LogStash::Event.new('message' => "put(data[#{short_body}] len[#{short_body.bytesize}])",
                                    '@metadata' => { 'target_alias' => 's_service_cnb_ms' })
 parser.filter(short_event)
@@ -54,7 +55,7 @@ raise 'short compatible frame did not fallback' unless short_event.get('[card_de
 raise 'short frame fallback tag missing' unless Array(short_event.get('tags')).include?('fallback')
 report['outcome_contract']['short_fallback'] = 'passed'
 
-invalid_body = 'ISO02340005302003000000020000000' + '000000' + '000000000000' + 'XX'
+invalid_body = 'ISO02340005302003200000000000000' + '000000' + '00000000X000' + '1030123456'
 invalid_event = LogStash::Event.new('message' => "put(data[#{invalid_body}] len[#{invalid_body.bytesize}])",
                                      '@metadata' => { 'target_alias' => 's_service_cnb_ms' })
 parser.filter(invalid_event)
@@ -68,8 +69,16 @@ trailing_event = LogStash::Event.new('message' => "put(data[#{complete_body}X] l
 parser.filter(trailing_event)
 raise 'unexplained trailing bytes did not hard error' unless trailing_event.get('[card_detail][status]') == 'error'
 raise 'trailing bytes error tag missing' unless Array(trailing_event.get('tags')).include?('error')
-raise 'validated common field was lost' unless trailing_event.get('[card_detail][fields][processing_code]') == '000000'
+raise 'insufficient common input exported business values' if trailing_event.get('[card_detail][fields]')
 report['outcome_contract']['trailing_bytes_error'] = 'passed'
+
+common_body = 'ISO02340005302003200000000000000' + '000000' + '000000001000' + '1030123456'
+mismatch_event = LogStash::Event.new('message' => "put(data[#{common_body}X] len[#{common_body.bytesize + 1}])",
+                                   '@metadata' => { 'target_alias' => 's_service_cnb_ms' })
+parser.filter(mismatch_event)
+raise 'detail mismatch with usable common fields did not fallback' unless mismatch_event.get('[card_detail][status]') == 'fallback'
+raise 'detail mismatch common value lost' unless mismatch_event.get('[card_detail][fields][transaction_amount]') == '000000001000'
+report['outcome_contract']['common_spec_mismatch_fallback'] = 'passed'
 
 empty_body = 'ISO02340005302000000000000000000'
 no_common_event = LogStash::Event.new('message' => "put(data[#{empty_body}",

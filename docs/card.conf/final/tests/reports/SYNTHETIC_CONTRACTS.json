@@ -4,6 +4,7 @@
     "short_fallback": "passed",
     "malformed_error": "passed",
     "trailing_bytes_error": "passed",
+    "common_spec_mismatch_fallback": "passed",
     "no_common_error": "passed",
     "nh_rest_byte_exact_ok": "passed",
     "nh_rest_does_not_hide_errors": "passed"
@@ -29,7 +30,7 @@
         "input_decoding_loss",
         "truncated_field"
       ],
-      "field_count": 1
+      "field_count": 3
     },
     "replacement_inside_header": {
       "status": "error",
@@ -42,9 +43,10 @@
     "malformed_before_replacement": {
       "status": "error",
       "errors": [
-        "invalid_length_prefix"
+        "invalid_length_prefix",
+        "insufficient_common_fields"
       ],
-      "field_count": 1
+      "field_count": 0
     },
     "replacement_outside_payload": {
       "status": "ok",
@@ -58,14 +60,14 @@
       "errors": [
 
       ],
-      "field_count": 2
+      "field_count": 3
     },
-    "samsung_nonspace_tail_is_error": {
-      "status": "error",
+    "samsung_nonspace_tail_common_fallback": {
+      "status": "fallback",
       "errors": [
         "trailing_bytes"
       ],
-      "field_count": 2
+      "field_count": 3
     },
     "replacement_after_embedded_control_payload": {
       "status": "control",

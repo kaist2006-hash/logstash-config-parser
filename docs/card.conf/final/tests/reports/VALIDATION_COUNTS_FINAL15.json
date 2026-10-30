@@ -1,0 +1,393 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "workers": 4,
+  "scope": "all recognized wire wrappers plus wrapperless ISO-bearing lines; every physical Samsung line; remaining physical lines inventoried separately",
+  "source_encoding": "CP949 replacement simulation compatible with Filebeat euc-kr; not a live Filebeat test",
+  "totals": {
+    "events": 1265545,
+    "physical_lines": 1932571,
+    "status": {
+      "control": 14880,
+      "ok": 1128182,
+      "error": 259,
+      "fallback": 122224
+    },
+    "mode_differences": 0,
+    "invalid_export_types": 0,
+    "export_after_error": 0,
+    "input_mutations": 0,
+    "metadata_version_errors": 0,
+    "fallback_detail_exports": 0,
+    "error_business_exports": 0,
+    "fallback_missing_evidence": 0,
+    "rest_events": 56692,
+    "rest_bytes": 42004838,
+    "padding_events": 401,
+    "error_with_fields": 0
+  },
+  "verification_phases": {
+    "all_16_service_dual_mode_events": 1265545,
+    "refined_network_common_rule_full_replay_events": 10296,
+    "refined_network_common_rule_file": "NIC_MS",
+    "note": "Network recovery predicate broadened only. Previous recoveries remain recoveries. All remaining errors outside NIC_MS lack an envelope/header, so the broadened network predicate cannot apply; their outcomes/outputs remain unchanged. Common field selection, business evidence and parse rules are unchanged between the phases."
+  },
+  "final_artifacts": {
+    "card_detail_parser.rb": "cff31b6db93288702913d36c64b71bbcb6cf7fe7f3902ff2d3795cec638f1a02",
+    "card_detail_specs.json": "31ff893bc797f317c4b235e8e0f1d6f5bee7a7b4ee58e4e4f230c5dbc26ee660"
+  },
+  "fallback_policy": {
+    "common_max_de": 49,
+    "extra_common_fields": [
+      "network_code"
+    ],
+    "minimum_business_fields": [
+      "processing_code",
+      "transaction_amount",
+      "transmission_datetime"
+    ],
+    "network_context_fields": [
+      "transmission_datetime",
+      "local_date",
+      "local_time",
+      "network_code"
+    ],
+    "network_identifier_fields": [
+      "trace_number",
+      "retrieval_reference",
+      "terminal_id",
+      "merchant_number"
+    ]
+  },
+  "files": [
+    {
+      "file": "BCC_IC",
+      "route": "s_service_bcc_ic",
+      "sha256": "3a806c7d744a0eef8a690d85765c5395b79a40beb45f1aeaaab35de70ec94f8d",
+      "events": 56134,
+      "status": {
+        "control": 7200,
+        "ok": 48892,
+        "error": 42
+      },
+      "error_causes": {
+        "missing_iso_header|": 42
+      },
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "bcc_ms",
+      "route": "s_service_bcc_ms",
+      "sha256": "459dfcaf3cd803a0b17fe2d704cafbff65250c0fc414ac271e4bc8f33e588be2",
+      "events": 13456,
+      "status": {
+        "ok": 5776,
+        "control": 7680
+      },
+      "error_causes": {},
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "CNB_IC",
+      "route": "s_service_cnb_ic",
+      "sha256": "3baa1eb394994a08b03e8696d6669e5cfbd837dd44245860ad3e996eb3a51f89",
+      "events": 302191,
+      "status": {
+        "ok": 302189,
+        "error": 2
+      },
+      "error_causes": {
+        "missing_iso_header|": 2
+      },
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "CNB_MS",
+      "route": "s_service_cnb_ms",
+      "sha256": "4502baf05739373c3e87a93481f6777f1c40307d0cdead93fe9b8e2e713191c6",
+      "events": 71302,
+      "status": {
+        "ok": 49637,
+        "fallback": 21659,
+        "error": 6
+      },
+      "error_causes": {
+        "missing_iso_header|": 6
+      },
+      "fallback_causes": {
+        "input_decoding_loss|": 13252,
+        "truncated_field|35": 19280,
+        "declared_length_mismatch": 19283,
+        "missing_text_envelope_tail": 2375,
+        "recovered_outer_trailing_bytes": 2323,
+        "truncated_field|43": 52,
+        "redacted_length_prefix|46": 1,
+        "truncated_field|46": 3
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "din_ic",
+      "route": "s_service_din_ic",
+      "sha256": "02cfe89530330f2013086975fb54cb41f2924d593e55134d31957000677a9aec",
+      "events": 5474,
+      "status": {
+        "ok": 5474
+      },
+      "error_causes": {},
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "din_ms",
+      "route": "s_service_din_ms",
+      "sha256": "b796225ca9e1a43a30043796188a42a9abaa84627bd61540113127e231b2f5ce",
+      "events": 13180,
+      "status": {
+        "ok": 11979,
+        "fallback": 1201
+      },
+      "error_causes": {},
+      "fallback_causes": {
+        "missing_text_envelope_tail": 426,
+        "input_decoding_loss|": 487,
+        "truncated_transport_payload|": 724,
+        "truncated_field|35": 724,
+        "bitmap_field_omitted_f39": 62
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "keb_sum",
+      "route": "s_service_keb_sum",
+      "sha256": "007c3cd9d274ef9192fbb3f0df5875a552dcc805c06fc6ff0283ef82af385339",
+      "events": 142703,
+      "status": {
+        "ok": 142703
+      },
+      "error_causes": {},
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "lgc_ic",
+      "route": "s_service_lgc_ic",
+      "sha256": "a855d14e175b87a49e87ac7e896352cb7f602088198a28486c98a6f10d14efc9",
+      "events": 194098,
+      "status": {
+        "ok": 194098
+      },
+      "error_causes": {},
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "lgc_ms",
+      "route": "s_service_lgc_ms",
+      "sha256": "bbd1ae84acb0ad13a9bde12aba17dbd0a12815559be9208041f70defbbb12c23",
+      "events": 114824,
+      "status": {
+        "ok": 104716,
+        "fallback": 10108
+      },
+      "error_causes": {},
+      "fallback_causes": {
+        "missing_text_envelope_tail": 10105,
+        "recovered_outer_trailing_bytes": 10105,
+        "input_decoding_loss|": 292,
+        "redacted_length_prefix|46": 3
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "LTC_IC",
+      "route": "s_service_ltc_ic",
+      "sha256": "34df2707bd3148551d7a61ba2538899c9a801da39cbe357dbff59ae5f8af41f2",
+      "events": 12104,
+      "status": {
+        "ok": 10091,
+        "fallback": 2013
+      },
+      "error_causes": {},
+      "fallback_causes": {
+        "input_decoding_loss|": 818,
+        "truncated_field|35": 1074,
+        "declared_length_mismatch": 1074,
+        "omitted_document_field_f61": 741,
+        "missing_text_envelope_tail": 196,
+        "recovered_outer_trailing_bytes": 115,
+        "truncated_field|61": 71,
+        "truncated_field|37": 10,
+        "invalid_numeric_value|49": 2
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "LTC_MS",
+      "route": "s_service_ltc_ms",
+      "sha256": "d80a8367eab850b45518802ed9ad155bc32dd83c4f385523a7f20f9963fe4090",
+      "events": 51771,
+      "status": {
+        "ok": 44145,
+        "fallback": 7617,
+        "error": 9
+      },
+      "error_causes": {
+        "incomplete_text_envelope|": 5,
+        "missing_iso_header|": 4
+      },
+      "fallback_causes": {
+        "omitted_document_field_f61": 2145,
+        "missing_text_envelope_tail": 2864,
+        "recovered_outer_trailing_bytes": 2724,
+        "input_decoding_loss|": 2287,
+        "truncated_field|35": 2605,
+        "declared_length_mismatch": 2605,
+        "truncated_field|61": 123,
+        "invalid_numeric_value|49": 3,
+        "truncated_field|37": 17
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "NIC_IC",
+      "route": "s_service_nlc_ic",
+      "sha256": "1c5a1bdd2b45a5db8551cffb43d2be75578f5470ffac86932bdff3272edce0f5",
+      "events": 111352,
+      "status": {
+        "ok": 98855,
+        "fallback": 12497
+      },
+      "error_causes": {},
+      "fallback_causes": {
+        "missing_text_envelope_tail": 9908,
+        "recovered_outer_trailing_bytes": 9908,
+        "padded_field_f118": 401,
+        "truncated_field|118": 2254,
+        "declared_length_mismatch": 2254,
+        "invalid_numeric_value|49": 2
+      },
+      "rest_events": 55617,
+      "rest_bytes": 41990088,
+      "padding_events": 401
+    },
+    {
+      "file": "NIC_MS",
+      "route": "s_service_nlc_ms",
+      "sha256": "32682e59a7042b432ae5173b5483271f1396b9a9321bf85ed8d89e7aeaaa3361",
+      "events": 10296,
+      "status": {
+        "ok": 9720,
+        "fallback": 434,
+        "error": 142
+      },
+      "error_causes": {
+        "truncated_field|41": 142,
+        "insufficient_common_fields|": 142
+      },
+      "fallback_causes": {
+        "missing_text_envelope_tail": 398,
+        "recovered_outer_trailing_bytes": 366,
+        "truncated_field|126": 34,
+        "declared_length_mismatch": 36,
+        "invalid_length_prefix|118": 8,
+        "field_length_exceeds_limit|118": 22,
+        "truncated_field|118": 2,
+        "truncated_field|60": 2
+      },
+      "rest_events": 1075,
+      "rest_bytes": 14750,
+      "padding_events": 0
+    },
+    {
+      "file": "win_ic",
+      "route": "s_service_win_ic",
+      "sha256": "0fa85ffbb20c6690927483557c879c2a24e8106af36a779b3a50c64d97958ec4",
+      "events": 3826,
+      "status": {
+        "ok": 3826
+      },
+      "error_causes": {},
+      "fallback_causes": {},
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "wrc",
+      "route": "s_service_wrc_sum",
+      "sha256": "02cb3399ec320182b74d3d2e7577db934146e167bed3f0ec21d669038ff14608",
+      "events": 49642,
+      "status": {
+        "ok": 48111,
+        "fallback": 1529,
+        "error": 2
+      },
+      "error_causes": {
+        "incomplete_text_envelope|": 2
+      },
+      "fallback_causes": {
+        "missing_bracket_envelope_tail": 1492,
+        "invalid_numeric_value|49": 38,
+        "invalid_numeric_value|70": 1
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "route": "s_service_win_ms",
+      "sha256": "bd71e484b9ea3bb2b09f2b3736d29b6a927edec4785fe4d08cf946270e280dd1",
+      "events": 113192,
+      "status": {
+        "fallback": 65166,
+        "ok": 47970,
+        "error": 56
+      },
+      "error_causes": {
+        "incomplete_text_envelope|": 56
+      },
+      "fallback_causes": {
+        "input_decoding_loss|": 62342,
+        "missing_completed_text_envelope_tail": 7046,
+        "truncated_field|35": 6914,
+        "declared_length_mismatch": 6914,
+        "invalid_length_prefix|55": 1606,
+        "legacy_space_padding": 1607,
+        "truncated_field|43": 77,
+        "missing_text_envelope_tail": 77,
+        "field_length_exceeds_limit|32": 1,
+        "invalid_length_prefix|127": 20,
+        "redacted_length_prefix|56": 1
+      },
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0
+    }
+  ]
+}

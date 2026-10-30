@@ -27,6 +27,14 @@ def register(params)
   @diagnostics = params.fetch('diagnostics', document.fetch('diagnostics', 'minimal'))
   raise ArgumentError, 'invalid diagnostics mode' unless %w[minimal full].include?(@diagnostics)
   @public_fields = %w[profile issuer service status direction mti record_type fields emv rest errors warnings].freeze
+  @fallback_policy = document.fetch('fallback_policy')
+  raise ArgumentError, 'invalid common DE limit' unless (3..49).cover?(@fallback_policy.fetch('common_max_de'))
+  %w[extra_common_fields minimum_business_fields network_context_fields network_identifier_fields].each do |key|
+    names = @fallback_policy.fetch(key)
+    raise ArgumentError, 'invalid fallback field list' unless names.is_a?(Array) && names.length <= 32 &&
+      names.all? { |name| name.is_a?(String) && /\A[a-z][a-z0-9_]{0,63}\z/.match?(name) } && names.uniq == names
+    raise ArgumentError, 'empty fallback evidence list' if key != 'extra_common_fields' && names.empty?
+  end
 
   enabled = params['enabled_profiles']
   enabled = enabled.split(',').map(&:strip).reject(&:empty?) if enabled.is_a?(String)
@@ -102,6 +110,7 @@ def register(params)
 
     compiled = Array.new(193)
     exported_names = {}
+    profile['_fallback_fields'] = {}
     profile.fetch('fields', {}).each do |key, spec|
       spec['parts'] = spec.fetch('parts', [])
       bit = Integer(key, 10)
@@ -137,12 +146,21 @@ def register(params)
         raise ArgumentError, 'invalid exported name' unless /\A[a-z][a-z0-9_]{0,63}\z/.match?(part['emit'])
         raise ArgumentError, 'duplicate exported field name' if exported_names[part['emit']]
         exported_names[part['emit']] = true
+        if (3..@fallback_policy['common_max_de']).cover?(bit) || @fallback_policy['extra_common_fields'].include?(part['emit'])
+          profile['_fallback_fields'][part['emit']] = true
+        end
         raise ArgumentError, 'invalid exported encoding' unless %w[ascii bcd hex].include?(part.fetch('encoding'))
         if part != spec
           raise ArgumentError, 'invalid subfield bounds' unless part.fetch('offset').is_a?(Integer) && part['offset'] >= 0 && (1..512).cover?(part.fetch('length'))
         end
       end
       compiled[bit] = spec
+    end
+    if profile['format'] == 'iso8583'
+      required = @fallback_policy['minimum_business_fields']
+      raise ArgumentError, 'fallback evidence is not a common output field' unless required.all? { |name| profile['_fallback_fields'].key?(name) }
+      raise ArgumentError, 'no network context field' unless @fallback_policy['network_context_fields'].any? { |name| profile['_fallback_fields'].key?(name) }
+      raise ArgumentError, 'no network reference field' unless @fallback_policy['network_identifier_fields'].any? { |name| profile['_fallback_fields'].key?(name) }
     end
     profile['compiled'] = compiled
     @profiles[profile['alias']] = profile
@@ -159,12 +177,9 @@ def register(params)
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   @printable_ascii_re = /\A[\x20-\x7E]*\z/n.freeze
-  @recoverable_error_codes = {
-    'truncated_field' => true, 'truncated_length_prefix' => true,
-    'truncated_transport_payload' => true, 'input_decoding_loss' => true
-  }.freeze
   card_freeze(@profiles)
   card_freeze(@emv_export)
+  card_freeze(@fallback_policy)
   @version.freeze
 end
 
@@ -185,6 +200,16 @@ def card_warn(result, code)
 end
 
 def card_publish(event, result)
+  if result['status'] == 'fallback'
+    profile = @profiles[event.get('[@metadata][target_alias]')]
+    result['fields'].delete_if { |name, _| !profile['_fallback_fields'].key?(name) }
+    result.delete('emv')
+    result.delete('rest')
+  elsif result['status'] == 'error'
+    result.delete('fields')
+    result.delete('emv')
+    result.delete('rest')
+  end
   event.set('[@metadata][card_detail_parser_version]', @version)
   if @diagnostics == 'minimal'
     output = {}
@@ -203,6 +228,19 @@ def card_publish(event, result)
   end
   event.set('[card_detail]', result)
   [event]
+end
+
+def card_common_ready?(profile, result)
+  return false unless profile && profile['format'] == 'iso8583' && result['iso_header'] &&
+    result['mti'] && result['present_fields'].is_a?(Array) && result['fields'].is_a?(Hash)
+  fields = result['fields']
+  present = ->(name) { fields[name].is_a?(String) && !fields[name].empty? }
+  if result['mti'].start_with?('08')
+    @fallback_policy['network_context_fields'].any?(&present) &&
+      @fallback_policy['network_identifier_fields'].any?(&present)
+  else
+    @fallback_policy['minimum_business_fields'].all?(&present)
+  end
 end
 
 def card_discard_field(values, spec)
@@ -766,18 +804,16 @@ def filter(event)
   if result['status'] == 'control' && !result['input_loss_truncated']
     # Control/health frames are structurally validated but not business-parsed.
   elsif result['errors'] && !result['errors'].empty?
-    common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
-    recoverable = result['errors'].all? { |item| @recoverable_error_codes[item['code']] }
-    result['status'] = common_recovered && recoverable ? 'fallback' : 'error'
+    common_recovered = card_common_ready?(profile, result)
+    result['status'] = common_recovered ? 'fallback' : 'error'
+    card_error(result, 'insufficient_common_fields') if !common_recovered && result['fields'] && !result['fields'].empty?
     event.tag(result['status'])
   elsif result['warnings'] && !result['warnings'].empty?
     common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
-    unless common_recovered
-      card_error(result, 'no_common_fields_recovered')
-    end
     rest_accepted = common_recovered && result.key?('rest') && profile['allow_unparsed_rest'] &&
                     result['warnings'].all? { |warning| %w[unparsed_rest bitmap_field_omitted_f127].include?(warning) }
-    result['status'] = rest_accepted ? 'ok' : (common_recovered ? 'fallback' : 'error')
+    result['status'] = rest_accepted ? 'ok' : (card_common_ready?(profile, result) ? 'fallback' : 'error')
+    card_error(result, 'insufficient_common_fields') if result['status'] == 'error'
     event.tag(result['status']) unless result['status'] == 'ok'
   else
     result['status'] = 'ok'

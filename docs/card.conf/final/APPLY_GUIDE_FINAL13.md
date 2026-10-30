@@ -1,5 +1,7 @@
 # FINAL13 적용
 
+> 현재 적용 파일과 분류 기준은 [FINAL15 안내](APPLY_GUIDE_FINAL15.md)를 따른다. 아래는 이전 버전 안내다.
+
 Filebeat의 `encoding: euc-kr`은 유지한다. card_detail_parser.rb와 card_detail_specs.json을 같은 CARD_PARSER_DIR에 둘 다 교체하고 해당 Logstash pipeline을 재로딩한다. 기존 Ruby 블록의 specs_path만 지정하면 된다.
 
 ```logstash

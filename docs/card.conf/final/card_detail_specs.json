@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
-  "version": "2026-10-30.final14",
+  "version": "2026-10-30.final15",
   "diagnostics": "minimal",
   "text_encoding": "CP949",
   "recover_lossy_prefix": true,
+  "fallback_policy": {"common_max_de": 49, "extra_common_fields": ["network_code"], "minimum_business_fields": ["processing_code", "transaction_amount", "transmission_datetime"], "network_context_fields": ["transmission_datetime", "local_date", "local_time", "network_code"], "network_identifier_fields": ["trace_number", "retrieval_reference", "terminal_id", "merchant_number"]},
   "emv_export": {
     "95": {"name": "terminal_verification_results", "length": 5},
     "9F33": {"name": "terminal_capabilities", "length": 3},
