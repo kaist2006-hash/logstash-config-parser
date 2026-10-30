@@ -1,0 +1,32 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "events": 71302,
+  "counts": {
+    "filebeat_iso8859_1__rb_latin1|ok": 62004,
+    "filebeat_euc_kr_compatible__rb_latin1|ok": 39194,
+    "filebeat_euc_kr_compatible__rb_cp949|ok": 46466,
+    "filebeat_euc_kr_compatible__rb_latin1|error": 28907,
+    "filebeat_euc_kr_compatible__rb_cp949|error": 16430,
+    "filebeat_iso8859_1__rb_latin1|fallback": 9291,
+    "filebeat_euc_kr_compatible__rb_cp949|fallback": 8406,
+    "filebeat_euc_kr_compatible__rb_latin1|fallback": 3201,
+    "filebeat_iso8859_1__rb_latin1|error": 7
+  },
+  "errors": {
+    "filebeat_euc_kr_compatible__rb_latin1|lossy_input_encoding": 16423,
+    "filebeat_euc_kr_compatible__rb_cp949|lossy_input_encoding": 16423,
+    "filebeat_iso8859_1__rb_latin1|truncated_field": 6968,
+    "filebeat_euc_kr_compatible__rb_latin1|input_encoding_not_reversible": 12477,
+    "filebeat_euc_kr_compatible__rb_cp949|truncated_field": 6131,
+    "filebeat_euc_kr_compatible__rb_latin1|truncated_field": 942,
+    "filebeat_iso8859_1__rb_latin1|redacted_length_prefix": 1,
+    "filebeat_euc_kr_compatible__rb_latin1|redacted_length_prefix": 1,
+    "filebeat_euc_kr_compatible__rb_cp949|redacted_length_prefix": 1,
+    "filebeat_iso8859_1__rb_latin1|missing_iso_header": 6,
+    "filebeat_euc_kr_compatible__rb_latin1|missing_iso_header": 6,
+    "filebeat_euc_kr_compatible__rb_cp949|missing_iso_header": 6
+  },
+  "latin1_roundtrip_mismatch": 0,
+  "cp949_roundtrip_mismatch": 0,
+  "scope": "CNB_MS; CP949 replacement simulation compatible with Filebeat euc-kr mapping family, not a live Filebeat run"
+}
