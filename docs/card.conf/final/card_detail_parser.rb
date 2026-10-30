@@ -1,7 +1,8 @@
 # Logstash 8.17.x Ruby filter - final single-spec edition.
 # The JSON spec is loaded, validated, compiled and frozen once in register().
-# No network or per-event disk I/O. Sensitive payment fields are consumed for
-# frame positioning but are not exported unless explicitly defined as safe emit fields.
+# No network or per-event disk I/O. Fields without an emit definition are
+# normally consumed but not exported. NH profiles explicitly preserve an
+# uninterpreted rest as hex; treat that field as sensitive raw payment data.
 require 'json'
 
 def card_freeze(value)
@@ -44,6 +45,7 @@ def register(params)
     end
     profile['enabled'] = enabled.include?(id) unless enabled.nil?
     raise ArgumentError, 'invalid enabled flag' unless [true, false].include?(profile['enabled'])
+    raise ArgumentError, 'invalid rest policy' unless [true, false].include?(profile.fetch('allow_unparsed_rest', false))
     profile['_binary'] = profile['wire'] == 'binary'
 
     transport = profile.fetch('transport', {})
@@ -507,6 +509,11 @@ def card_parse(raw, profile, result)
       # the missing outer logger trailer/buffer, not to another ISO data element.
       result['recovered_trailing_bytes'] = trailing.bytesize
       card_warn(result, 'recovered_outer_trailing_bytes')
+    elsif profile['allow_unparsed_rest']
+      # Preserve the exact uninterpreted payload bytes without assuming a DE layout.
+      # Hex is byte-safe for LogStash::Event and Elasticsearch string fields.
+      result['rest'] = trailing.unpack1('H*').upcase
+      card_warn(result, 'unparsed_rest')
     else
       card_error(result, 'trailing_bytes', nil, pos, pos, raw.bytesize)
       result['frame_status'] = 'partial'
@@ -640,8 +647,10 @@ def filter(event)
     unless common_recovered
       card_error(result, 'no_common_fields_recovered')
     end
-    result['status'] = common_recovered ? 'fallback' : 'error'
-    event.tag(result['status'])
+    rest_accepted = common_recovered && result.key?('rest') && profile['allow_unparsed_rest'] &&
+                    result['warnings'].all? { |warning| %w[unparsed_rest bitmap_field_omitted_f127].include?(warning) }
+    result['status'] = rest_accepted ? 'ok' : (common_recovered ? 'fallback' : 'error')
+    event.tag(result['status']) unless result['status'] == 'ok'
   else
     result['status'] = 'ok'
   end
@@ -661,3 +670,4 @@ rescue StandardError
   event.tag('error')
   [event]
 end
+

@@ -76,6 +76,32 @@ parser.filter(no_common_event)
 raise 'warning-only frame without common fields did not hard error' unless no_common_event.get('[card_detail][status]') == 'error'
 raise 'warning-only no-common frame error tag missing' unless Array(no_common_event.get('tags')).include?('error')
 report['outcome_contract']['no_common_error'] = 'passed'
+
+# Byte-exact opaque tails are accepted only after the known NH fields validate.
+rest_bytes = "\x00\xFF\x20\x58".b
+[
+  ['s_service_nlc_ms', '0100', '2000000000000000', '000000'],
+  ['s_service_nlc_ic', '0110', 'A0000000000000000000000000000002', '000000']
+].each do |route, mti, bitmap, processing_code|
+  body = ('0' * 9 + 'ISO000000000' + mti + bitmap + processing_code).b + rest_bytes
+  message = "put(data[".b + body + "] len[#{body.bytesize}])".b
+  message = message.force_encoding('ISO-8859-1').encode('UTF-8')
+  event = LogStash::Event.new('message' => message, '@metadata' => { 'target_alias' => route })
+  parser.filter(event)
+  detail = event.get('card_detail')
+  raise 'NH accepted tail lost bytes' unless detail['rest'] == '00FF2058'
+  raise 'NH accepted tail not ok' unless detail['status'] == 'ok'
+  raise 'NH known field lost' unless detail['fields']['processing_code'] == processing_code
+  raise 'NH accepted tail tagged as failure' if Array(event.get('tags')).any? { |tag| %w[error fallback].include?(tag) }
+end
+report['outcome_contract']['nh_rest_byte_exact_ok'] = 'passed'
+
+body = ('0' * 9 + 'ISO000000000' + '0100' + '2000000000000000' + '00X000').b + rest_bytes
+message = ("put(data[".b + body + "] len[#{body.bytesize}])".b).force_encoding('ISO-8859-1').encode('UTF-8')
+invalid_rest_event = LogStash::Event.new('message' => message, '@metadata' => { 'target_alias' => 's_service_nlc_ms' })
+parser.filter(invalid_rest_event)
+raise 'rest policy hid malformed known field' unless invalid_rest_event.get('[card_detail][status]') == 'error'
+report['outcome_contract']['nh_rest_does_not_hide_errors'] = 'passed'
 started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 queue = SizedQueue.new(2048)
 
@@ -84,7 +110,8 @@ pool = workers.times.map do
     local = {
       'counts' => Hash.new(0), 'errors' => Hash.new(0), 'warnings' => Hash.new(0), 'tags' => Hash.new(0),
       'first_error_line' => {}, 'events' => 0, 'message_mutations' => 0,
-      'route_mutations' => 0, 'events_with_exported_fields' => 0,
+      'route_mutations' => 0, 'events_with_exported_fields' => 0, 'rest_events' => 0,
+      'rest_bytes' => 0,
       'comparison_status' => Hash.new(0), 'comparison_fields' => Hash.new(0),
       'first_error_context' => {}
     }
@@ -98,6 +125,16 @@ pool = workers.times.map do
       local['message_mutations'] += 1 unless event.get('message') == message
       local['route_mutations'] += 1 unless event.get('[@metadata][target_alias]') == route
       detail = event.get('card_detail') || {}
+      if detail['rest']
+        raise 'rest exposed on another issuer' unless %w[nh_ic nh_ms].include?(detail['profile'])
+        raise 'rest was not hex-encoded byte-for-byte' unless detail['rest'].match?(/\A[0-9A-F]+\z/) &&
+          detail['rest'].length == detail['remaining_bytes'] * 2
+        raise 'accepted rest did not become ok' unless detail['status'] == 'ok' &&
+          detail.fetch('warnings', []).include?('unparsed_rest') &&
+          detail.fetch('errors', []).empty?
+        local['rest_events'] += 1
+        local['rest_bytes'] += detail['remaining_bytes']
+      end
       if reference
         reference_event = LogStash::Event.new('message' => message, '@metadata' => { 'target_alias' => route })
         reference.filter(reference_event)
@@ -178,7 +215,8 @@ workers.times { queue.push(nil) }
 merged = {
   'counts' => Hash.new(0), 'errors' => Hash.new(0), 'warnings' => Hash.new(0), 'tags' => Hash.new(0),
   'first_error_line' => {}, 'events' => 0, 'message_mutations' => 0,
-  'route_mutations' => 0, 'events_with_exported_fields' => 0,
+  'route_mutations' => 0, 'events_with_exported_fields' => 0, 'rest_events' => 0,
+  'rest_bytes' => 0,
   'comparison_status' => Hash.new(0), 'comparison_fields' => Hash.new(0),
   'first_error_context' => {}
 }
@@ -195,10 +233,11 @@ pool.each do |thread|
       merged['first_error_context'][name] = value
     end
   end
-  %w[events message_mutations route_mutations events_with_exported_fields].each { |key| merged[key] += local[key] }
+  %w[events message_mutations route_mutations events_with_exported_fields rest_events rest_bytes].each { |key| merged[key] += local[key] }
 end
 report['summary'] = merged
 report['elapsed_seconds'] = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).round(3)
 File.write(ENV.fetch('CARD_CORE_REPORT'), JSON.pretty_generate(report))
 puts JSON.generate({ 'events' => merged['events'], 'errors' => merged['errors'].values.sum, 'elapsed_seconds' => report['elapsed_seconds'] })
 raise 'parser mutated input events' unless merged['message_mutations'].zero? && merged['route_mutations'].zero?
+

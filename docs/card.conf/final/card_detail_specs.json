@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "2026-10-18.final9",
+  "version": "2026-10-18.final10",
   "emv_export": {
     "95": {"name": "terminal_verification_results", "length": 5},
     "9F33": {"name": "terminal_capabilities", "length": 3},
@@ -260,7 +260,7 @@
       }
     },
     {
-      "id":"nh_ms","alias":"s_service_nlc_ms","issuer":"농협카드","service":"MS","wire":"ascii","enabled":true,
+      "id":"nh_ms","alias":"s_service_nlc_ms","issuer":"농협카드","service":"MS","wire":"ascii","enabled":true,"allow_unparsed_rest":true,
       "validation_stage":"real_log_replay","header_offsets":[9,13],"max_bitmaps":2,"trim_to_declared_length":true,
       "expected_headers":["ISO000000000"],
       "transport":{"outbound_declared_trailer_bytes":8},
@@ -303,7 +303,7 @@
       }
     },
     {
-      "id":"nh_ic","alias":"s_service_nlc_ic","issuer":"농협카드","service":"IC","wire":"ascii","enabled":true,
+      "id":"nh_ic","alias":"s_service_nlc_ic","issuer":"농협카드","service":"IC","wire":"ascii","enabled":true,"allow_unparsed_rest":true,
       "validation_stage":"real_log_replay","header_offsets":[9,17],"max_bitmaps":2,"trim_to_declared_length":true,
       "expected_headers":["ISO000000000"],
       "transport":{"extended_text_marker":true,"outbound_declared_trailer_bytes":8},
@@ -638,3 +638,4 @@
     }
   ]
 }
+
