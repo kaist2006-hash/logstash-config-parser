@@ -1,0 +1,118 @@
+{
+  "result": "passed",
+  "cases": [
+    {
+      "name": "error_stops_after_invalid_currency",
+      "status": "error",
+      "field_names": [
+        "processing_code"
+      ],
+      "minimal_keys": [
+        "status",
+        "mti",
+        "direction",
+        "issuer",
+        "profile",
+        "errors",
+        "fields",
+        "service"
+      ]
+    },
+    {
+      "name": "nh_document_slot_padding",
+      "status": "fallback",
+      "field_names": [
+        "pg_business_id",
+        "installment_months",
+        "tax_amount",
+        "business_id",
+        "service_charge",
+        "processing_code"
+      ],
+      "minimal_keys": [
+        "status",
+        "mti",
+        "emv",
+        "direction",
+        "issuer",
+        "profile",
+        "fields",
+        "warnings",
+        "service"
+      ]
+    },
+    {
+      "name": "nh_bad_padding_is_error",
+      "status": "error",
+      "field_names": [
+        "processing_code"
+      ],
+      "minimal_keys": [
+        "status",
+        "mti",
+        "direction",
+        "issuer",
+        "profile",
+        "errors",
+        "fields",
+        "service"
+      ]
+    },
+    {
+      "name": "nh_short_padding_falls_back",
+      "status": "fallback",
+      "field_names": [
+        "processing_code"
+      ],
+      "minimal_keys": [
+        "status",
+        "mti",
+        "direction",
+        "issuer",
+        "profile",
+        "errors",
+        "fields",
+        "service"
+      ]
+    },
+    {
+      "name": "compound_field_atomic_failure",
+      "status": "error",
+      "field_names": [
+        "processing_code"
+      ],
+      "minimal_keys": [
+        "status",
+        "mti",
+        "direction",
+        "issuer",
+        "profile",
+        "errors",
+        "fields",
+        "service"
+      ]
+    },
+    {
+      "name": "merchant_subfield_hana_sum",
+      "identifier_bytes": 11,
+      "wire_field_bytes": 15,
+      "result": "passed"
+    },
+    {
+      "name": "merchant_subfield_hyundai_ms",
+      "identifier_bytes": 10,
+      "wire_field_bytes": 15,
+      "result": "passed"
+    },
+    {
+      "name": "merchant_subfield_shinhan_ms",
+      "identifier_bytes": 10,
+      "wire_field_bytes": 15,
+      "result": "passed"
+    },
+    {
+      "name": "shinhan_ic_preserves_independent_15_byte_layout",
+      "result": "passed"
+    }
+  ]
+}

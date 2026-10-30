@@ -24,6 +24,9 @@ def register(params)
   @text_encoding = Encoding.find(params.fetch('text_encoding', document.fetch('text_encoding', 'ISO-8859-1')))
   @recover_lossy_prefix = document.fetch('recover_lossy_prefix', false)
   raise ArgumentError, 'invalid lossy prefix policy' unless [true, false].include?(@recover_lossy_prefix)
+  @diagnostics = params.fetch('diagnostics', document.fetch('diagnostics', 'minimal'))
+  raise ArgumentError, 'invalid diagnostics mode' unless %w[minimal full].include?(@diagnostics)
+  @public_fields = %w[profile issuer service status direction mti record_type fields emv rest errors warnings].freeze
 
   enabled = params['enabled_profiles']
   enabled = enabled.split(',').map(&:strip).reject(&:empty?) if enabled.is_a?(String)
@@ -98,6 +101,7 @@ def register(params)
     end
 
     compiled = Array.new(193)
+    exported_names = {}
     profile.fetch('fields', {}).each do |key, spec|
       spec['parts'] = spec.fetch('parts', [])
       bit = Integer(key, 10)
@@ -111,6 +115,7 @@ def register(params)
         raise ArgumentError, 'invalid variable maximum' unless (1..4096).cover?(spec.fetch('max'))
         spec['_prefix_bytes'] = prefix_width[spec['prefix']]
       end
+      raise ArgumentError, 'invalid field validation encoding' if spec['encoding'] && !%w[ascii bcd hex].include?(spec['encoding'])
       if spec['allow_omitted_when_last_mtis']
         raise ArgumentError, 'invalid omitted-MTI rule' unless spec['allow_omitted_when_last_mtis'].is_a?(Array)
       end
@@ -120,9 +125,18 @@ def register(params)
       if spec['length_includes_prefix']
         raise ArgumentError, 'inclusive length is valid only for variable fields' unless spec['kind'] == 'var'
       end
+      if (padding = spec['slot_padding'])
+        raise ArgumentError, 'invalid field slot padding' unless spec['kind'] == 'var' && spec['unit'] == 'bytes' &&
+          padding.fetch('length').is_a?(Integer) && (1..spec['max']).cover?(padding['length']) &&
+          (0..255).cover?(padding.fetch('byte')) && (2..192).cover?(padding.fetch('before_field')) &&
+          padding.fetch('mtis').all? { |m| /\A[0-9]{4}\z/.match?(m) }
+        padding['_bytes'] = (padding['byte'].chr.b * padding['length'])
+      end
       ([spec] + spec['parts']).each do |part|
         next unless part['emit']
         raise ArgumentError, 'invalid exported name' unless /\A[a-z][a-z0-9_]{0,63}\z/.match?(part['emit'])
+        raise ArgumentError, 'duplicate exported field name' if exported_names[part['emit']]
+        exported_names[part['emit']] = true
         raise ArgumentError, 'invalid exported encoding' unless %w[ascii bcd hex].include?(part.fetch('encoding'))
         if part != spec
           raise ArgumentError, 'invalid subfield bounds' unless part.fetch('offset').is_a?(Integer) && part['offset'] >= 0 && (1..512).cover?(part.fetch('length'))
@@ -168,6 +182,32 @@ end
 def card_warn(result, code)
   result['warnings'] ||= []
   result['warnings'] << code unless result['warnings'].include?(code) || result['warnings'].length >= 16
+end
+
+def card_publish(event, result)
+  event.set('[@metadata][card_detail_parser_version]', @version)
+  if @diagnostics == 'minimal'
+    output = {}
+    @public_fields.each do |key|
+      value = result[key]
+      output[key] = value unless value.nil?
+    end
+    if output['errors']
+      output['errors'] = output['errors'].map do |error|
+        item = { 'code' => error['code'] }
+        item['field'] = error['field'] if error.key?('field')
+        item
+      end
+    end
+    result = output
+  end
+  event.set('[card_detail]', result)
+  [event]
+end
+
+def card_discard_field(values, spec)
+  values.delete(spec['emit']) if spec['emit']
+  spec['parts'].each { |part| values.delete(part['emit']) }
 end
 
 def card_external_input_loss(result)
@@ -258,6 +298,7 @@ def card_tlv(bytes, result, bit, start)
   end
   result['emv'] = exported unless exported.empty?
   result['tlv_count'] = count
+  true
 end
 
 def card_optional_tail_omission?(spec, mti, pos, raw_size, field_index, active_size)
@@ -493,14 +534,24 @@ def card_parse(raw, profile, result)
     end
     bytes = raw.byteslice(pos, length)
 
-    if spec['emit']
+    if spec['encoding']
       value = card_value(bytes, spec, result, bit, pos)
-      values[spec['emit']] = value unless value.nil?
+      break if value.nil?
+      values[spec['emit']] = value if spec['emit']
     end
+    field_valid = true
     spec['parts'].each do |part|
       next if part['offset'] + part['length'] > length
       value = card_value(bytes.byteslice(part['offset'], part['length']), part, result, bit, pos + part['offset'])
-      values[part['emit']] = value unless value.nil?
+      if value.nil?
+        field_valid = false
+        break
+      end
+      values[part['emit']] = value
+    end
+    unless field_valid
+      card_discard_field(values, spec)
+      break
     end
 
     if spec['tlv']
@@ -508,13 +559,34 @@ def card_parse(raw, profile, result)
       if spec['tlv_hex_ascii']
         unless bytes.bytesize.even? && /\A[0-9a-fA-F]*\z/.match?(bytes)
           card_error(result, 'invalid_ascii_hex_tlv', bit, pos)
+          card_discard_field(values, spec)
           break
         end
         tlv_bytes = [bytes].pack('H*')
       end
-      card_tlv(tlv_bytes, result, bit, pos)
+      unless card_tlv(tlv_bytes, result, bit, pos)
+        card_discard_field(values, spec)
+        break
+      end
     end
     pos += length
+    padding = spec['slot_padding']
+    if padding && padding['mtis'].include?(mti) && active[field_index + 1] == padding['before_field'] && length < padding['length']
+      width = padding['length'] - length
+      if pos + width > raw.bytesize
+        card_error(result, 'truncated_field', bit, pos, width, raw.bytesize - pos)
+        card_discard_field(values, spec)
+        break
+      end
+      unless raw.byteslice(pos, width) == padding['_bytes'].byteslice(0, width)
+        card_error(result, 'invalid_field_slot_padding', bit, pos, width)
+        card_discard_field(values, spec)
+        break
+      end
+      pos += width
+      result['document_padding_bytes'] = result.fetch('document_padding_bytes', 0) + width
+      card_warn(result, "padded_field_f#{bit}")
+    end
     consumed_fields += 1
   end
 
@@ -563,8 +635,7 @@ def filter(event)
   unless profile
     result['status'] = 'unconfigured'
     result['frame_status'] = 'not_parsed'
-    event.set('[card_detail]', result)
-    return [event]
+    return card_publish(event, result)
   end
   result['profile'] = profile['id']
   result['issuer'] = profile['issuer']
@@ -572,8 +643,7 @@ def filter(event)
   unless profile['enabled']
     result['status'] = 'disabled'
     result['frame_status'] = 'not_parsed'
-    event.set('[card_detail]', result)
-    return [event]
+    return card_publish(event, result)
   end
 
   message = event.get('message')
@@ -712,19 +782,16 @@ def filter(event)
   else
     result['status'] = 'ok'
   end
-  event.set('[card_detail]', result)
-  [event]
+  card_publish(event, result)
 rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
   card_error(result, 'input_encoding_not_reversible')
   result['status'] = 'error'
-  event.set('[card_detail]', result)
   event.tag('error')
-  [event]
+  card_publish(event, result)
 rescue StandardError
   result ||= { 'parser_version' => @version }
   result['status'] = 'error'
   card_error(result, 'unexpected_parser_exception')
-  event.set('[card_detail]', result)
   event.tag('error')
-  [event]
+  card_publish(event, result)
 end

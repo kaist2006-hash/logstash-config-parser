@@ -1,5 +1,7 @@
 # 카드 전문 수집 인코딩 수정 안내
 
+> 현재 FINAL14는 Filebeat euc-kr을 유지한다. [FINAL14 적용 안내](APPLY_GUIDE_FINAL14.md)와 [검증서](VALIDATION_FINAL14.md)를 따른다. 아래는 이전 인코딩 원인 분석 이력이다.
+
 > **이 문서는 이전 FINAL10 기준의 안내다.** 사용자가 Filebeat euc-kr 유지를 선택한 현재 FINAL13의 적용 방법은 [새 적용 안내](APPLY_GUIDE_FINAL13.md)를 따른다. FINAL13은 CP949 역변환과 손실 접두부 fallback을 유지하고, 이전에 검증에서 누락한 삼성 MS put_msg_complete 요청 포장을 보완했다. 아래의 Filebeat 변경 지침을 FINAL13 구성에 그대로 적용하지 않는다.
 
 확인일: 2026-10-30. 대상 파서: `2026-10-18.final10`.

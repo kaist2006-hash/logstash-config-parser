@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
-  "version": "2026-10-30.final13",
+  "version": "2026-10-30.final14",
+  "diagnostics": "minimal",
   "text_encoding": "CP949",
   "recover_lossy_prefix": true,
   "emv_export": {
@@ -334,7 +335,7 @@
         "52":{"kind":"fixed","length":16},"53":{"kind":"fixed","length":16},"60":{"kind":"fixed","length":12},
         "70":{"kind":"fixed","length":3,"emit":"network_code","encoding":"ascii","numeric":true},
         "90":{"kind":"fixed","length":24},"99":{"kind":"fixed","length":2},"100":{"kind":"fixed","length":6},
-        "118":{"kind":"var","prefix":"ascii3","unit":"bytes","max":111,"parts":[
+        "118":{"kind":"var","prefix":"ascii3","unit":"bytes","max":111,"slot_padding":{"length":111,"byte":32,"before_field":124,"mtis":["0400"]},"parts":[
           {"emit":"installment_months","offset":0,"length":2,"encoding":"ascii","numeric":true},
           {"emit":"business_id","offset":2,"length":10,"encoding":"ascii","numeric":false},
           {"emit":"tax_amount","offset":12,"length":12,"encoding":"ascii","numeric":true},
@@ -435,7 +436,7 @@
         "37":{"kind":"fixed","length":12,"emit":"retrieval_reference","encoding":"ascii","numeric":false},
         "39":{"kind":"fixed","length":2,"emit":"response_code","encoding":"ascii","numeric":false},
         "41":{"kind":"fixed","length":16,"emit":"terminal_id","encoding":"ascii","numeric":false},
-        "42":{"kind":"fixed","length":15,"emit":"merchant_number","encoding":"ascii","numeric":false},
+        "42":{"kind":"fixed","length":15,"encoding":"ascii","parts":[{"emit":"merchant_number","offset":0,"length":10,"encoding":"ascii","numeric":false}]},
         "43":{"kind":"fixed","length":40},
         "49":{"kind":"fixed","length":3,"emit":"currency_code","encoding":"ascii","numeric":true},
         "52":{"kind":"fixed","length":16},
@@ -543,7 +544,7 @@
         "25":{"kind":"fixed","length":1,"emit":"pos_condition","encoding":"bcd","numeric":true},
         "37":{"kind":"fixed","length":12,"emit":"retrieval_reference","encoding":"ascii","numeric":false},
         "39":{"kind":"fixed","length":2,"emit":"response_code","encoding":"ascii","numeric":false},
-        "42":{"kind":"fixed","length":15,"emit":"merchant_number","encoding":"ascii","numeric":false},
+        "42":{"kind":"fixed","length":15,"encoding":"ascii","parts":[{"emit":"merchant_number","offset":0,"length":11,"encoding":"ascii","numeric":false}]},
         "49":{"kind":"fixed","length":2,"emit":"currency_code","encoding":"bcd","numeric":true},
         "70":{"kind":"fixed","length":2,"emit":"network_code","encoding":"bcd","numeric":true},
         "90":{"kind":"fixed","length":21},"123":{"kind":"fixed","length":512},"124":{"kind":"fixed","length":512},
@@ -579,7 +580,7 @@
         "37":{"kind":"fixed","length":12,"emit":"retrieval_reference","encoding":"ascii","numeric":false},
         "39":{"kind":"fixed","length":2,"emit":"response_code","encoding":"ascii","numeric":false,"skip_when_mtis":["0800"]},
         "41":{"kind":"fixed","length":16,"emit":"terminal_id","encoding":"ascii","numeric":false},
-        "42":{"kind":"fixed","length":15,"emit":"merchant_number","encoding":"ascii","numeric":false},
+        "42":{"kind":"fixed","length":15,"encoding":"ascii","parts":[{"emit":"merchant_number","offset":0,"length":10,"encoding":"ascii","numeric":false}]},
         "43":{"kind":"fixed","length":40},
         "49":{"kind":"fixed","length":3,"emit":"currency_code","encoding":"ascii","numeric":true},
         "52":{"kind":"fixed","length":16},"61":{"kind":"fixed","length":30},

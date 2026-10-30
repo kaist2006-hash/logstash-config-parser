@@ -1,0 +1,17 @@
+{
+  "runtime": "Logstash 8.17.6 real stdin/json_lines/Ruby/file pipeline",
+  "workers": 4,
+  "events": 518,
+  "mode": "JSON default minimal, only specs_path in script_params",
+  "result": "passed",
+  "result_differences": 0,
+  "counts": {
+    "control": 24,
+    "ok": 446,
+    "fallback": 46,
+    "error": 2
+  },
+  "scope": "all 16 services plus NH padded cancellation and Samsung legacy/fragment samples; CP949 input simulation, not live Filebeat",
+  "parser_sha256": "832c795dd3bdb138628b52869e6ab327568a71ded0d3eb79d2b09e4780dab2de",
+  "specs_sha256": "19eadada09b11d2178b9f233903928d9f2646cd08b5123cbfe05b05c11f7765a"
+}

@@ -1,0 +1,239 @@
+{
+  "scope": "up to 4000 candidates and 100 approved request/response pairs per service; amount/merchant/currency echo cross-check, not a universal business invariant",
+  "files": [
+    {
+      "file": "BCC_IC",
+      "candidates": 4000,
+      "matched_approved_pairs": 0,
+      "compared_fields": {
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "bcc_ms",
+      "candidates": 4000,
+      "matched_approved_pairs": 0,
+      "compared_fields": {
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "CNB_IC",
+      "candidates": 218,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "domestic_merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "CNB_MS",
+      "candidates": 503,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "din_ic",
+      "candidates": 201,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "din_ms",
+      "candidates": 232,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "keb_sum",
+      "candidates": 233,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "lgc_ic",
+      "candidates": 216,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "lgc_ms",
+      "candidates": 215,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "LTC_IC",
+      "candidates": 266,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "LTC_MS",
+      "candidates": 228,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "NIC_IC",
+      "candidates": 216,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 99
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "NIC_MS",
+      "candidates": 315,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 77
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "win_ic",
+      "candidates": 202,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "wrc",
+      "candidates": 211,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 100
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "candidates": 257,
+      "matched_approved_pairs": 100,
+      "compared_fields": {
+        "transaction_amount": 100,
+        "merchant_number": 100,
+        "currency_code": 91
+      },
+      "different_fields": {
+      },
+      "mismatch_line_pairs": [
+
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # 카드사별 공통 필드 정의 및 검증 범위
 
-기준: `card_detail_specs.json`의 `2026-10-30.final13`. 삼성 MS 요청 포장 누락을 보완한 결과와 제한은 [FINAL13 검증서](VALIDATION_FINAL13.md)를 참조한다. 카드사별 필드 정의는 FINAL12와 같고 삼성 MS에 put_msg_complete 포장 인식만 추가했다. 이 문서는 실제 RB가 출력하는 경로와 JSON의 `emit` 정의를 기준으로 한다. 이전 정리표의 `card_detail.header.*`, `card_detail.detail.*` 경로는 현재 구현의 출력 경로가 **아니다**.
+기준: `2026-10-30.final14`. 카드사별 실제 출력 위치·관측 건수는 [FINAL14 필드표](CARD_FIELDS_FINAL14.md), 검증 범위와 남은 제한은 [검증서](VALIDATION_FINAL14.md), 적용은 [안내](APPLY_GUIDE_FINAL14.md)를 따른다. 아래는 공통 필드명 요약이며 모든 이벤트에서 값이 존재한다는 뜻은 아니다. 기존 card_detail.header/detail 경로는 현재 출력 경로가 아니다.
 
 ## 먼저 알아야 할 점
 
@@ -13,7 +13,7 @@
 
 ## 모든 활성 ISO 프로필에 공통으로 정의된 8개 이름
 
-아래 8개는 BC MS 고정 레코드를 제외한 **활성 ISO 프로필 14개 모두**에 정의돼 있다. 모든 이벤트에서 값이 채워진다는 뜻은 아니다. 예를 들어 요청에는 응답코드 DE39가 없을 수 있다.
+아래 8개는 BC MS 고정 레코드를 제외한 **활성 ISO 프로필 15개 모두**에 정의돼 있다. 모든 이벤트에서 값이 채워진다는 뜻은 아니다. 예를 들어 요청에는 응답코드 DE39가 없을 수 있다.
 
 | 출력 경로 (`card_detail.fields.` 접두어 생략) | DE | 의미 |
 |---|---:|---|
@@ -26,7 +26,7 @@
 | `merchant_number` | 42 | 가맹점 번호 |
 | `currency_code` | 49 | 거래 통화 코드 |
 
-공통 메타데이터는 `card_detail.parser_version`, `profile`, `issuer`, `service`, `status`, `frame_status`에 출력된다. 봉투 및 ISO 본문을 식별한 경우에만 `direction`, `mti`, `bitmap`, `present_fields`, `payload_bytes` 등이 추가된다. BC MS에는 ISO `mti`·`bitmap`이 없을 수 있다.
+기본 메타데이터는 `profile`, `issuer`, `service`, `status`와 실제 확인한 `direction`, `mti`, `record_type`이다. `parser_version`, `frame_status`, `bitmap`, `present_fields`, 바이트 수는 JSON `diagnostics: full`에서만 출력한다. 제어 레코드는 거래 업무 필드가 없을 수 있다.
 
 ## 카드사·서비스별 추가 필드
 
@@ -76,3 +76,5 @@ final10에서는 **농협 IC·MS에만** 규격으로 해석한 필드 뒤의 �
 이전 1,208,914건의 재생에는 삼성의 요청 put_msg_complete 56,568건이 누락돼 있었다. FINAL13은 삼성 원문 113,192줄을 모두 검사했고 다른 15개 서비스는 각각 64건의 표본으로 기존 결과와 비교했다. 모든 카드사의 모든 물리 줄을 FINAL13으로 전량 재생했다는 뜻은 아니다. BC MS는 내부 업무 필드를 출력하지 않는다. 롯데 IC는 제공된 ASCII 형태를 검증했고 문서의 바이너리 IC 형태는 미검증이다. 농협의 알려진 필드를 처리한 후행 데이터는 rest HEX로 보존한다. 농협 IC의 F118/F124 경계 미해결 401건은 이 rest 처리 대상과 별개다. euc-kr로 바이트가 손실되면 확인 가능한 접두부의 업무 필드를 추출해 fallback으로 처리하고, 구조를 확인할 수 없으면 error를 유지한다. 실제 Beats부터 Elasticsearch까지의 운영 연결은 별도 검증 범위다.
 
 세부 카드사별 status 건수와 적용 방법은 [final10 검증 및 적용 안내](VALIDATION_FINAL10.md)를 참조한다. [참고용 엑셀](CARD_CONF_공통필드_카드사별_FINAL10_20261018.xlsx)은 현재 출력 필드 정의를 정리한 문서다. 현재 구현의 최종 근거는 같은 폴더의 `card_detail_parser.rb`와 `card_detail_specs.json`이며, 과거 `card_field_reference_excel.xml`은 2026-10-11 시점 자료라 현 버전의 근거로 사용하지 않는다.
+
+FINAL14의 DE42 출력 경계: 하나 통합은 앞 11자리, 현대 MS·신한 MS는 앞 10자리만 가맹점번호로 출력하고 전체 15바이트를 소비·검증한다. 신한 IC는 문서상 15바이트 정의를 유지한다. 국민 IC의 DE42 HOST ID와 DE118 국내 가맹점번호는 별도 필드다.

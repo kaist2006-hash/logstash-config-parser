@@ -1,0 +1,14 @@
+{
+  "events": 418,
+  "transitions": {
+    "error->fallback": 401,
+    "fallback->fallback": 16,
+    "ok->ok": 1
+  },
+  "errors": {
+    "truncated_field|118": 16
+  },
+  "padding_events": 401,
+  "emv_recovered": 305,
+  "input_mutations": 0
+}
