@@ -1,3 +1,5 @@
+> 보관 문서입니다. 현재 적용본은 [FINAL17 적용 안내](APPLY_GUIDE_FINAL17.md), [검증 결과](VALIDATION_FINAL17.md), [필드표](CARD_FIELDS_FINAL17.md)를 사용하세요.
+
 # FINAL16 적용 안내
 
 FINAL15를 대체합니다. 상세 불일치 시 공통필드를 복구하는 fallback 기준을 바로잡았습니다. fallback은 공통 값만, error는 업무 값 없이 원인만 출력합니다. 상세 규격을 모르는 상태를 ok로 승격한 버전이 아닙니다.

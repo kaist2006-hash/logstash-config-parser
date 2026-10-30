@@ -93,6 +93,14 @@ def register(params)
     if transport.key?('completed_text_envelope')
       raise ArgumentError, 'invalid completed text envelope flag' unless [true, false].include?(transport['completed_text_envelope'])
     end
+    if transport['completed_text_trailer_hex']
+      hex = transport['completed_text_trailer_hex']
+      raise ArgumentError, 'invalid completed text trailer' unless transport['completed_text_envelope'] &&
+        hex.is_a?(String) && /\A(?:[0-9a-fA-F]{2}){1,16}\z/.match?(hex)
+      transport['_completed_trailer'] = [hex].pack('H*')
+      transport['_completed_trailer_text'] = transport['_completed_trailer'].dup.force_encoding(@text_encoding).
+        encode('UTF-8', invalid: :replace, undef: :replace, replace: "\uFFFD")
+    end
     if transport.key?('outbound_declared_trailer_bytes')
       n = transport['outbound_declared_trailer_bytes']
       raise ArgumentError, 'invalid outbound trailer width' unless n.is_a?(Integer) && (1..64).cover?(n)
@@ -215,8 +223,10 @@ def register(params)
   @text_marker_re = /\b(get|put)\(data\[/.freeze
   @extended_text_marker_re = /\b(get|put)\([^\r\n)]{0,128}?data\[/.freeze
   @text_tail_re = /\] len\[([0-9]+)\](?: uid\[[^\]]*\])?(?: linename\[[^\]]*\])?\)\s*\z/.freeze
+  # Recover the known logger suffix even when the packet/length closing text is absent.
+  @orphan_text_tail_re = /(?:\] len\[[^\[\]\r\n]*\]?)? (?:(?:uid|fd)\[[^\]\r\n]*\] )?linename\[[^\]\r\n]*\]\)\s*\z/.freeze
   @completed_text_marker_re = /\bput_msg_complete\[/.freeze
-  @completed_text_envelope_re = /\bput_msg_complete\[(.*?)\](?:\s+linename\[[^\]]*\])?\s*\z/m.freeze
+  @completed_text_envelope_re = /\bput_msg_complete\[(.*?)\](?:\[([^\[\]\r\n]*)\])?(?:\s+linename\[[^\]]*\])?\s*\z/m.freeze
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   @printable_ascii_re = /\A[\x20-\x7E]*\z/n.freeze
@@ -820,6 +830,13 @@ def filter(event)
       if completed_marker && (!marker || completed_marker.begin(0) < marker.begin(0))
         completed = @completed_text_envelope_re.match(wire_message, completed_marker.begin(0))
         raw = completed ? completed[1] : wire_message[completed_marker.end(0)..-1]
+        if completed && completed[2]
+          if /\A[0-9]+\z/.match?(completed[2])
+            result['declared_bytes'] = completed[2].to_i
+          else
+            card_warn(result, 'invalid_completed_text_length')
+          end
+        end
         result['direction'] = 'OUT'
         result['log_encoding'] = 'completed_text'
         unless completed
@@ -834,7 +851,8 @@ def filter(event)
           result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
           result['log_encoding'] = 'text'
         elsif marker
-          raw = wire_message[marker.end(0)..-1]
+          logger_tail = @orphan_text_tail_re.match(wire_message, marker.end(0))
+          raw = logger_tail ? wire_message[marker.end(0)...logger_tail.begin(0)] : wire_message[marker.end(0)..-1]
           result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
           result['log_encoding'] = 'text'
           result['outer_envelope_recovered'] = true
@@ -845,10 +863,14 @@ def filter(event)
       end
     end
 
+    completed_loss_tail = false
     if raw && result['log_encoding'] != 'hex'
       result['input_text_encoding'] = @text_encoding.name
       loss_offset = raw.index("\uFFFD")
       if loss_offset
+        suffix = transport['_completed_trailer_text']
+        completed_loss_tail = result['log_encoding'] == 'completed_text' && suffix &&
+          suffix.include?("\uFFFD") && raw[loss_offset, suffix.length] == suffix
         if @recover_lossy_prefix
           # Everything after the first replacement character has unknown byte
           # positions. Parse only the reversible prefix and force fallback/error.
@@ -868,6 +890,18 @@ def filter(event)
 
     if raw
       result['logged_bytes'] = raw.bytesize
+      # Only the counted completed-request form defines this transport boundary.
+      # Invalid bytes inside the ISO payload still cause fallback/error.
+      trailer = transport['_completed_trailer']
+      if result['log_encoding'] == 'completed_text' && result['declared_bytes'] && trailer
+        length = result['declared_bytes'] - trailer.bytesize
+        if length >= 0 && ((raw.bytesize >= result['declared_bytes'] && raw.byteslice(length, trailer.bytesize) == trailer) ||
+            (result['input_loss_truncated'] && completed_loss_tail && raw.bytesize == length))
+          result['envelope_declared_bytes'] = result['declared_bytes']
+          result['declared_bytes'] = length
+          result['transport_trailer_bytes'] = trailer.bytesize
+        end
+      end
       embedded_rule = transport['embedded_length'][result['log_encoding']]
       trailer_bytes = transport['outbound_declared_trailer_bytes']
       if result['declared_bytes'] && !embedded_rule && result['direction'] == 'OUT' &&

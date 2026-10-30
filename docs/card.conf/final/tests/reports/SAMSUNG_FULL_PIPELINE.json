@@ -1,0 +1,44 @@
+{
+  "result": "passed",
+  "runtime": "Logstash 8.17.6 / 4 workers",
+  "encoding_simulation": "CP949-compatible Filebeat euc-kr decoding with replacement",
+  "physical_input_lines": 113192,
+  "output_events": 113136,
+  "trace_fragments_dropped": 56,
+  "direction": {
+    "IN": 56568,
+    "OUT": 56568
+  },
+  "status": {
+    "ok": 95967,
+    "fallback": 17169
+  },
+  "profile": {
+    "samsung_ms": 113136
+  },
+  "wrong_root_direction": 0,
+  "photo_shape_responses": 77,
+  "field_presence_counts": {
+    "transaction_amount": 112648,
+    "response_code": 56514,
+    "merchant_number": 105656,
+    "currency_code": 93988,
+    "approval_number": 48884,
+    "retrieval_reference": 105656,
+    "pos_entry_mode": 97167,
+    "transmission_datetime": 113136,
+    "installment_months": 84917,
+    "processing_code": 112648,
+    "local_time": 57931,
+    "local_date": 57931,
+    "trace_number": 3702,
+    "network_code": 488
+  },
+  "codes": {
+    "input_decoding_loss": 12825,
+    "truncated_field": 6991,
+    "invalid_length_prefix": 1626,
+    "field_length_exceeds_limit": 1,
+    "redacted_length_prefix": 1
+  }
+}

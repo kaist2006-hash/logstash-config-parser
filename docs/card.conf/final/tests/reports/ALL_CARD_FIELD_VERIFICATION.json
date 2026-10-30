@@ -1,0 +1,3293 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "workers": 4,
+  "scope": "all recognized wire wrappers plus wrapperless ISO-bearing lines; every physical Samsung line; remaining physical lines inventoried separately",
+  "source_encoding": "CP949 replacement simulation compatible with Filebeat euc-kr; not a live Filebeat test",
+  "profiles": {
+    "bcc_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 8
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 5
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 1
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "installment_months": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "approval_number": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 8
+      },
+      "business_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 10,
+        "part_length": 12
+      },
+      "terminal_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 22,
+        "part_length": 16
+      },
+      "tax_amount": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 53,
+        "part_length": 15
+      },
+      "service_charge": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 68,
+        "part_length": 15
+      }
+    },
+    "bcc_ms": {
+    },
+    "kb_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "point_balance": {
+        "de": 5,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 5
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 1
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "fallback_reason": {
+        "de": 61,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "encrypted_card_transport": {
+        "de": 61,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 1
+      },
+      "terminal_software_model": {
+        "de": 61,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 3,
+        "part_length": 16
+      },
+      "terminal_reader_model": {
+        "de": 61,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 19,
+        "part_length": 16
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "original_mti": {
+        "de": 90,
+        "encoding": "bcd",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "original_trace": {
+        "de": 90,
+        "encoding": "bcd",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 3
+      },
+      "original_date": {
+        "de": 90,
+        "encoding": "bcd",
+        "numeric": false,
+        "part_offset": 5,
+        "part_length": 3
+      },
+      "original_approval_number": {
+        "de": 90,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 10,
+        "part_length": 8
+      },
+      "domestic_country": {
+        "de": 118,
+        "encoding": "bcd",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "installment_months": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 2,
+        "part_length": 2
+      },
+      "domestic_merchant_number": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 4,
+        "part_length": 15
+      },
+      "approval_number": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 19,
+        "part_length": 8
+      },
+      "business_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 27,
+        "part_length": 15
+      },
+      "terminal_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 42,
+        "part_length": 10
+      },
+      "tax_amount": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 52,
+        "part_length": 12
+      },
+      "service_charge": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 64,
+        "part_length": 12
+      }
+    },
+    "kb_ms": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "installment_months": {
+        "de": 55,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": null
+      },
+      "approval_number": {
+        "de": 56,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": null
+      }
+    },
+    "lotte_ms": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "settlement_amount": {
+        "de": 5,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "billing_amount": {
+        "de": 6,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "acquirer_code": {
+        "de": 32,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 6
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "terminal_id": {
+        "de": 41,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 16
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "business_id": {
+        "de": 43,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 10
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "merchant_fee_rate_raw": {
+        "de": 48,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": null
+      },
+      "installment_months": {
+        "de": 55,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": null
+      },
+      "approval_number": {
+        "de": 56,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": null
+      },
+      "deposit_sale_type": {
+        "de": 57,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "deposit_amount": {
+        "de": 57,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 2,
+        "part_length": 14
+      }
+    },
+    "lotte_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "settlement_amount": {
+        "de": 5,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "billing_amount": {
+        "de": 6,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "acquirer_code": {
+        "de": 32,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 6
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "terminal_id": {
+        "de": 41,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 16
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "business_id": {
+        "de": 43,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 10
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "merchant_fee_rate_raw": {
+        "de": 48,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": null
+      },
+      "installment_months": {
+        "de": 55,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": null
+      },
+      "approval_number": {
+        "de": 56,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": null
+      },
+      "deposit_sale_type": {
+        "de": 57,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "deposit_amount": {
+        "de": 57,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 2,
+        "part_length": 14
+      }
+    },
+    "nh_ms": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 14
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 8
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "approval_number": {
+        "de": 38,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 8
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "terminal_id": {
+        "de": 41,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "installment_months": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "business_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 10
+      },
+      "tax_amount": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 12,
+        "part_length": 12
+      },
+      "service_charge": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 24,
+        "part_length": 12
+      },
+      "pg_business_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 37,
+        "part_length": 10
+      }
+    },
+    "nh_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 14
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 8
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "approval_number": {
+        "de": 38,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 8
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "terminal_id": {
+        "de": 41,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "installment_months": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 0,
+        "part_length": 2
+      },
+      "business_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 2,
+        "part_length": 10
+      },
+      "tax_amount": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 12,
+        "part_length": 12
+      },
+      "service_charge": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": 24,
+        "part_length": 12
+      },
+      "pg_business_id": {
+        "de": 118,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 37,
+        "part_length": 10
+      }
+    },
+    "samsung_ms": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "installment_months": {
+        "de": 55,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": null
+      },
+      "approval_number": {
+        "de": 56,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": null
+      }
+    },
+    "samsung_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 5
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 1
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      }
+    },
+    "shinhan_ms": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "terminal_id": {
+        "de": 41,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 16
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 10
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      }
+    },
+    "shinhan_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 5
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 1
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      }
+    },
+    "woori_sum": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "approval_number": {
+        "de": 38,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 8
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      }
+    },
+    "hana_sum": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 5
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 1
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 11
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      }
+    },
+    "hyundai_ms": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 10
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 4
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "terminal_id": {
+        "de": 41,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 16
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": 0,
+        "part_length": 10
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "ascii",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      }
+    },
+    "hyundai_ic": {
+      "processing_code": {
+        "de": 3,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "transaction_amount": {
+        "de": 4,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 6
+      },
+      "transmission_datetime": {
+        "de": 7,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 5
+      },
+      "trace_number": {
+        "de": 11,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_time": {
+        "de": 12,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 3
+      },
+      "local_date": {
+        "de": 13,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_type": {
+        "de": 18,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "acquirer_country": {
+        "de": 19,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_entry_mode": {
+        "de": 22,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "card_sequence": {
+        "de": 23,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "pos_condition": {
+        "de": 25,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 1
+      },
+      "retrieval_reference": {
+        "de": 37,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 12
+      },
+      "response_code": {
+        "de": 39,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "merchant_number": {
+        "de": 42,
+        "encoding": "ascii",
+        "numeric": false,
+        "part_offset": null,
+        "part_length": 15
+      },
+      "currency_code": {
+        "de": 49,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      },
+      "network_code": {
+        "de": 70,
+        "encoding": "bcd",
+        "numeric": true,
+        "part_offset": null,
+        "part_length": 2
+      }
+    }
+  },
+  "files": [
+    {
+      "file": "BCC_IC",
+      "route": "s_service_bcc_ic",
+      "physical_lines": 112268,
+      "selected": 56134,
+      "excluded": {
+        "other_lines": 56134,
+        "with_data_marker": 3600
+      },
+      "sha256": "3a806c7d744a0eef8a690d85765c5395b79a40beb45f1aeaaab35de70ec94f8d",
+      "events": 56134,
+      "status": {
+        "control": 7200,
+        "ok": 48892,
+        "error": 42
+      },
+      "errors": {
+        "unexpected_iso_header|": 42
+      },
+      "warnings": {
+      },
+      "fallback_causes": {
+      },
+      "fields": {
+        "merchant_type": 21793,
+        "transmission_datetime": 48892,
+        "pos_entry_mode": 46230,
+        "approval_number": 48892,
+        "transaction_amount": 48892,
+        "currency_code": 24446,
+        "business_id": 48892,
+        "terminal_id": 48892,
+        "installment_months": 48892,
+        "tax_amount": 48892,
+        "local_time": 48892,
+        "pos_condition": 24446,
+        "local_date": 48892,
+        "acquirer_country": 21793,
+        "retrieval_reference": 48892,
+        "service_charge": 48892,
+        "trace_number": 48892,
+        "merchant_number": 48892,
+        "processing_code": 48892,
+        "response_code": 27099,
+        "card_sequence": 14238
+      },
+      "nonempty_fields": {
+        "merchant_type": 21793,
+        "transmission_datetime": 48892,
+        "pos_entry_mode": 46230,
+        "transaction_amount": 48892,
+        "currency_code": 24446,
+        "business_id": 46225,
+        "terminal_id": 48823,
+        "installment_months": 48892,
+        "tax_amount": 48892,
+        "local_time": 48892,
+        "pos_condition": 24446,
+        "local_date": 48892,
+        "acquirer_country": 21793,
+        "retrieval_reference": 48892,
+        "service_charge": 48892,
+        "trace_number": 48892,
+        "merchant_number": 48892,
+        "processing_code": 48892,
+        "approval_number": 26820,
+        "response_code": 27099,
+        "card_sequence": 14238
+      },
+      "emv": {
+        "transaction_type": 4218,
+        "cryptogram_information": 4233,
+        "currency_code": 4218,
+        "terminal_capabilities": 4218,
+        "terminal_country": 4218,
+        "application_interchange_profile": 4218,
+        "application_version": 4232,
+        "cvm_results": 4233,
+        "terminal_verification_results": 4218,
+        "transaction_counter": 4218,
+        "transaction_date": 4218,
+        "terminal_type": 4233
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "bcc_ms",
+      "route": "s_service_bcc_ms",
+      "physical_lines": 22728,
+      "selected": 13456,
+      "excluded": {
+        "other_lines": 9272,
+        "with_data_marker": 2400
+      },
+      "sha256": "459dfcaf3cd803a0b17fe2d704cafbff65250c0fc414ac271e4bc8f33e588be2",
+      "events": 13456,
+      "status": {
+        "ok": 5776,
+        "control": 7680
+      },
+      "errors": {
+      },
+      "warnings": {
+        "missing_text_envelope_tail": 37
+      },
+      "fallback_causes": {
+      },
+      "fields": {
+      },
+      "nonempty_fields": {
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "CNB_IC",
+      "route": "s_service_cnb_ic",
+      "physical_lines": 453297,
+      "selected": 302191,
+      "excluded": {
+        "other_lines": 151106
+      },
+      "sha256": "3baa1eb394994a08b03e8696d6669e5cfbd837dd44245860ad3e996eb3a51f89",
+      "events": 302191,
+      "status": {
+        "ok": 302189,
+        "fallback": 2
+      },
+      "errors": {
+      },
+      "warnings": {
+        "header_variant_common_only": 2
+      },
+      "fallback_causes": {
+        "header_variant_common_only": 2
+      },
+      "fields": {
+        "merchant_type": 150135,
+        "domestic_merchant_number": 302189,
+        "pos_entry_mode": 302191,
+        "transaction_amount": 302191,
+        "currency_code": 302187,
+        "terminal_reader_model": 150135,
+        "business_id": 302189,
+        "tax_amount": 302189,
+        "installment_months": 302189,
+        "card_sequence": 302191,
+        "pos_condition": 302191,
+        "retrieval_reference": 302191,
+        "trace_number": 302191,
+        "merchant_number": 302191,
+        "processing_code": 302191,
+        "fallback_reason": 150135,
+        "transmission_datetime": 302191,
+        "approval_number": 302189,
+        "terminal_id": 302189,
+        "terminal_software_model": 150135,
+        "acquirer_country": 150135,
+        "encrypted_card_transport": 150135,
+        "service_charge": 302189,
+        "domestic_country": 302189,
+        "response_code": 152054,
+        "original_mti": 963,
+        "original_trace": 963,
+        "original_date": 963,
+        "original_approval_number": 963,
+        "point_balance": 4
+      },
+      "nonempty_fields": {
+        "merchant_type": 150135,
+        "domestic_merchant_number": 302189,
+        "pos_entry_mode": 302191,
+        "transaction_amount": 302191,
+        "currency_code": 302187,
+        "terminal_reader_model": 150135,
+        "business_id": 302189,
+        "tax_amount": 302189,
+        "installment_months": 302189,
+        "card_sequence": 302191,
+        "pos_condition": 302191,
+        "retrieval_reference": 302191,
+        "trace_number": 302191,
+        "merchant_number": 302191,
+        "processing_code": 302191,
+        "transmission_datetime": 302191,
+        "terminal_id": 302189,
+        "terminal_software_model": 150135,
+        "acquirer_country": 150135,
+        "encrypted_card_transport": 149984,
+        "service_charge": 302189,
+        "domestic_country": 302189,
+        "approval_number": 150468,
+        "response_code": 152054,
+        "original_mti": 963,
+        "original_trace": 963,
+        "original_date": 963,
+        "original_approval_number": 963,
+        "point_balance": 4
+      },
+      "emv": {
+        "transaction_type": 116278,
+        "cryptogram_information": 116278,
+        "currency_code": 116278,
+        "terminal_capabilities": 116278,
+        "terminal_country": 116278,
+        "application_interchange_profile": 116278,
+        "application_version": 116278,
+        "cvm_results": 116278,
+        "terminal_verification_results": 116278,
+        "transaction_counter": 116278,
+        "transaction_date": 116278,
+        "terminal_type": 116278
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "CNB_MS",
+      "route": "s_service_cnb_ms",
+      "physical_lines": 71346,
+      "selected": 71302,
+      "excluded": {
+        "other_lines": 44
+      },
+      "sha256": "4502baf05739373c3e87a93481f6777f1c40307d0cdead93fe9b8e2e713191c6",
+      "events": 71302,
+      "status": {
+        "ok": 49637,
+        "fallback": 21659,
+        "error": 6
+      },
+      "errors": {
+        "input_decoding_loss|": 13252,
+        "truncated_field|35": 19328,
+        "truncated_field|46": 3,
+        "redacted_length_prefix|46": 1,
+        "missing_iso_header|": 6,
+        "truncated_field|37": 4
+      },
+      "warnings": {
+        "missing_text_envelope_tail": 2375,
+        "recovered_outer_trailing_bytes": 2323,
+        "declared_length_mismatch": 19283
+      },
+      "fallback_causes": {
+        "missing_text_envelope_tail": 2375,
+        "recovered_outer_trailing_bytes": 2323,
+        "input_decoding_loss|": 13252,
+        "truncated_field|35": 19328,
+        "declared_length_mismatch": 19283,
+        "truncated_field|46": 3,
+        "redacted_length_prefix|46": 1,
+        "truncated_field|37": 4
+      },
+      "fields": {
+        "local_date": 65316,
+        "retrieval_reference": 51964,
+        "transmission_datetime": 71296,
+        "pos_entry_mode": 29668,
+        "transaction_amount": 71296,
+        "merchant_number": 51964,
+        "processing_code": 71296,
+        "currency_code": 51960,
+        "installment_months": 49637,
+        "local_time": 65316,
+        "approval_number": 17166,
+        "response_code": 22296
+      },
+      "nonempty_fields": {
+        "local_date": 65316,
+        "retrieval_reference": 51964,
+        "transmission_datetime": 71296,
+        "pos_entry_mode": 29668,
+        "transaction_amount": 71296,
+        "merchant_number": 51964,
+        "processing_code": 71296,
+        "currency_code": 51960,
+        "installment_months": 49637,
+        "local_time": 65316,
+        "approval_number": 16226,
+        "response_code": 22296
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "din_ic",
+      "route": "s_service_din_ic",
+      "physical_lines": 10948,
+      "selected": 5474,
+      "excluded": {
+        "other_lines": 5474
+      },
+      "sha256": "02cfe89530330f2013086975fb54cb41f2924d593e55134d31957000677a9aec",
+      "events": 5474,
+      "status": {
+        "ok": 5474
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "fallback_causes": {
+      },
+      "fields": {
+        "merchant_type": 5465,
+        "transmission_datetime": 5474,
+        "pos_entry_mode": 5474,
+        "transaction_amount": 5474,
+        "currency_code": 5474,
+        "card_sequence": 5474,
+        "pos_condition": 5474,
+        "retrieval_reference": 5474,
+        "acquirer_country": 2728,
+        "trace_number": 5474,
+        "merchant_number": 5474,
+        "processing_code": 5474,
+        "response_code": 2746
+      },
+      "nonempty_fields": {
+        "merchant_type": 5465,
+        "transmission_datetime": 5474,
+        "pos_entry_mode": 5474,
+        "transaction_amount": 5474,
+        "currency_code": 5474,
+        "card_sequence": 5474,
+        "pos_condition": 5474,
+        "retrieval_reference": 5474,
+        "acquirer_country": 2728,
+        "trace_number": 5474,
+        "merchant_number": 5474,
+        "processing_code": 5474,
+        "response_code": 2746
+      },
+      "emv": {
+        "cryptogram_information": 668,
+        "application_version": 668,
+        "cvm_results": 668,
+        "terminal_type": 668
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "din_ms",
+      "route": "s_service_din_ms",
+      "physical_lines": 19770,
+      "selected": 13180,
+      "excluded": {
+        "other_lines": 6590
+      },
+      "sha256": "b796225ca9e1a43a30043796188a42a9abaa84627bd61540113127e231b2f5ce",
+      "events": 13180,
+      "status": {
+        "ok": 11979,
+        "fallback": 1201
+      },
+      "errors": {
+        "input_decoding_loss|": 487,
+        "truncated_transport_payload|": 724,
+        "truncated_field|35": 724
+      },
+      "warnings": {
+        "missing_text_envelope_tail": 426,
+        "bitmap_field_omitted_f39": 62
+      },
+      "fallback_causes": {
+        "missing_text_envelope_tail": 426,
+        "input_decoding_loss|": 487,
+        "truncated_transport_payload|": 724,
+        "truncated_field|35": 724,
+        "bitmap_field_omitted_f39": 62
+      },
+      "fields": {
+        "transmission_datetime": 13180,
+        "pos_entry_mode": 13056,
+        "transaction_amount": 13056,
+        "currency_code": 12332,
+        "terminal_id": 12332,
+        "local_time": 13056,
+        "local_date": 13056,
+        "retrieval_reference": 12332,
+        "trace_number": 13180,
+        "merchant_number": 12332,
+        "processing_code": 13056,
+        "response_code": 6912,
+        "merchant_type": 6528,
+        "network_code": 124
+      },
+      "nonempty_fields": {
+        "transmission_datetime": 13180,
+        "pos_entry_mode": 13056,
+        "transaction_amount": 13056,
+        "currency_code": 12332,
+        "terminal_id": 12332,
+        "local_time": 13056,
+        "local_date": 13056,
+        "retrieval_reference": 12332,
+        "trace_number": 13180,
+        "merchant_number": 12332,
+        "processing_code": 13056,
+        "response_code": 6912,
+        "merchant_type": 6527,
+        "network_code": 124
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "keb_sum",
+      "route": "s_service_keb_sum",
+      "physical_lines": 214234,
+      "selected": 142703,
+      "excluded": {
+        "other_lines": 71531
+      },
+      "sha256": "007c3cd9d274ef9192fbb3f0df5875a552dcc805c06fc6ff0283ef82af385339",
+      "events": 142703,
+      "status": {
+        "ok": 142703
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "fallback_causes": {
+      },
+      "fields": {
+        "pos_condition": 71232,
+        "retrieval_reference": 142703,
+        "transmission_datetime": 142703,
+        "pos_entry_mode": 142459,
+        "trace_number": 142703,
+        "transaction_amount": 142459,
+        "merchant_number": 142459,
+        "processing_code": 142459,
+        "currency_code": 142459,
+        "card_sequence": 49702,
+        "response_code": 79501,
+        "network_code": 244
+      },
+      "nonempty_fields": {
+        "pos_condition": 71232,
+        "retrieval_reference": 142703,
+        "transmission_datetime": 142703,
+        "pos_entry_mode": 142459,
+        "trace_number": 142703,
+        "transaction_amount": 142459,
+        "merchant_number": 142459,
+        "processing_code": 142459,
+        "currency_code": 142459,
+        "card_sequence": 49702,
+        "response_code": 79501,
+        "network_code": 244
+      },
+      "emv": {
+        "transaction_type": 24957,
+        "cryptogram_information": 24957,
+        "currency_code": 24957,
+        "terminal_capabilities": 24957,
+        "terminal_country": 24957,
+        "application_interchange_profile": 24957,
+        "application_version": 24957,
+        "cvm_results": 24956,
+        "terminal_verification_results": 24957,
+        "transaction_counter": 24957,
+        "transaction_date": 24957,
+        "terminal_type": 24957
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "lgc_ic",
+      "route": "s_service_lgc_ic",
+      "physical_lines": 291157,
+      "selected": 194098,
+      "excluded": {
+        "other_lines": 97059
+      },
+      "sha256": "a855d14e175b87a49e87ac7e896352cb7f602088198a28486c98a6f10d14efc9",
+      "events": 194098,
+      "status": {
+        "ok": 194098
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "fallback_causes": {
+      },
+      "fields": {
+        "merchant_type": 103989,
+        "transmission_datetime": 194098,
+        "pos_entry_mode": 194098,
+        "transaction_amount": 194098,
+        "currency_code": 194098,
+        "card_sequence": 194098,
+        "pos_condition": 194098,
+        "retrieval_reference": 194098,
+        "acquirer_country": 96324,
+        "trace_number": 194098,
+        "merchant_number": 194098,
+        "processing_code": 194098,
+        "response_code": 97774
+      },
+      "nonempty_fields": {
+        "merchant_type": 103989,
+        "transmission_datetime": 194098,
+        "pos_entry_mode": 194098,
+        "transaction_amount": 194098,
+        "currency_code": 194098,
+        "card_sequence": 194098,
+        "pos_condition": 194098,
+        "retrieval_reference": 194098,
+        "acquirer_country": 96324,
+        "trace_number": 194098,
+        "merchant_number": 194098,
+        "processing_code": 194098,
+        "response_code": 97774
+      },
+      "emv": {
+        "transaction_type": 57889,
+        "cryptogram_information": 57889,
+        "currency_code": 57889,
+        "terminal_capabilities": 57879,
+        "terminal_country": 57889,
+        "application_interchange_profile": 57889,
+        "application_version": 57788,
+        "cvm_results": 57888,
+        "terminal_verification_results": 57889,
+        "transaction_counter": 57913,
+        "transaction_date": 57889,
+        "terminal_type": 57888
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "lgc_ms",
+      "route": "s_service_lgc_ms",
+      "physical_lines": 347806,
+      "selected": 114824,
+      "excluded": {
+        "other_lines": 232982
+      },
+      "sha256": "bbd1ae84acb0ad13a9bde12aba17dbd0a12815559be9208041f70defbbb12c23",
+      "events": 114824,
+      "status": {
+        "ok": 104716,
+        "fallback": 10108
+      },
+      "errors": {
+        "input_decoding_loss|": 292,
+        "redacted_length_prefix|46": 3
+      },
+      "warnings": {
+        "missing_text_envelope_tail": 10105,
+        "recovered_outer_trailing_bytes": 10105
+      },
+      "fallback_causes": {
+        "missing_text_envelope_tail": 10105,
+        "recovered_outer_trailing_bytes": 10105,
+        "input_decoding_loss|": 292,
+        "redacted_length_prefix|46": 3
+      },
+      "fields": {
+        "local_date": 114824,
+        "retrieval_reference": 114824,
+        "transmission_datetime": 114824,
+        "pos_entry_mode": 57410,
+        "transaction_amount": 114824,
+        "merchant_number": 114824,
+        "processing_code": 114824,
+        "currency_code": 114817,
+        "local_time": 114824,
+        "response_code": 65970,
+        "terminal_id": 4
+      },
+      "nonempty_fields": {
+        "local_date": 114824,
+        "retrieval_reference": 114824,
+        "transmission_datetime": 114824,
+        "pos_entry_mode": 57410,
+        "transaction_amount": 114824,
+        "merchant_number": 114824,
+        "processing_code": 114824,
+        "currency_code": 114817,
+        "local_time": 114824,
+        "response_code": 65970,
+        "terminal_id": 4
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "LTC_IC",
+      "route": "s_service_ltc_ic",
+      "physical_lines": 12110,
+      "selected": 12104,
+      "excluded": {
+        "other_lines": 6
+      },
+      "sha256": "34df2707bd3148551d7a61ba2538899c9a801da39cbe357dbff59ae5f8af41f2",
+      "events": 12104,
+      "status": {
+        "ok": 10091,
+        "fallback": 2013
+      },
+      "errors": {
+        "input_decoding_loss|": 818,
+        "truncated_field|35": 1074,
+        "truncated_field|61": 71,
+        "invalid_numeric_value|49": 2,
+        "truncated_field|37": 10
+      },
+      "warnings": {
+        "omitted_document_field_f61": 741,
+        "declared_length_mismatch": 1074,
+        "missing_text_envelope_tail": 196,
+        "recovered_outer_trailing_bytes": 115
+      },
+      "fallback_causes": {
+        "omitted_document_field_f61": 741,
+        "input_decoding_loss|": 818,
+        "truncated_field|35": 1074,
+        "declared_length_mismatch": 1074,
+        "truncated_field|61": 71,
+        "missing_text_envelope_tail": 196,
+        "recovered_outer_trailing_bytes": 115,
+        "invalid_numeric_value|49": 2,
+        "truncated_field|37": 10
+      },
+      "fields": {
+        "transmission_datetime": 12104,
+        "pos_entry_mode": 12104,
+        "acquirer_code": 12104,
+        "deposit_sale_type": 5123,
+        "transaction_amount": 12104,
+        "currency_code": 11018,
+        "business_id": 11020,
+        "terminal_id": 11020,
+        "billing_amount": 12104,
+        "installment_months": 10091,
+        "local_time": 12104,
+        "local_date": 12104,
+        "retrieval_reference": 11020,
+        "settlement_amount": 12104,
+        "trace_number": 12104,
+        "deposit_amount": 5123,
+        "merchant_number": 11020,
+        "processing_code": 12104,
+        "response_code": 5794,
+        "approval_number": 4968,
+        "merchant_fee_rate_raw": 4964
+      },
+      "nonempty_fields": {
+        "transmission_datetime": 12104,
+        "pos_entry_mode": 12104,
+        "acquirer_code": 12104,
+        "transaction_amount": 12104,
+        "currency_code": 11018,
+        "business_id": 11020,
+        "terminal_id": 11020,
+        "billing_amount": 12104,
+        "installment_months": 10091,
+        "local_time": 12104,
+        "local_date": 12104,
+        "retrieval_reference": 11020,
+        "settlement_amount": 12104,
+        "trace_number": 12104,
+        "merchant_number": 11020,
+        "processing_code": 12104,
+        "response_code": 5794,
+        "approval_number": 4781,
+        "merchant_fee_rate_raw": 4964
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "LTC_MS",
+      "route": "s_service_ltc_ms",
+      "physical_lines": 51818,
+      "selected": 51771,
+      "excluded": {
+        "other_lines": 47
+      },
+      "sha256": "d80a8367eab850b45518802ed9ad155bc32dd83c4f385523a7f20f9963fe4090",
+      "events": 51771,
+      "status": {
+        "ok": 44145,
+        "fallback": 7621,
+        "error": 5
+      },
+      "errors": {
+        "input_decoding_loss|": 2287,
+        "truncated_field|35": 2605,
+        "truncated_field|61": 123,
+        "invalid_numeric_value|49": 3,
+        "truncated_field|37": 17,
+        "incomplete_text_envelope|": 5
+      },
+      "warnings": {
+        "omitted_document_field_f61": 2145,
+        "declared_length_mismatch": 2605,
+        "missing_text_envelope_tail": 2864,
+        "recovered_outer_trailing_bytes": 2724,
+        "header_variant_common_only": 4
+      },
+      "fallback_causes": {
+        "omitted_document_field_f61": 2145,
+        "input_decoding_loss|": 2287,
+        "truncated_field|35": 2605,
+        "declared_length_mismatch": 2605,
+        "missing_text_envelope_tail": 2864,
+        "recovered_outer_trailing_bytes": 2724,
+        "truncated_field|61": 123,
+        "invalid_numeric_value|49": 3,
+        "truncated_field|37": 17,
+        "header_variant_common_only": 4
+      },
+      "fields": {
+        "network_code": 120,
+        "transmission_datetime": 51766,
+        "trace_number": 51766,
+        "pos_entry_mode": 51646,
+        "acquirer_code": 51646,
+        "approval_number": 23201,
+        "transaction_amount": 51646,
+        "currency_code": 49021,
+        "business_id": 49024,
+        "terminal_id": 49024,
+        "billing_amount": 51646,
+        "installment_months": 44031,
+        "local_time": 51646,
+        "local_date": 51646,
+        "retrieval_reference": 49024,
+        "settlement_amount": 51646,
+        "response_code": 25736,
+        "merchant_number": 49024,
+        "processing_code": 51646,
+        "merchant_fee_rate_raw": 23128,
+        "deposit_sale_type": 20830,
+        "deposit_amount": 20830
+      },
+      "nonempty_fields": {
+        "network_code": 120,
+        "transmission_datetime": 51766,
+        "trace_number": 51766,
+        "pos_entry_mode": 51646,
+        "acquirer_code": 51646,
+        "approval_number": 22781,
+        "transaction_amount": 51646,
+        "currency_code": 49021,
+        "business_id": 49024,
+        "terminal_id": 49024,
+        "billing_amount": 51646,
+        "installment_months": 44031,
+        "local_time": 51646,
+        "local_date": 51646,
+        "retrieval_reference": 49024,
+        "settlement_amount": 51646,
+        "response_code": 25736,
+        "merchant_number": 49024,
+        "processing_code": 51646,
+        "merchant_fee_rate_raw": 23128,
+        "deposit_sale_type": 3,
+        "deposit_amount": 3
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "NIC_IC",
+      "route": "s_service_nlc_ic",
+      "physical_lines": 111434,
+      "selected": 111352,
+      "excluded": {
+        "other_lines": 82
+      },
+      "sha256": "1c5a1bdd2b45a5db8551cffb43d2be75578f5470ffac86932bdff3272edce0f5",
+      "events": 111352,
+      "status": {
+        "ok": 98855,
+        "fallback": 12497
+      },
+      "errors": {
+        "truncated_field|118": 2254,
+        "invalid_numeric_value|49": 2
+      },
+      "warnings": {
+        "bitmap_field_omitted_f127": 55200,
+        "unparsed_rest": 55617,
+        "missing_text_envelope_tail": 9908,
+        "recovered_outer_trailing_bytes": 9908,
+        "declared_length_mismatch": 2254,
+        "padded_field_f118": 401
+      },
+      "fallback_causes": {
+        "missing_text_envelope_tail": 9908,
+        "recovered_outer_trailing_bytes": 9908,
+        "truncated_field|118": 2254,
+        "declared_length_mismatch": 2254,
+        "padded_field_f118": 401,
+        "invalid_numeric_value|49": 2
+      },
+      "fields": {
+        "merchant_type": 111228,
+        "pos_entry_mode": 111228,
+        "transaction_amount": 111228,
+        "currency_code": 111226,
+        "business_id": 98739,
+        "tax_amount": 98739,
+        "installment_months": 98739,
+        "card_sequence": 111228,
+        "local_time": 111228,
+        "pos_condition": 111228,
+        "local_date": 111228,
+        "retrieval_reference": 111352,
+        "response_code": 111352,
+        "trace_number": 111352,
+        "merchant_number": 111228,
+        "processing_code": 111228,
+        "transmission_datetime": 111352,
+        "approval_number": 111228,
+        "terminal_id": 111228,
+        "acquirer_country": 111228,
+        "service_charge": 98739,
+        "pg_business_id": 98739,
+        "network_code": 124
+      },
+      "nonempty_fields": {
+        "merchant_type": 111227,
+        "pos_entry_mode": 111228,
+        "transaction_amount": 111228,
+        "currency_code": 110809,
+        "business_id": 98739,
+        "tax_amount": 98739,
+        "installment_months": 98739,
+        "card_sequence": 111228,
+        "local_time": 110811,
+        "pos_condition": 111228,
+        "local_date": 110811,
+        "retrieval_reference": 111352,
+        "trace_number": 111352,
+        "merchant_number": 111228,
+        "processing_code": 111228,
+        "transmission_datetime": 111352,
+        "terminal_id": 72504,
+        "acquirer_country": 110811,
+        "service_charge": 98739,
+        "response_code": 56036,
+        "approval_number": 55207,
+        "pg_business_id": 2088,
+        "network_code": 124
+      },
+      "emv": {
+        "transaction_type": 44423,
+        "cryptogram_information": 44423,
+        "currency_code": 44423,
+        "terminal_capabilities": 44423,
+        "terminal_country": 44423,
+        "application_interchange_profile": 44423,
+        "application_version": 44422,
+        "cvm_results": 44422,
+        "terminal_verification_results": 44423,
+        "transaction_counter": 98638,
+        "transaction_date": 44423,
+        "terminal_type": 44422
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 55617,
+      "rest_bytes": 41990088,
+      "padding_events": 401,
+      "error_with_fields": 0
+    },
+    {
+      "file": "NIC_MS",
+      "route": "s_service_nlc_ms",
+      "physical_lines": 10348,
+      "selected": 10296,
+      "excluded": {
+        "other_lines": 52
+      },
+      "sha256": "32682e59a7042b432ae5173b5483271f1396b9a9321bf85ed8d89e7aeaaa3361",
+      "events": 10296,
+      "status": {
+        "ok": 9720,
+        "fallback": 576
+      },
+      "errors": {
+        "truncated_field|126": 34,
+        "truncated_field|118": 2
+      },
+      "warnings": {
+        "missing_text_envelope_tail": 398,
+        "recovered_outer_trailing_bytes": 354,
+        "network_layout_common_only": 186,
+        "unparsed_rest": 1075,
+        "declared_length_mismatch": 36
+      },
+      "fallback_causes": {
+        "missing_text_envelope_tail": 398,
+        "recovered_outer_trailing_bytes": 354,
+        "network_layout_common_only": 186,
+        "truncated_field|126": 34,
+        "declared_length_mismatch": 36,
+        "truncated_field|118": 2
+      },
+      "fields": {
+        "merchant_type": 10110,
+        "pos_entry_mode": 10110,
+        "transaction_amount": 10110,
+        "currency_code": 10110,
+        "business_id": 9720,
+        "tax_amount": 9720,
+        "installment_months": 9720,
+        "card_sequence": 10110,
+        "local_time": 10110,
+        "pos_condition": 10110,
+        "local_date": 10110,
+        "retrieval_reference": 10110,
+        "response_code": 10110,
+        "trace_number": 10296,
+        "merchant_number": 10110,
+        "processing_code": 10110,
+        "transmission_datetime": 10296,
+        "approval_number": 10110,
+        "terminal_id": 10110,
+        "acquirer_country": 10110,
+        "service_charge": 9720,
+        "pg_business_id": 9720,
+        "network_code": 186
+      },
+      "nonempty_fields": {
+        "merchant_type": 10109,
+        "pos_entry_mode": 10110,
+        "transaction_amount": 10110,
+        "currency_code": 9406,
+        "business_id": 9720,
+        "tax_amount": 9720,
+        "installment_months": 9720,
+        "local_time": 9406,
+        "pos_condition": 10110,
+        "local_date": 9406,
+        "retrieval_reference": 10110,
+        "trace_number": 10296,
+        "merchant_number": 10110,
+        "processing_code": 10110,
+        "transmission_datetime": 10296,
+        "acquirer_country": 9406,
+        "service_charge": 9720,
+        "pg_business_id": 8694,
+        "response_code": 4778,
+        "approval_number": 3999,
+        "network_code": 186,
+        "terminal_id": 591
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 1075,
+      "rest_bytes": 14750,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "win_ic",
+      "route": "s_service_win_ic",
+      "physical_lines": 5739,
+      "selected": 3826,
+      "excluded": {
+        "other_lines": 1913
+      },
+      "sha256": "0fa85ffbb20c6690927483557c879c2a24e8106af36a779b3a50c64d97958ec4",
+      "events": 3826,
+      "status": {
+        "ok": 3826
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "fallback_causes": {
+      },
+      "fields": {
+        "merchant_type": 3796,
+        "transmission_datetime": 3826,
+        "pos_entry_mode": 3826,
+        "transaction_amount": 3826,
+        "currency_code": 3826,
+        "card_sequence": 3826,
+        "local_time": 1913,
+        "pos_condition": 3826,
+        "local_date": 1913,
+        "acquirer_country": 3796,
+        "retrieval_reference": 3826,
+        "trace_number": 3826,
+        "merchant_number": 3826,
+        "processing_code": 3826,
+        "response_code": 1928
+      },
+      "nonempty_fields": {
+        "merchant_type": 3796,
+        "transmission_datetime": 3826,
+        "pos_entry_mode": 3826,
+        "transaction_amount": 3826,
+        "currency_code": 3826,
+        "card_sequence": 3826,
+        "local_time": 1913,
+        "pos_condition": 3826,
+        "local_date": 1913,
+        "acquirer_country": 3796,
+        "retrieval_reference": 3826,
+        "trace_number": 3826,
+        "merchant_number": 3826,
+        "processing_code": 3826,
+        "response_code": 1928
+      },
+      "emv": {
+        "transaction_type": 973,
+        "cryptogram_information": 973,
+        "currency_code": 973,
+        "terminal_capabilities": 973,
+        "terminal_country": 973,
+        "application_interchange_profile": 973,
+        "application_version": 973,
+        "cvm_results": 973,
+        "terminal_verification_results": 973,
+        "transaction_counter": 973,
+        "transaction_date": 973,
+        "terminal_type": 973
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "wrc",
+      "route": "s_service_wrc_sum",
+      "physical_lines": 84376,
+      "selected": 49642,
+      "excluded": {
+        "other_lines": 34734
+      },
+      "sha256": "02cb3399ec320182b74d3d2e7577db934146e167bed3f0ec21d669038ff14608",
+      "events": 49642,
+      "status": {
+        "ok": 48111,
+        "fallback": 1529,
+        "error": 2
+      },
+      "errors": {
+        "invalid_numeric_value|49": 38,
+        "incomplete_text_envelope|": 2,
+        "invalid_numeric_value|70": 1
+      },
+      "warnings": {
+        "missing_bracket_envelope_tail": 1492
+      },
+      "fallback_causes": {
+        "missing_bracket_envelope_tail": 1492,
+        "invalid_numeric_value|49": 38,
+        "invalid_numeric_value|70": 1
+      },
+      "fields": {
+        "transmission_datetime": 49640,
+        "pos_entry_mode": 49616,
+        "transaction_amount": 49616,
+        "currency_code": 49578,
+        "card_sequence": 24808,
+        "local_time": 46785,
+        "pos_condition": 49616,
+        "local_date": 46785,
+        "retrieval_reference": 49628,
+        "trace_number": 49640,
+        "merchant_number": 49616,
+        "processing_code": 49616,
+        "approval_number": 24273,
+        "response_code": 27650,
+        "network_code": 23
+      },
+      "nonempty_fields": {
+        "transmission_datetime": 49640,
+        "pos_entry_mode": 49616,
+        "transaction_amount": 49616,
+        "currency_code": 49578,
+        "local_time": 46785,
+        "pos_condition": 49616,
+        "local_date": 46785,
+        "retrieval_reference": 49628,
+        "trace_number": 49640,
+        "merchant_number": 49616,
+        "processing_code": 49616,
+        "approval_number": 24273,
+        "response_code": 27650,
+        "network_code": 23
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "route": "s_service_win_ms",
+      "physical_lines": 113192,
+      "selected": 113192,
+      "excluded": {
+      },
+      "sha256": "bd71e484b9ea3bb2b09f2b3736d29b6a927edec4785fe4d08cf946270e280dd1",
+      "events": 113192,
+      "status": {
+        "ok": 95967,
+        "fallback": 17169,
+        "error": 56
+      },
+      "errors": {
+        "input_decoding_loss|": 12825,
+        "truncated_field|35": 6969,
+        "invalid_length_prefix|55": 1606,
+        "truncated_field|37": 22,
+        "incomplete_text_envelope|": 56,
+        "invalid_length_prefix|127": 20,
+        "field_length_exceeds_limit|32": 1,
+        "redacted_length_prefix|56": 1
+      },
+      "warnings": {
+        "missing_completed_text_envelope_tail": 7046,
+        "declared_length_mismatch": 6914,
+        "legacy_space_padding": 1607,
+        "missing_text_envelope_tail": 77
+      },
+      "fallback_causes": {
+        "input_decoding_loss|": 12825,
+        "missing_completed_text_envelope_tail": 7046,
+        "truncated_field|35": 6969,
+        "declared_length_mismatch": 6914,
+        "legacy_space_padding": 1607,
+        "invalid_length_prefix|55": 1606,
+        "truncated_field|37": 22,
+        "missing_text_envelope_tail": 77,
+        "invalid_length_prefix|127": 20,
+        "field_length_exceeds_limit|32": 1,
+        "redacted_length_prefix|56": 1
+      },
+      "fields": {
+        "local_date": 57931,
+        "retrieval_reference": 105656,
+        "transmission_datetime": 113136,
+        "pos_entry_mode": 97167,
+        "transaction_amount": 112648,
+        "merchant_number": 105656,
+        "processing_code": 112648,
+        "currency_code": 93988,
+        "installment_months": 84917,
+        "local_time": 57931,
+        "response_code": 56514,
+        "approval_number": 48884,
+        "network_code": 488,
+        "trace_number": 3702
+      },
+      "nonempty_fields": {
+        "local_date": 57931,
+        "retrieval_reference": 105656,
+        "transmission_datetime": 113136,
+        "pos_entry_mode": 97167,
+        "transaction_amount": 112648,
+        "merchant_number": 105656,
+        "processing_code": 112648,
+        "currency_code": 93988,
+        "installment_months": 84917,
+        "local_time": 57931,
+        "response_code": 56514,
+        "approval_number": 47751,
+        "network_code": 488,
+        "trace_number": 3702
+      },
+      "emv": {
+      },
+      "profile_mismatches": 0,
+      "mode_differences": 0,
+      "invalid_export_types": 0,
+      "export_after_error": 0,
+      "input_mutations": 0,
+      "metadata_version_errors": 0,
+      "fallback_detail_exports": 0,
+      "error_business_exports": 0,
+      "fallback_missing_evidence": 0,
+      "rest_events": 0,
+      "rest_bytes": 0,
+      "padding_events": 0,
+      "error_with_fields": 0
+    }
+  ],
+  "elapsed_seconds": 756.249,
+  "totals": {
+    "events": 1265545,
+    "physical_lines": 1932571,
+    "status": {
+      "control": 14880,
+      "ok": 1176179,
+      "error": 111,
+      "fallback": 74375
+    },
+    "mode_differences": 0,
+    "invalid_export_types": 0,
+    "export_after_error": 0,
+    "input_mutations": 0,
+    "metadata_version_errors": 0,
+    "fallback_detail_exports": 0,
+    "error_business_exports": 0,
+    "fallback_missing_evidence": 0,
+    "rest_events": 56692,
+    "rest_bytes": 42004838,
+    "padding_events": 401,
+    "error_with_fields": 0
+  }
+}

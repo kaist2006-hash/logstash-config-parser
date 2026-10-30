@@ -1,3 +1,5 @@
+> 보관 문서입니다. 현재 적용본은 [FINAL17 적용 안내](APPLY_GUIDE_FINAL17.md), [검증 결과](VALIDATION_FINAL17.md), [필드표](CARD_FIELDS_FINAL17.md)를 사용하세요.
+
 # 카드사 공통 필드 정리표
 
 > 현재 필드 출처·관측 범위와 공통/상세 분류는 [FINAL16 필드표](CARD_FIELDS_FINAL16.md)를 따른다. 아래는 이전 참조 자료다.

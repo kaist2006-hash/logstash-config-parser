@@ -1,20 +1,9 @@
 {
-  "runtime": "Actual Logstash 8.17.6 4 workers, stdin/json_lines -> Ruby(specs_path only) -> file",
-  "events": 714,
-  "real_source_events": 712,
-  "synthetic_negative_events": 2,
-  "network_layout_regressions": 186,
   "result": "passed",
-  "differences": 0,
-  "counts": {
-    "ok": 446,
-    "control": 24,
-    "fallback": 241,
-    "error": 3
-  },
-  "final_artifacts": {
-    "card_detail_parser.rb": "594f11f91be89721c03961b35e2274b08ffa3c01e764b830635262b33ec0ef6a",
-    "card_detail_specs.json": "95bb264ad06828eee97040bbad667ef2860b2f2b903326250fcb425125f38a2e"
-  },
-  "scope": "All 16 services, all six header variants, all 186 NH network layouts and prior Samsung/NH cases. CP949 simulation; not live Filebeat."
+  "runtime": "Logstash 8.17.6 / 4 workers",
+  "cases": 714,
+  "business_value_differences": 0,
+  "duplicate_or_missing_events": 0,
+  "real_source_cases": 712,
+  "synthetic_cases": 2
 }

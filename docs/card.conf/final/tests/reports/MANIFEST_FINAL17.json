@@ -1,0 +1,81 @@
+{
+  "version": "2026-10-30.final17",
+  "files": {
+    "card_detail_parser.rb": {
+      "bytes": 44082,
+      "sha256": "fc050db89d8672236d2f13e3f7e031e4ba9c70d5dda2e12dc43ef02f4a5e5657"
+    },
+    "card_detail_specs.json": {
+      "bytes": 53727,
+      "sha256": "3c86b8e57d19307ad9368df70835cad739d2918bd654742bf39814781ade94aa"
+    },
+    "card.conf": {
+      "bytes": 5548,
+      "sha256": "029c902b0b9d1562e3de5fb523886ce83b5fd6da1adaccc3fc30380eaedc5376"
+    },
+    "APPLY_GUIDE_FINAL17.md": {
+      "bytes": 2887,
+      "sha256": "10e5a77517e68e9a8d993d6264fcc88d444dd0fcde461704d7e6573e34381f11"
+    },
+    "VALIDATION_FINAL17.md": {
+      "bytes": 4784,
+      "sha256": "aa8f170888e0b47f17d7b212eb23dc8a59d19109963a00b1db870668daadfc76"
+    },
+    "CARD_FIELDS_FINAL17.md": {
+      "bytes": 22341,
+      "sha256": "219296c32e475ea9d4bc412dd12f1ed2a3444829838bdb64a7e1b96cafad035a"
+    },
+    "FIELD_VARIABILITY_FINAL17.md": {
+      "bytes": 2778,
+      "sha256": "3a077e4708fa069e676a9b1b787ecddc61dab965a2194ef2b924141a31349e1f"
+    },
+    "ALL_CARD_FIELD_VERIFICATION.json": {
+      "bytes": 84878,
+      "sha256": "5c950eda99a03fad4da94da6a91335566340fe0a1bceb88fcf0fdbc50413b608"
+    },
+    "SAMSUNG_REAL_SOURCE_VERIFICATION.json": {
+      "bytes": 3290,
+      "sha256": "83c1cedbfd7b17c58bd04d3ad2fbd75f8bb2476934c266b77c23dd0ad97321b9"
+    },
+    "SAMSUNG_FULL_PIPELINE.json": {
+      "bytes": 1146,
+      "sha256": "48f0cee68e9b17bd6bf3c10a8395b8839d08f29b0a6444bdfb5d1e1a6de7298c"
+    },
+    "ENVELOPE_VARIABLE_REGRESSION.json": {
+      "bytes": 1108,
+      "sha256": "919014d3d1d62e696eb3d844f4129fe491cf21cc51ced0e09804a5f63028e910"
+    },
+    "FRONTEND_REGRESSION.json": {
+      "bytes": 241,
+      "sha256": "29efda1df6fc5530125a4e08134b73e099b01cf853788fc338b867481526d818"
+    },
+    "OUTPUT_CONTRACTS.json": {
+      "bytes": 9149,
+      "sha256": "14b479a62d7112397c371bcdd8495fefc122300ded650a6f5baa73349d15170b"
+    },
+    "SYNTHETIC_CONTRACTS.json": {
+      "bytes": 1921,
+      "sha256": "2e59bd916b9c381ccb763a90ee74f642e848417fa91cc2ae471ba1e1c915a6a2"
+    },
+    "FULL_PIPELINE_ALL_CARD_SAMPLE.json": {
+      "bytes": 215,
+      "sha256": "0bf2363fc5711cb05cd292bb8f85db213acee0d7bee0d6797b50a74b93fbe71d"
+    },
+    "FIELD_VARIABILITY_AUDIT.json": {
+      "bytes": 20055,
+      "sha256": "ce6eea09dc4de0d9c55728a684e645a847c97bf64229f5b121ade8c37482220e"
+    },
+    "VALIDATION_COUNTS_FINAL17.json": {
+      "bytes": 1133,
+      "sha256": "5e9a59818629b6f89378911d4189fc006502df4df7f28533d33c50307054ce82"
+    },
+    "output_contracts_final17.rb": {
+      "bytes": 11091,
+      "sha256": "76f12f5475b3a894d19507940e966258ed44f1390fde1a71d8531cd88a3d7976"
+    },
+    "envelope_variable_final17.rb": {
+      "bytes": 4129,
+      "sha256": "aeb81e29add94ce668b30cad5dd425fceee87a77cd539b93d9ed995627c4f580"
+    }
+  }
+}

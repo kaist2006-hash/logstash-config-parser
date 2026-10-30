@@ -1,3 +1,5 @@
+> 보관 문서입니다. 현재 적용본은 [FINAL17 적용 안내](APPLY_GUIDE_FINAL17.md), [검증 결과](VALIDATION_FINAL17.md), [필드표](CARD_FIELDS_FINAL17.md)를 사용하세요.
+
 # 테스트 입력·서비스 식별 — FINAL16
 
 | gateway | 실제 서비스 | @metadata.target_alias | card_detail.profile |

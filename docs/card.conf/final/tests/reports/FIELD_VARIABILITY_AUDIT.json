@@ -1,0 +1,1028 @@
+{
+  "profiles": [
+    {
+      "profile": "bcc_ic",
+      "wire": "binary",
+      "field_kinds": {
+        "fixed": 31,
+        "var": 12
+      },
+      "variable_fields": [
+        {
+          "de": 2,
+          "prefix": "binary",
+          "max": 19,
+          "unit": "digits"
+        },
+        {
+          "de": 32,
+          "prefix": "binary",
+          "max": 11,
+          "unit": "digits"
+        },
+        {
+          "de": 35,
+          "prefix": "binary",
+          "max": 37,
+          "unit": "digits"
+        },
+        {
+          "de": 44,
+          "prefix": "binary",
+          "max": 25,
+          "unit": "bytes"
+        },
+        {
+          "de": 47,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "binary",
+          "max": 10,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "ascii3",
+          "max": 999,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 134,
+          "prefix": "binary",
+          "max": 31,
+          "unit": "bytes"
+        },
+        {
+          "de": 142,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 143,
+          "prefix": "binary",
+          "max": 20,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "bcc_ms",
+      "wire": "ascii",
+      "field_kinds": {},
+      "variable_fields": []
+    },
+    {
+      "profile": "kb_ic",
+      "wire": "binary",
+      "field_kinds": {
+        "fixed": 35,
+        "var": 13
+      },
+      "variable_fields": [
+        {
+          "de": 2,
+          "prefix": "binary",
+          "max": 19,
+          "unit": "digits"
+        },
+        {
+          "de": 32,
+          "prefix": "binary",
+          "max": 11,
+          "unit": "digits"
+        },
+        {
+          "de": 35,
+          "prefix": "binary",
+          "max": 37,
+          "unit": "digits"
+        },
+        {
+          "de": 44,
+          "prefix": "binary",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 47,
+          "prefix": "binary",
+          "max": 203,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "binary",
+          "max": 5,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 134,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 135,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 139,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 142,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 143,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "kb_ms",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 17,
+        "var": 7
+      },
+      "variable_fields": [
+        {
+          "de": 32,
+          "prefix": "ascii2",
+          "max": 6,
+          "unit": "bytes"
+        },
+        {
+          "de": 35,
+          "prefix": "ascii2",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 46,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 47,
+          "prefix": "ascii3",
+          "max": 203,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 2,
+          "unit": "bytes"
+        },
+        {
+          "de": 56,
+          "prefix": "ascii3",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 61,
+          "prefix": "ascii3",
+          "max": 35,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "lotte_ms",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 20,
+        "var": 7
+      },
+      "variable_fields": [
+        {
+          "de": 48,
+          "prefix": "ascii2",
+          "max": 4,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 2,
+          "unit": "bytes"
+        },
+        {
+          "de": 56,
+          "prefix": "ascii3",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 57,
+          "prefix": "ascii3",
+          "max": 16,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "ascii3",
+          "max": 50,
+          "unit": "bytes"
+        },
+        {
+          "de": 63,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 112,
+          "prefix": "ascii3",
+          "max": 32,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "lotte_ic",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 20,
+        "var": 7
+      },
+      "variable_fields": [
+        {
+          "de": 48,
+          "prefix": "ascii2",
+          "max": 4,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 2,
+          "unit": "bytes"
+        },
+        {
+          "de": 56,
+          "prefix": "ascii3",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 57,
+          "prefix": "ascii3",
+          "max": 16,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "ascii3",
+          "max": 50,
+          "unit": "bytes"
+        },
+        {
+          "de": 63,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 112,
+          "prefix": "ascii3",
+          "max": 32,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 28,
+        "var": 5
+      },
+      "variable_fields": [
+        {
+          "de": 118,
+          "prefix": "ascii3",
+          "max": 111,
+          "unit": "bytes"
+        },
+        {
+          "de": 120,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        },
+        {
+          "de": 124,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        },
+        {
+          "de": 127,
+          "prefix": "ascii3",
+          "max": 282,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "nh_ic",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 28,
+        "var": 5
+      },
+      "variable_fields": [
+        {
+          "de": 118,
+          "prefix": "ascii3",
+          "max": 111,
+          "unit": "bytes"
+        },
+        {
+          "de": 120,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        },
+        {
+          "de": 124,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        },
+        {
+          "de": 127,
+          "prefix": "ascii3",
+          "max": 282,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "samsung_ms",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 17,
+        "var": 6
+      },
+      "variable_fields": [
+        {
+          "de": 32,
+          "prefix": "ascii2",
+          "max": 6,
+          "unit": "bytes"
+        },
+        {
+          "de": 35,
+          "prefix": "ascii2",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 2,
+          "unit": "bytes"
+        },
+        {
+          "de": 56,
+          "prefix": "ascii3",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 127,
+          "prefix": "ascii3",
+          "max": 512,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "samsung_ic",
+      "wire": "binary",
+      "field_kinds": {
+        "fixed": 32,
+        "var": 16
+      },
+      "variable_fields": [
+        {
+          "de": 2,
+          "prefix": "binary",
+          "max": 19,
+          "unit": "digits"
+        },
+        {
+          "de": 32,
+          "prefix": "binary",
+          "max": 11,
+          "unit": "digits"
+        },
+        {
+          "de": 35,
+          "prefix": "binary",
+          "max": 37,
+          "unit": "digits"
+        },
+        {
+          "de": 44,
+          "prefix": "binary",
+          "max": 25,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 59,
+          "prefix": "binary",
+          "max": 200,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "binary",
+          "max": 10,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 119,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 122,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 134,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 135,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 140,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 142,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 143,
+          "prefix": "binary",
+          "max": 20,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "shinhan_ms",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 13,
+        "var": 15
+      },
+      "variable_fields": [
+        {
+          "de": 32,
+          "prefix": "ascii2",
+          "max": 6,
+          "unit": "bytes"
+        },
+        {
+          "de": 35,
+          "prefix": "ascii2",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 44,
+          "prefix": "ascii2",
+          "max": 4,
+          "unit": "bytes"
+        },
+        {
+          "de": 46,
+          "prefix": "ascii3",
+          "max": 40,
+          "unit": "bytes"
+        },
+        {
+          "de": 47,
+          "prefix": "ascii3",
+          "max": 6,
+          "unit": "bytes"
+        },
+        {
+          "de": 48,
+          "prefix": "ascii3",
+          "max": 16,
+          "unit": "bytes"
+        },
+        {
+          "de": 54,
+          "prefix": "ascii3",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 2,
+          "unit": "bytes"
+        },
+        {
+          "de": 56,
+          "prefix": "ascii3",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 57,
+          "prefix": "ascii3",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 58,
+          "prefix": "ascii3",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 61,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 63,
+          "prefix": "ascii3",
+          "max": 57,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 127,
+          "prefix": "ascii3",
+          "max": 47,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "shinhan_ic",
+      "wire": "binary",
+      "field_kinds": {
+        "fixed": 29,
+        "var": 14
+      },
+      "variable_fields": [
+        {
+          "de": 2,
+          "prefix": "binary",
+          "max": 19,
+          "unit": "digits"
+        },
+        {
+          "de": 32,
+          "prefix": "binary",
+          "max": 6,
+          "unit": "digits"
+        },
+        {
+          "de": 35,
+          "prefix": "binary",
+          "max": 37,
+          "unit": "digits"
+        },
+        {
+          "de": 44,
+          "prefix": "binary",
+          "max": 25,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "binary",
+          "max": 10,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 119,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 120,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 134,
+          "prefix": "binary",
+          "max": 32,
+          "unit": "bytes"
+        },
+        {
+          "de": 140,
+          "prefix": "binary",
+          "max": 10,
+          "unit": "bytes"
+        },
+        {
+          "de": 142,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 143,
+          "prefix": "binary",
+          "max": 20,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "woori_sum",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 23,
+        "var": 4
+      },
+      "variable_fields": [
+        {
+          "de": 47,
+          "prefix": "binary",
+          "max": 74,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 256,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "ascii3",
+          "max": 500,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "hana_sum",
+      "wire": "binary",
+      "field_kinds": {
+        "fixed": 18,
+        "var": 11
+      },
+      "variable_fields": [
+        {
+          "de": 2,
+          "prefix": "binary",
+          "max": 19,
+          "unit": "digits"
+        },
+        {
+          "de": 32,
+          "prefix": "binary",
+          "max": 6,
+          "unit": "digits"
+        },
+        {
+          "de": 35,
+          "prefix": "binary",
+          "max": 38,
+          "unit": "digits"
+        },
+        {
+          "de": 47,
+          "prefix": "binary",
+          "max": 74,
+          "unit": "bytes"
+        },
+        {
+          "de": 48,
+          "prefix": "binary",
+          "max": 126,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "binary",
+          "max": 46,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "binary",
+          "max": 98,
+          "unit": "bytes"
+        },
+        {
+          "de": 119,
+          "prefix": "binary",
+          "max": 100,
+          "unit": "bytes"
+        },
+        {
+          "de": 120,
+          "prefix": "binary",
+          "max": 150,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "binary",
+          "max": 80,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "hyundai_ms",
+      "wire": "ascii",
+      "field_kinds": {
+        "fixed": 19,
+        "var": 7,
+        "blocked": 1
+      },
+      "variable_fields": [
+        {
+          "de": 32,
+          "prefix": "ascii2",
+          "max": 6,
+          "unit": "bytes"
+        },
+        {
+          "de": 35,
+          "prefix": "ascii2",
+          "max": 37,
+          "unit": "bytes"
+        },
+        {
+          "de": 54,
+          "prefix": "ascii3",
+          "max": 25,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "ascii3",
+          "max": 2,
+          "unit": "bytes"
+        },
+        {
+          "de": 56,
+          "prefix": "ascii3",
+          "max": 8,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        },
+        {
+          "de": 127,
+          "prefix": "ascii3",
+          "max": 80,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "profile": "hyundai_ic",
+      "wire": "binary",
+      "field_kinds": {
+        "fixed": 35,
+        "var": 15
+      },
+      "variable_fields": [
+        {
+          "de": 2,
+          "prefix": "binary",
+          "max": 19,
+          "unit": "digits"
+        },
+        {
+          "de": 32,
+          "prefix": "binary",
+          "max": 11,
+          "unit": "digits"
+        },
+        {
+          "de": 35,
+          "prefix": "binary",
+          "max": 37,
+          "unit": "digits"
+        },
+        {
+          "de": 44,
+          "prefix": "binary",
+          "max": 25,
+          "unit": "bytes"
+        },
+        {
+          "de": 54,
+          "prefix": "binary",
+          "max": 120,
+          "unit": "bytes"
+        },
+        {
+          "de": 55,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 60,
+          "prefix": "binary",
+          "max": 5,
+          "unit": "bytes"
+        },
+        {
+          "de": 118,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 126,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 127,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 128,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 134,
+          "prefix": "binary",
+          "max": 32,
+          "unit": "bytes"
+        },
+        {
+          "de": 135,
+          "prefix": "binary",
+          "max": 15,
+          "unit": "bytes"
+        },
+        {
+          "de": 142,
+          "prefix": "binary",
+          "max": 255,
+          "unit": "bytes"
+        },
+        {
+          "de": 143,
+          "prefix": "binary",
+          "max": 20,
+          "unit": "bytes"
+        }
+      ]
+    }
+  ],
+  "variable_definitions": 144,
+  "synthetic_scope": "Samsung MS: 160 variable-value/length/bitmap/header/MTI combinations, plus 7 invalid-boundary cases",
+  "limits": "Unobserved protocol combinations and undocumented layouts are not declared verified."
+}

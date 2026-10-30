@@ -1,0 +1,47 @@
+{
+  "version": "2026-10-30.final17",
+  "totals": {
+    "events": 1265545,
+    "physical_lines": 1932571,
+    "status": {
+      "control": 14880,
+      "ok": 1176179,
+      "error": 111,
+      "fallback": 74375
+    },
+    "mode_differences": 0,
+    "invalid_export_types": 0,
+    "export_after_error": 0,
+    "input_mutations": 0,
+    "metadata_version_errors": 0,
+    "fallback_detail_exports": 0,
+    "error_business_exports": 0,
+    "fallback_missing_evidence": 0,
+    "rest_events": 56692,
+    "rest_bytes": 42004838,
+    "padding_events": 401,
+    "error_with_fields": 0
+  },
+  "samsung_real_source": {
+    "physical_lines": 113192,
+    "status": {
+      "ok": 95967,
+      "fallback": 17169,
+      "error": 56
+    }
+  },
+  "samsung_full_pipeline": {
+    "physical_input_lines": 113192,
+    "output_events": 113136,
+    "trace_fragments_dropped": 56,
+    "direction": {
+      "IN": 56568,
+      "OUT": 56568
+    },
+    "status": {
+      "ok": 95967,
+      "fallback": 17169
+    }
+  },
+  "fixed_value_exceptions": "No sample amounts, timestamps, references, merchant numbers, or linename values are used as parsing exceptions."
+}

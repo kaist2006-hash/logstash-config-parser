@@ -1,3 +1,5 @@
+> 보관 문서입니다. 현재 적용본은 [FINAL17 적용 안내](APPLY_GUIDE_FINAL17.md), [검증 결과](VALIDATION_FINAL17.md), [필드표](CARD_FIELDS_FINAL17.md)를 사용하세요.
+
 # FINAL16 검증 결과 — 롯데·농협 오분류 및 삼성 입력 식별
 
 이번 수정은 사진과 실로그에서 확인한 두 파싱 오분류를 보완하고, 삼성 화면에 BC 원본이 들어간 문제를 구분합니다. Filebeat euc-kr, 최소 진단 출력, 카드사별 독립 규격, fallback의 공통 전용 출력은 유지합니다.

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "2026-10-30.final16",
+  "version": "2026-10-30.final17",
   "diagnostics": "minimal",
   "text_encoding": "CP949",
   "recover_lossy_prefix": true,
@@ -354,7 +354,8 @@
     {
       "id":"samsung_ms","alias":"s_service_win_ms","issuer":"삼성카드","service":"MS","wire":"ascii","enabled":true,
       "validation_stage":"real_log_replay","header_offsets":[0],"max_bitmaps":2,
-      "transport":{"response_prefix":"RESPDATA","completed_text_envelope":true},
+      "transport":{"response_prefix":"RESPDATA","completed_text_envelope":true,"completed_text_trailer_hex":"FFEF"},
+      "trim_to_declared_length":true,
       "trailing_padding":{"headers":["ISO023400053"],"mtis":["0210"],"after_field":55,"byte":32,"length":11},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
       "fields":{
