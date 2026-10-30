@@ -1,0 +1,51 @@
+{
+  "runtime": "Logstash 8.17.6 actual pipeline",
+  "workers": 4,
+  "script_params": [
+    "specs_path"
+  ],
+  "result": "passed",
+  "cases": [
+    {
+      "name": "bad_header",
+      "status": "error",
+      "profile": "kb_ms",
+      "field_names": [],
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "name": "cp949_unicode",
+      "status": "ok",
+      "profile": "kb_ms",
+      "field_names": [
+        "processing_code"
+      ],
+      "tags": []
+    },
+    {
+      "name": "samsung_legacy",
+      "status": "fallback",
+      "profile": "samsung_ms",
+      "field_names": [
+        "installment_months",
+        "processing_code"
+      ],
+      "tags": [
+        "fallback"
+      ]
+    },
+    {
+      "name": "lossy_prefix",
+      "status": "fallback",
+      "profile": "kb_ms",
+      "field_names": [
+        "processing_code"
+      ],
+      "tags": [
+        "fallback"
+      ]
+    }
+  ]
+}

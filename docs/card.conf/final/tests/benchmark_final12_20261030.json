@@ -1,0 +1,31 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "workers": 1,
+  "sample_events": 1024,
+  "events_per_round": 3072,
+  "rounds": 6,
+  "scope": "first 64 candidates per service; balanced sample, Event construction included, warmed parsers, alternating run order; not production EPS",
+  "seconds": {
+    "11": [
+      1.2721754999984114,
+      1.2340962990019761,
+      1.217089099001896,
+      1.1829692009996506,
+      1.159997499002202,
+      1.3249021000010544
+    ],
+    "12": [
+      1.3508590999990702,
+      1.0955198000010569,
+      0.9778671999993094,
+      0.9798130999988643,
+      0.9827009000000544,
+      0.9760655010031769
+    ]
+  },
+  "median_seconds": {
+    "final11": 1.2255926990019361,
+    "final12": 0.9812569999994594
+  },
+  "median_time_reduction_percent": 19.94
+}

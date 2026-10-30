@@ -1,6 +1,6 @@
 # 카드사별 공통 필드 정의 및 검증 범위
 
-기준: `card_detail_specs.json`의 `2026-10-30.final11` 및 제공 실로그 재생 결과. 최신 건수·입력 인코딩·미검증 범위는 [FINAL11 검증서](VALIDATION_FINAL11.md)를 참조한다. 이 문서는 실제 RB가 출력하는 경로와 JSON의 `emit` 정의를 기준으로 한다. 이전 정리표의 `card_detail.header.*`, `card_detail.detail.*` 경로는 현재 구현의 출력 경로가 **아니다**.
+기준: `card_detail_specs.json`의 `2026-10-30.final12` 및 제공 실로그 재생 결과. 최신 건수·입력 인코딩·미검증 범위와 간소화 검토는 [FINAL12 검증서](VALIDATION_FINAL12.md)를 참조한다. FINAL11과 출력은 동일하며 JSON 규격은 버전 외 변경하지 않았다. 이 문서는 실제 RB가 출력하는 경로와 JSON의 `emit` 정의를 기준으로 한다. 이전 정리표의 `card_detail.header.*`, `card_detail.detail.*` 경로는 현재 구현의 출력 경로가 **아니다**.
 
 ## 먼저 알아야 할 점
 
@@ -73,6 +73,6 @@ final10에서는 **농협 IC·MS에만** 규격으로 해석한 필드 뒤의 �
 
 ## 실로그가 증명한 것과 증명하지 못한 것
 
-FINAL11의 euc-kr 호환 재생 대상은 삼성 MS를 포함해 1,208,914건이며 `ok` 1,128,182 / `fallback` 65,317 / `control` 14,880 / `error` 535다. 이 숫자는 현재 규칙에 대한 재생 결과이며 모든 카드사의 모든 거래유형·필드값이 문서와 100% 일치한다는 증명이 아니다. BC MS는 내부 업무 필드를 출력하지 않는다. 롯데 IC는 제공된 ASCII 형태를 검증했고 문서의 바이너리 IC 형태는 미검증이다. 농협의 알려진 필드를 처리한 후행 데이터는 rest HEX로 보존한다. euc-kr로 전문 안 바이트가 손실되면 확인 가능한 접두부의 업무 필드를 추출해 fallback으로 처리하고, 구조를 확인할 수 없으면 error를 유지한다. 실제 Beats부터 Elasticsearch까지의 운영 연결·multiline·라우팅은 별도 검증 범위다.
+FINAL12의 euc-kr 호환 재생 대상은 삼성 MS를 포함해 1,208,914건이며 `ok` 1,128,182 / `fallback` 65,317 / `control` 14,880 / `error` 535다. 이 숫자는 현재 규칙에 대한 재생 결과이며 모든 카드사의 모든 거래유형·필드값이 문서와 100% 일치한다는 증명이 아니다. BC MS는 내부 업무 필드를 출력하지 않는다. 롯데 IC는 제공된 ASCII 형태를 검증했고 문서의 바이너리 IC 형태는 미검증이다. 농협의 알려진 필드를 처리한 후행 데이터는 rest HEX로 보존한다. 농협 IC의 F118/F124 경계 미해결 401건은 파싱 도중 발생하는 오류이므로 이 rest 처리 대상과 별개다. euc-kr로 전문 안 바이트가 손실되면 확인 가능한 접두부의 업무 필드를 추출해 fallback으로 처리하고, 구조를 확인할 수 없으면 error를 유지한다. 실제 Beats부터 Elasticsearch까지의 운영 연결·multiline·라우팅은 별도 검증 범위다.
 
 세부 카드사별 status 건수와 적용 방법은 [final10 검증 및 적용 안내](VALIDATION_FINAL10.md)를 참조한다. [참고용 엑셀](CARD_CONF_공통필드_카드사별_FINAL10_20261018.xlsx)은 현재 출력 필드 정의를 정리한 문서다. 현재 구현의 최종 근거는 같은 폴더의 `card_detail_parser.rb`와 `card_detail_specs.json`이며, 과거 `card_field_reference_excel.xml`은 2026-10-11 시점 자료라 현 버전의 근거로 사용하지 않는다.

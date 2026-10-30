@@ -1,6 +1,6 @@
 # 카드 전문 수집 인코딩 수정 안내
 
-> **이 문서는 이전 FINAL10 기준의 안내다.** 사용자가 Filebeat euc-kr 유지를 선택한 현재 FINAL11의 적용 방법은 [새 적용 안내](APPLY_GUIDE_FINAL11.md)를 따른다. FINAL11은 CP949 역변환과 손실 접두부 fallback을 지원하고 삼성 MS 실로그를 검증했다. 아래의 Filebeat 변경 지침을 FINAL11 구성에 그대로 적용하지 않는다.
+> **이 문서는 이전 FINAL10 기준의 안내다.** 사용자가 Filebeat euc-kr 유지를 선택한 현재 FINAL12의 적용 방법은 [새 적용 안내](APPLY_GUIDE_FINAL12.md)를 따른다. FINAL12는 FINAL11의 파싱 결과를 유지하면서 반복 처리를 간소화했다. CP949 역변환과 손실 접두부 fallback을 지원하고 삼성 MS 실로그를 검증했다. 아래의 Filebeat 변경 지침을 FINAL12 구성에 그대로 적용하지 않는다.
 
 확인일: 2026-10-30. 대상 파서: `2026-10-18.final10`.
 

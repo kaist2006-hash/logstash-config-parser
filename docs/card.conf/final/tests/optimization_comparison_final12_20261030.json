@@ -1,0 +1,235 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "workers": 4,
+  "source_encoding": "CP949 replacement simulation compatible with Filebeat euc-kr",
+  "comparison": "entire card_detail excluding parser_version, tags, original message and routing metadata",
+  "files": [
+    {
+      "file": "BCC_IC",
+      "route": "s_service_bcc_ic",
+      "events": 56134,
+      "counts": {
+        "control": 7200,
+        "ok": 48892,
+        "error": 42
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "bcc_ms",
+      "route": "s_service_bcc_ms",
+      "events": 13456,
+      "counts": {
+        "ok": 5776,
+        "control": 7680
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "CNB_IC",
+      "route": "s_service_cnb_ic",
+      "events": 302191,
+      "counts": {
+        "ok": 302189,
+        "error": 2
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "CNB_MS",
+      "route": "s_service_cnb_ms",
+      "events": 71302,
+      "counts": {
+        "ok": 49637,
+        "fallback": 21658,
+        "error": 7
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "din_ic",
+      "route": "s_service_din_ic",
+      "events": 5474,
+      "counts": {
+        "ok": 5474
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "din_ms",
+      "route": "s_service_din_ms",
+      "events": 13180,
+      "counts": {
+        "ok": 11979,
+        "fallback": 1201
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "keb_sum",
+      "route": "s_service_keb_sum",
+      "events": 142703,
+      "counts": {
+        "ok": 142703
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "lgc_ic",
+      "route": "s_service_lgc_ic",
+      "events": 194098,
+      "counts": {
+        "ok": 194098
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "lgc_ms",
+      "route": "s_service_lgc_ms",
+      "events": 114824,
+      "counts": {
+        "ok": 104716,
+        "fallback": 10105,
+        "error": 3
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "LTC_IC",
+      "route": "s_service_ltc_ic",
+      "events": 12104,
+      "counts": {
+        "ok": 10091,
+        "fallback": 2011,
+        "error": 2
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "LTC_MS",
+      "route": "s_service_ltc_ms",
+      "events": 51766,
+      "counts": {
+        "ok": 44145,
+        "fallback": 7614,
+        "error": 7
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "NIC_IC",
+      "route": "s_service_nlc_ic",
+      "events": 111352,
+      "counts": {
+        "ok": 98855,
+        "fallback": 12094,
+        "error": 403
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "NIC_MS",
+      "route": "s_service_nlc_ms",
+      "events": 10296,
+      "counts": {
+        "ok": 9720,
+        "fallback": 546,
+        "error": 30
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "win_ic",
+      "route": "s_service_win_ic",
+      "events": 3826,
+      "counts": {
+        "ok": 3826
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "wrc",
+      "route": "s_service_wrc_sum",
+      "events": 49640,
+      "counts": {
+        "ok": 48111,
+        "error": 39,
+        "fallback": 1490
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "route": "s_service_win_ms",
+      "events": 56568,
+      "counts": {
+        "ok": 47970,
+        "fallback": 8598
+      },
+      "detail_mismatches": 0,
+      "tag_mismatches": 0,
+      "input_mutations": 0,
+      "version_errors": 0
+    }
+  ],
+  "edge_case_comparisons": 1746,
+  "elapsed_seconds": 543.495,
+  "totals": {
+    "events": 1208914,
+    "counts": {
+      "control": 14880,
+      "ok": 1128182,
+      "error": 535,
+      "fallback": 65317
+    },
+    "detail_mismatches": 0,
+    "tag_mismatches": 0,
+    "input_mutations": 0,
+    "version_errors": 0
+  }
+}
