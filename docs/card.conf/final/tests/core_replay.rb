@@ -201,7 +201,7 @@ routes.each do |filename, route|
     file.each_line do |raw|
       physical += 1
       sha.update(raw)
-      next unless /(?:get|put)\(/.match?(raw) || (raw.include?('==>') && /\[[SR]\]/.match?(raw))
+      next unless /(?:get|put)\(|\bput_msg_complete\[/.match?(raw) || (raw.include?('==>') && /\[[SR]\]/.match?(raw))
       message = raw.sub(/\r?\n\z/, '').force_encoding('ISO-8859-1').encode('UTF-8')
       queue.push([message, route, physical, filename])
       selected += 1

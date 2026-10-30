@@ -1,0 +1,37 @@
+{
+  "new_envelope_contracts": [
+    {
+      "name": "closed_request",
+      "status": "ok",
+      "log_encoding": "completed_text"
+    },
+    {
+      "name": "closed_without_linename",
+      "status": "ok",
+      "log_encoding": "completed_text"
+    },
+    {
+      "name": "open_request",
+      "status": "fallback",
+      "log_encoding": "completed_text"
+    },
+    {
+      "name": "invalid_header",
+      "status": "error",
+      "log_encoding": "completed_text"
+    },
+    {
+      "name": "other_issuer_isolation",
+      "status": "error",
+      "log_encoding": null
+    },
+    {
+      "name": "invalid_numeric",
+      "status": "error",
+      "log_encoding": "completed_text"
+    }
+  ],
+  "other_service_sample_comparisons": 960,
+  "other_service_sample_differences": 0,
+  "scope": "64 existing candidates from each of the other 15 services; all Samsung physical lines tested separately"
+}

@@ -65,6 +65,9 @@ def register(params)
     if transport.key?('extended_text_marker')
       raise ArgumentError, 'invalid extended text marker flag' unless [true, false].include?(transport['extended_text_marker'])
     end
+    if transport.key?('completed_text_envelope')
+      raise ArgumentError, 'invalid completed text envelope flag' unless [true, false].include?(transport['completed_text_envelope'])
+    end
     if transport.key?('outbound_declared_trailer_bytes')
       n = transport['outbound_declared_trailer_bytes']
       raise ArgumentError, 'invalid outbound trailer width' unless n.is_a?(Integer) && (1..64).cover?(n)
@@ -137,6 +140,8 @@ def register(params)
   @text_marker_re = /\b(get|put)\(data\[/.freeze
   @extended_text_marker_re = /\b(get|put)\([^\r\n)]{0,128}?data\[/.freeze
   @text_tail_re = /\] len\[([0-9]+)\](?: uid\[[^\]]*\])?(?: linename\[[^\]]*\])?\)\s*\z/.freeze
+  @completed_text_marker_re = /\bput_msg_complete\[/.freeze
+  @completed_text_envelope_re = /\bput_msg_complete\[(.*?)\](?:\s+linename\[[^\]]*\])?\s*\z/m.freeze
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   @printable_ascii_re = /\A[\x20-\x7E]*\z/n.freeze
@@ -607,20 +612,32 @@ def filter(event)
     else
       marker_re = transport['extended_text_marker'] ? @extended_text_marker_re : @text_marker_re
       marker = marker_re.match(wire_message)
-      tail = @text_tail_re.match(wire_message)
-      if marker && tail && tail.begin(0) >= marker.end(0)
-        raw = wire_message[marker.end(0)...tail.begin(0)]
-        result['declared_bytes'] = tail[1].to_i
-        result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
-        result['log_encoding'] = 'text'
-      elsif marker
-        raw = wire_message[marker.end(0)..-1]
-        result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
-        result['log_encoding'] = 'text'
-        result['outer_envelope_recovered'] = true
-        card_warn(result, 'missing_text_envelope_tail')
+      completed_marker = @completed_text_marker_re.match(wire_message) if transport['completed_text_envelope']
+      if completed_marker && (!marker || completed_marker.begin(0) < marker.begin(0))
+        completed = @completed_text_envelope_re.match(wire_message, completed_marker.begin(0))
+        raw = completed ? completed[1] : wire_message[completed_marker.end(0)..-1]
+        result['direction'] = 'OUT'
+        result['log_encoding'] = 'completed_text'
+        unless completed
+          result['outer_envelope_recovered'] = true
+          card_warn(result, 'missing_completed_text_envelope_tail')
+        end
       else
-        card_error(result, 'incomplete_text_envelope')
+        tail = @text_tail_re.match(wire_message)
+        if marker && tail && tail.begin(0) >= marker.end(0)
+          raw = wire_message[marker.end(0)...tail.begin(0)]
+          result['declared_bytes'] = tail[1].to_i
+          result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
+          result['log_encoding'] = 'text'
+        elsif marker
+          raw = wire_message[marker.end(0)..-1]
+          result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
+          result['log_encoding'] = 'text'
+          result['outer_envelope_recovered'] = true
+          card_warn(result, 'missing_text_envelope_tail')
+        else
+          card_error(result, 'incomplete_text_envelope')
+        end
       end
     end
 

@@ -1,0 +1,15 @@
+{
+  "runtime": "Logstash 8.17.6 real stdin/json_lines/Ruby/file pipeline",
+  "script_params": [
+    "specs_path"
+  ],
+  "events": 68,
+  "result": "passed",
+  "direct_parser_result_differences": 0,
+  "counts": {
+    "fallback": 33,
+    "ok": 23,
+    "error": 12
+  },
+  "scope": "68 real-source samples across all observed request/response header-MTI combinations, including 4 incomplete fragments; CP949 input simulation, not a live Filebeat test"
+}

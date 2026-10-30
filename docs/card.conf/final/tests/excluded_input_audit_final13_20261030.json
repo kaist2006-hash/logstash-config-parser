@@ -1,0 +1,181 @@
+[
+  {
+    "file": "BCC_IC",
+    "counts": {
+      "physical_lines": 112268,
+      "old_selected": 56134,
+      "old_excluded": 56134,
+      "excluded_data_marker": 3600
+    },
+    "excluded_functions": {
+      "get_msg_info": 56134
+    }
+  },
+  {
+    "file": "bcc_ms",
+    "counts": {
+      "physical_lines": 22728,
+      "old_selected": 13456,
+      "old_excluded": 9272,
+      "excluded_data_marker": 2400
+    },
+    "excluded_functions": {
+      "get_msg_info": 9128,
+      "al_session_open": 72
+    }
+  },
+  {
+    "file": "CNB_IC",
+    "counts": {
+      "physical_lines": 453297,
+      "old_selected": 302191,
+      "old_excluded": 151106
+    },
+    "excluded_functions": {
+      "get_msg_info": 151091,
+      "get_session_timeout": 12
+    }
+  },
+  {
+    "file": "CNB_MS",
+    "counts": {
+      "physical_lines": 71346,
+      "old_selected": 71302,
+      "old_excluded": 44
+    },
+    "excluded_functions": {
+      "put_msg_info": 44
+    }
+  },
+  {
+    "file": "din_ic",
+    "counts": {
+      "physical_lines": 10948,
+      "old_selected": 5474,
+      "old_excluded": 5474
+    },
+    "excluded_functions": {
+      "get_msg_info": 5474
+    }
+  },
+  {
+    "file": "din_ms",
+    "counts": {
+      "physical_lines": 19770,
+      "old_selected": 13180,
+      "old_excluded": 6590
+    },
+    "excluded_functions": {
+      "get_msg_info": 6590
+    }
+  },
+  {
+    "file": "keb_sum",
+    "counts": {
+      "physical_lines": 214234,
+      "old_selected": 142703,
+      "old_excluded": 71531
+    },
+    "excluded_functions": {
+      "get_msg_info": 71349,
+      "get_end_msg": 182
+    }
+  },
+  {
+    "file": "lgc_ic",
+    "counts": {
+      "physical_lines": 291157,
+      "old_selected": 194098,
+      "old_excluded": 97059
+    },
+    "excluded_functions": {
+      "get_msg_info": 97051,
+      "get_session_timeout": 4,
+      "get_delayed_response": 2
+    }
+  },
+  {
+    "file": "lgc_ms",
+    "counts": {
+      "physical_lines": 347806,
+      "old_excluded": 232982,
+      "old_selected": 114824
+    },
+    "excluded_functions": {
+      "get_unique_id": 117854,
+      "get_msg_info": 114828,
+      "put_msg_info": 300
+    }
+  },
+  {
+    "file": "LTC_IC",
+    "counts": {
+      "physical_lines": 12110,
+      "old_selected": 12104,
+      "old_excluded": 6
+    },
+    "excluded_functions": {
+      "put_msg_info": 6
+    }
+  },
+  {
+    "file": "LTC_MS",
+    "counts": {
+      "physical_lines": 51818,
+      "old_selected": 51766,
+      "old_excluded": 52,
+      "excluded_with_ISO": 5
+    },
+    "excluded_functions": {
+      "put_msg_info": 52
+    }
+  },
+  {
+    "file": "NIC_IC",
+    "counts": {
+      "physical_lines": 111434,
+      "old_selected": 111352,
+      "old_excluded": 82
+    },
+    "excluded_functions": {
+      "put_msg_info": 82
+    }
+  },
+  {
+    "file": "NIC_MS",
+    "counts": {
+      "physical_lines": 10348,
+      "old_selected": 10296,
+      "old_excluded": 52
+    },
+    "excluded_functions": {
+      "al_session_open": 24,
+      "put_msg_info": 8,
+      "put_msg_complete": 8
+    }
+  },
+  {
+    "file": "win_ic",
+    "counts": {
+      "physical_lines": 5739,
+      "old_selected": 3826,
+      "old_excluded": 1913
+    },
+    "excluded_functions": {
+      "get_msg_info": 1913
+    }
+  },
+  {
+    "file": "wrc",
+    "counts": {
+      "physical_lines": 84376,
+      "old_selected": 49640,
+      "old_excluded": 34736,
+      "excluded_with_ISO": 2
+    },
+    "excluded_functions": {
+      "put_msg_info": 17383,
+      "get_msg_info": 17353
+    }
+  }
+]

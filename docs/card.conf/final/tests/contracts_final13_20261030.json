@@ -1,0 +1,87 @@
+{
+  "existing_contracts": {
+    "hard_error": "passed",
+    "short_fallback": "passed",
+    "malformed_error": "passed",
+    "trailing_bytes_error": "passed",
+    "no_common_error": "passed",
+    "nh_rest_byte_exact_ok": "passed",
+    "nh_rest_does_not_hide_errors": "passed"
+  },
+  "encoding_contracts": {
+    "unicode_logger_prefix_and_tail": {
+      "status": "ok",
+      "errors": [
+
+      ],
+      "field_count": 1
+    },
+    "cp949_payload_byte_lengths": {
+      "status": "ok",
+      "errors": [
+
+      ],
+      "field_count": 1
+    },
+    "replacement_after_common_fields": {
+      "status": "fallback",
+      "errors": [
+        "input_decoding_loss",
+        "truncated_field"
+      ],
+      "field_count": 1
+    },
+    "replacement_inside_header": {
+      "status": "error",
+      "errors": [
+        "input_decoding_loss",
+        "missing_iso_header"
+      ],
+      "field_count": 0
+    },
+    "malformed_before_replacement": {
+      "status": "error",
+      "errors": [
+        "invalid_length_prefix"
+      ],
+      "field_count": 1
+    },
+    "replacement_outside_payload": {
+      "status": "ok",
+      "errors": [
+
+      ],
+      "field_count": 1
+    },
+    "samsung_exact_legacy_space_padding": {
+      "status": "fallback",
+      "errors": [
+
+      ],
+      "field_count": 2
+    },
+    "samsung_nonspace_tail_is_error": {
+      "status": "error",
+      "errors": [
+        "trailing_bytes"
+      ],
+      "field_count": 2
+    },
+    "replacement_after_embedded_control_payload": {
+      "status": "control",
+      "errors": [
+
+      ],
+      "field_count": 0
+    },
+    "replacement_inside_embedded_control_payload": {
+      "status": "error",
+      "errors": [
+        "input_decoding_loss",
+        "truncated_transport_payload",
+        "unknown_fixed_record"
+      ],
+      "field_count": 0
+    }
+  }
+}
