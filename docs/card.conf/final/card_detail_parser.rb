@@ -19,9 +19,11 @@ def register(params)
 
   @max_message_bytes = Integer(params.fetch('max_message_bytes', 65_536))
   raise ArgumentError, 'invalid max_message_bytes' unless (1024..1_048_576).cover?(@max_message_bytes)
-  # The captured text envelopes carry arbitrary 8-bit payload bytes.  The
-  # one-to-one Latin-1 round trip was used by the real-log replay as well.
-  @text_encoding = Encoding.find(params.fetch('text_encoding', 'ISO-8859-1'))
+  # Reverse only the extracted payload, using the collector's input encoding.
+  # CP949 matches Filebeat euc-kr's mapping family. Lost bytes are never guessed.
+  @text_encoding = Encoding.find(params.fetch('text_encoding', document.fetch('text_encoding', 'ISO-8859-1')))
+  @recover_lossy_prefix = document.fetch('recover_lossy_prefix', false)
+  raise ArgumentError, 'invalid lossy prefix policy' unless [true, false].include?(@recover_lossy_prefix)
 
   enabled = params['enabled_profiles']
   enabled = enabled.split(',').map(&:strip).reject(&:empty?) if enabled.is_a?(String)
@@ -42,6 +44,12 @@ def register(params)
     if profile['format'] == 'iso8583'
       raise ArgumentError, 'invalid header offsets' unless profile.fetch('header_offsets').all? { |n| n.is_a?(Integer) && (0..32).cover?(n) }
       raise ArgumentError, 'invalid bitmap bound' unless (1..3).cover?(profile.fetch('max_bitmaps'))
+    end
+    if (rule = profile['trailing_padding'])
+      raise ArgumentError, 'invalid padding headers' unless rule.fetch('headers').all? { |h| /\AISO[0-9]{9}\z/.match?(h) }
+      raise ArgumentError, 'invalid padding MTIs' unless rule.fetch('mtis').all? { |m| /\A[0-9]{4}\z/.match?(m) }
+      raise ArgumentError, 'invalid padding bounds' unless (2..192).cover?(rule.fetch('after_field')) &&
+        (1..64).cover?(rule.fetch('length')) && (0..255).cover?(rule.fetch('byte'))
     end
     profile['enabled'] = enabled.include?(id) unless enabled.nil?
     raise ArgumentError, 'invalid enabled flag' unless [true, false].include?(profile['enabled'])
@@ -127,7 +135,7 @@ def register(params)
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   @recoverable_error_codes = {
     'truncated_field' => true, 'truncated_length_prefix' => true,
-    'truncated_transport_payload' => true
+    'truncated_transport_payload' => true, 'input_decoding_loss' => true
   }.freeze
   card_freeze(@profiles)
   card_freeze(@emv_export)
@@ -148,6 +156,16 @@ end
 def card_warn(result, code)
   result['warnings'] ||= []
   result['warnings'] << code unless result['warnings'].include?(code) || result['warnings'].length >= 16
+end
+
+def card_external_input_loss(result)
+  return unless result['input_loss_truncated']
+  # An independently validated transport length already bounds the complete
+  # payload. Replacement characters occur only in the discarded logger buffer.
+  result['input_loss_truncated'] = false
+  result['input_loss_outside_payload'] = true
+  result['errors'].reject! { |item| item['code'] == 'input_decoding_loss' }
+  result.delete('errors') if result['errors'].empty?
 end
 
 def card_value(bytes, spec, result, bit, offset)
@@ -265,6 +283,7 @@ def card_transport(raw, profile, result)
       result['response_prefix_bytes'] = response_prefix.bytesize
     end
     encoded_bytes = rule.fetch('payload_encoding', 'binary') == 'hex_ascii' ? count * 2 : count
+    card_external_input_loss(result) if body.bytesize >= encoded_bytes
     if body.bytesize < encoded_bytes
       card_error(result, 'truncated_transport_payload', nil, prefix_bytes, encoded_bytes, body.bytesize)
       result['embedded_available_bytes'] = body.bytesize
@@ -504,7 +523,17 @@ def card_parse(raw, profile, result)
   result['frame_status'] = consumed_fields == active.length ? 'complete' : 'partial'
   if result['frame_status'] == 'complete' && pos != raw.bytesize
     trailing = raw.byteslice(pos, raw.bytesize - pos)
-    if result['outer_envelope_recovered']
+    rule = profile['trailing_padding']
+    if rule && rule['headers'].include?(header) && rule['mtis'].include?(mti) &&
+       active.last == rule['after_field'] && trailing.bytesize == rule['length'] &&
+       trailing.each_byte.all? { |byte| byte == rule['byte'] }
+      # Only this exact legacy response's space padding is recognized. Keep
+      # the document deviation visible as fallback; do not invent a DE56 value.
+      result['padding_bytes'] = trailing.bytesize
+      result['consumed_bytes'] = raw.bytesize
+      result['remaining_bytes'] = 0
+      card_warn(result, 'legacy_space_padding')
+    elsif result['outer_envelope_recovered']
       # Every bitmap-announced field was consumed. The remaining bytes belong to
       # the missing outer logger trailer/buffer, not to another ISO data element.
       result['recovered_trailing_bytes'] = trailing.bytesize
@@ -550,10 +579,10 @@ def filter(event)
     card_error(result, 'message_not_string')
   elsif message.bytesize > @max_message_bytes
     card_error(result, 'message_too_large', nil, nil, @max_message_bytes, message.bytesize)
-  elsif message.include?("\uFFFD")
-    card_error(result, 'lossy_input_encoding')
   else
-    wire_message = message.encode(@text_encoding).b
+    # Envelope markers are ASCII. Slice this Unicode string by character
+    # offsets first; byte offsets become valid only after reversing its payload.
+    wire_message = message
     raw = nil
     if wire_message.include?('==>[')
       match = @bracket_envelope_re.match(wire_message)
@@ -593,18 +622,39 @@ def filter(event)
       marker = marker_re.match(wire_message)
       tail = @text_tail_re.match(wire_message)
       if marker && tail && tail.begin(0) >= marker.end(0)
-        raw = wire_message.byteslice(marker.end(0), tail.begin(0) - marker.end(0))
+        raw = wire_message[marker.end(0)...tail.begin(0)]
         result['declared_bytes'] = tail[1].to_i
         result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
         result['log_encoding'] = 'text'
       elsif marker
-        raw = wire_message.byteslice(marker.end(0), wire_message.bytesize - marker.end(0))
+        raw = wire_message[marker.end(0)..-1]
         result['direction'] = marker[1] == 'put' ? 'OUT' : 'IN'
         result['log_encoding'] = 'text'
         result['outer_envelope_recovered'] = true
         card_warn(result, 'missing_text_envelope_tail')
       else
         card_error(result, 'incomplete_text_envelope')
+      end
+    end
+
+    if raw && result['log_encoding'] != 'hex'
+      result['input_text_encoding'] = @text_encoding.name
+      loss_offset = raw.index("\uFFFD")
+      if loss_offset
+        if @recover_lossy_prefix
+          # Everything after the first replacement character has unknown byte
+          # positions. Parse only the reversible prefix and force fallback/error.
+          raw = raw[0...loss_offset].encode(@text_encoding).b
+          result['input_loss_truncated'] = true
+          result['logged_bytes_exact'] = false
+          result['input_recovered_prefix_bytes'] = raw.bytesize
+          card_error(result, 'input_decoding_loss', nil, raw.bytesize)
+        else
+          card_error(result, 'lossy_input_encoding')
+          raw = nil
+        end
+      else
+        raw = raw.encode(@text_encoding).b
       end
     end
 
@@ -624,6 +674,10 @@ def filter(event)
           card_warn(result, 'declared_length_mismatch')
         end
       end
+      if !embedded_rule && profile['trim_to_declared_length'] && result['declared_bytes'] &&
+         raw.bytesize >= result['declared_bytes']
+        card_external_input_loss(result)
+      end
       raw = card_transport(raw, profile, result)
       if raw
         if profile['format'] == 'fixed'
@@ -635,7 +689,7 @@ def filter(event)
     end
   end
 
-  if result['status'] == 'control'
+  if result['status'] == 'control' && !result['input_loss_truncated']
     # Control/health frames are structurally validated but not business-parsed.
   elsif result['errors'] && !result['errors'].empty?
     common_recovered = result['fields'].is_a?(Hash) && !result['fields'].empty?
@@ -670,4 +724,3 @@ rescue StandardError
   event.tag('error')
   [event]
 end
-

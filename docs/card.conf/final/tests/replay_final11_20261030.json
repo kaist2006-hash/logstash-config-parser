@@ -1,0 +1,535 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "event_class": "LogStash::Event",
+  "parser_version": "2026-10-30.final11",
+  "input_scope": "lossless Latin-1 reference and CP949 replacement simulation compatible with Filebeat euc-kr; not a live Filebeat run",
+  "files": [
+    {
+      "file": "BCC_IC",
+      "route": "s_service_bcc_ic",
+      "events": 56134,
+      "counts": {
+        "lossless|control": 7200,
+        "euc_kr_retained|control": 7200,
+        "lossless|ok": 48892,
+        "euc_kr_retained|ok": 48892,
+        "lossless|error": 42,
+        "euc_kr_retained|error": 42
+      },
+      "errors": {
+        "lossless|missing_iso_header|": 42,
+        "euc_kr_retained|missing_iso_header|": 42
+      },
+      "warnings": {
+      },
+      "with_fields": {
+        "lossless": 48892,
+        "euc_kr_retained": 48892
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "bcc_ms",
+      "route": "s_service_bcc_ms",
+      "events": 13456,
+      "counts": {
+        "lossless|ok": 5776,
+        "euc_kr_retained|ok": 5776,
+        "lossless|control": 7680,
+        "euc_kr_retained|control": 7680
+      },
+      "errors": {
+      },
+      "warnings": {
+        "lossless|missing_text_envelope_tail": 37,
+        "euc_kr_retained|missing_text_envelope_tail": 37
+      },
+      "with_fields": {
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "CNB_IC",
+      "route": "s_service_cnb_ic",
+      "events": 302191,
+      "counts": {
+        "lossless|ok": 302189,
+        "euc_kr_retained|ok": 302189,
+        "lossless|error": 2,
+        "euc_kr_retained|error": 2
+      },
+      "errors": {
+        "lossless|missing_iso_header|": 2,
+        "euc_kr_retained|missing_iso_header|": 2
+      },
+      "warnings": {
+      },
+      "with_fields": {
+        "lossless": 302189,
+        "euc_kr_retained": 302189
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "CNB_MS",
+      "route": "s_service_cnb_ms",
+      "events": 71302,
+      "counts": {
+        "lossless|ok": 62004,
+        "euc_kr_retained|ok": 49637,
+        "euc_kr_retained|fallback": 21658,
+        "lossless|fallback": 9291,
+        "lossless|error": 7,
+        "euc_kr_retained|error": 7
+      },
+      "errors": {
+        "euc_kr_retained|input_decoding_loss|": 13252,
+        "euc_kr_retained|truncated_field|35": 19280,
+        "lossless|truncated_field|35": 6916,
+        "lossless|truncated_field|43": 52,
+        "euc_kr_retained|truncated_field|43": 52,
+        "euc_kr_retained|truncated_field|46": 3,
+        "lossless|missing_iso_header|": 6,
+        "euc_kr_retained|missing_iso_header|": 6,
+        "lossless|redacted_length_prefix|46": 1,
+        "euc_kr_retained|redacted_length_prefix|46": 1
+      },
+      "warnings": {
+        "euc_kr_retained|declared_length_mismatch": 19283,
+        "lossless|declared_length_mismatch": 6916,
+        "lossless|missing_text_envelope_tail": 2375,
+        "lossless|recovered_outer_trailing_bytes": 2323,
+        "euc_kr_retained|missing_text_envelope_tail": 2375,
+        "euc_kr_retained|recovered_outer_trailing_bytes": 2323
+      },
+      "with_fields": {
+        "lossless": 71296,
+        "euc_kr_retained": 71296
+      },
+      "loss_truncated": 13252,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "din_ic",
+      "route": "s_service_din_ic",
+      "events": 5474,
+      "counts": {
+        "lossless|ok": 5474,
+        "euc_kr_retained|ok": 5474
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "with_fields": {
+        "lossless": 5474,
+        "euc_kr_retained": 5474
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "din_ms",
+      "route": "s_service_din_ms",
+      "events": 13180,
+      "counts": {
+        "lossless|ok": 12324,
+        "euc_kr_retained|ok": 11979,
+        "euc_kr_retained|fallback": 1201,
+        "lossless|fallback": 856
+      },
+      "errors": {
+        "euc_kr_retained|input_decoding_loss|": 487,
+        "euc_kr_retained|truncated_transport_payload|": 724,
+        "euc_kr_retained|truncated_field|35": 724,
+        "lossless|truncated_transport_payload|": 379,
+        "lossless|truncated_field|35": 379
+      },
+      "warnings": {
+        "lossless|missing_text_envelope_tail": 426,
+        "euc_kr_retained|missing_text_envelope_tail": 426,
+        "lossless|bitmap_field_omitted_f39": 62,
+        "euc_kr_retained|bitmap_field_omitted_f39": 62
+      },
+      "with_fields": {
+        "lossless": 13180,
+        "euc_kr_retained": 13180
+      },
+      "loss_truncated": 487,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "keb_sum",
+      "route": "s_service_keb_sum",
+      "events": 142703,
+      "counts": {
+        "lossless|ok": 142703,
+        "euc_kr_retained|ok": 142703
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "with_fields": {
+        "lossless": 142703,
+        "euc_kr_retained": 142703
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "lgc_ic",
+      "route": "s_service_lgc_ic",
+      "events": 194098,
+      "counts": {
+        "lossless|ok": 194098,
+        "euc_kr_retained|ok": 194098
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "with_fields": {
+        "lossless": 194098,
+        "euc_kr_retained": 194098
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "lgc_ms",
+      "route": "s_service_lgc_ms",
+      "events": 114824,
+      "counts": {
+        "lossless|ok": 104716,
+        "euc_kr_retained|ok": 104716,
+        "lossless|fallback": 10105,
+        "euc_kr_retained|fallback": 10105,
+        "lossless|error": 3,
+        "euc_kr_retained|error": 3
+      },
+      "errors": {
+        "euc_kr_retained|input_decoding_loss|": 292,
+        "lossless|redacted_length_prefix|46": 3,
+        "euc_kr_retained|redacted_length_prefix|46": 3
+      },
+      "warnings": {
+        "lossless|missing_text_envelope_tail": 10105,
+        "lossless|recovered_outer_trailing_bytes": 10105,
+        "euc_kr_retained|missing_text_envelope_tail": 10105,
+        "euc_kr_retained|recovered_outer_trailing_bytes": 10105
+      },
+      "with_fields": {
+        "lossless": 114824,
+        "euc_kr_retained": 114824
+      },
+      "loss_truncated": 292,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "LTC_IC",
+      "route": "s_service_ltc_ic",
+      "events": 12104,
+      "counts": {
+        "lossless|ok": 10339,
+        "euc_kr_retained|ok": 10091,
+        "lossless|fallback": 1763,
+        "euc_kr_retained|fallback": 2011,
+        "lossless|error": 2,
+        "euc_kr_retained|error": 2
+      },
+      "errors": {
+        "euc_kr_retained|input_decoding_loss|": 818,
+        "euc_kr_retained|truncated_field|35": 1074,
+        "lossless|truncated_field|35": 826,
+        "lossless|truncated_field|61": 71,
+        "euc_kr_retained|truncated_field|61": 71,
+        "lossless|truncated_field|37": 10,
+        "euc_kr_retained|truncated_field|37": 10,
+        "lossless|invalid_numeric_value|49": 2,
+        "lossless|redacted_length_prefix|55": 2,
+        "euc_kr_retained|invalid_numeric_value|49": 2,
+        "euc_kr_retained|redacted_length_prefix|55": 2
+      },
+      "warnings": {
+        "lossless|omitted_document_field_f61": 741,
+        "euc_kr_retained|omitted_document_field_f61": 741,
+        "euc_kr_retained|declared_length_mismatch": 1074,
+        "lossless|declared_length_mismatch": 826,
+        "lossless|missing_text_envelope_tail": 196,
+        "euc_kr_retained|missing_text_envelope_tail": 196,
+        "lossless|recovered_outer_trailing_bytes": 115,
+        "euc_kr_retained|recovered_outer_trailing_bytes": 115
+      },
+      "with_fields": {
+        "lossless": 12104,
+        "euc_kr_retained": 12104
+      },
+      "loss_truncated": 818,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "LTC_MS",
+      "route": "s_service_ltc_ms",
+      "events": 51766,
+      "counts": {
+        "lossless|ok": 44835,
+        "euc_kr_retained|ok": 44145,
+        "lossless|fallback": 6924,
+        "euc_kr_retained|fallback": 7614,
+        "lossless|error": 7,
+        "euc_kr_retained|error": 7
+      },
+      "errors": {
+        "lossless|truncated_field|35": 1915,
+        "euc_kr_retained|input_decoding_loss|": 2287,
+        "euc_kr_retained|truncated_field|35": 2605,
+        "lossless|truncated_field|61": 122,
+        "euc_kr_retained|truncated_field|61": 123,
+        "lossless|invalid_numeric_value|49": 3,
+        "lossless|redacted_length_prefix|55": 3,
+        "euc_kr_retained|invalid_numeric_value|49": 3,
+        "euc_kr_retained|redacted_length_prefix|55": 3,
+        "lossless|truncated_field|37": 17,
+        "euc_kr_retained|truncated_field|37": 17,
+        "lossless|missing_iso_header|": 4,
+        "euc_kr_retained|missing_iso_header|": 4
+      },
+      "warnings": {
+        "lossless|omitted_document_field_f61": 2145,
+        "euc_kr_retained|omitted_document_field_f61": 2145,
+        "lossless|declared_length_mismatch": 1915,
+        "euc_kr_retained|declared_length_mismatch": 2605,
+        "lossless|missing_text_envelope_tail": 2864,
+        "lossless|recovered_outer_trailing_bytes": 2725,
+        "euc_kr_retained|missing_text_envelope_tail": 2864,
+        "euc_kr_retained|recovered_outer_trailing_bytes": 2724
+      },
+      "with_fields": {
+        "lossless": 51762,
+        "euc_kr_retained": 51762
+      },
+      "loss_truncated": 2287,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "NIC_IC",
+      "route": "s_service_nlc_ic",
+      "events": 111352,
+      "counts": {
+        "lossless|ok": 98855,
+        "euc_kr_retained|ok": 98855,
+        "lossless|fallback": 12094,
+        "euc_kr_retained|fallback": 12094,
+        "lossless|error": 403,
+        "euc_kr_retained|error": 403
+      },
+      "errors": {
+        "lossless|truncated_field|118": 2254,
+        "euc_kr_retained|truncated_field|118": 2254,
+        "lossless|invalid_length_prefix|124": 401,
+        "euc_kr_retained|invalid_length_prefix|124": 401,
+        "lossless|invalid_numeric_value|49": 2,
+        "lossless|redacted_length_prefix|118": 2,
+        "euc_kr_retained|invalid_numeric_value|49": 2,
+        "euc_kr_retained|redacted_length_prefix|118": 2
+      },
+      "warnings": {
+        "lossless|bitmap_field_omitted_f127": 55200,
+        "lossless|unparsed_rest": 55617,
+        "euc_kr_retained|bitmap_field_omitted_f127": 55200,
+        "euc_kr_retained|unparsed_rest": 55617,
+        "lossless|missing_text_envelope_tail": 9908,
+        "lossless|recovered_outer_trailing_bytes": 9840,
+        "euc_kr_retained|missing_text_envelope_tail": 9908,
+        "euc_kr_retained|recovered_outer_trailing_bytes": 9840,
+        "lossless|declared_length_mismatch": 2254,
+        "euc_kr_retained|declared_length_mismatch": 2254
+      },
+      "with_fields": {
+        "lossless": 111352,
+        "euc_kr_retained": 111352
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "NIC_MS",
+      "route": "s_service_nlc_ms",
+      "events": 10296,
+      "counts": {
+        "lossless|ok": 9720,
+        "euc_kr_retained|ok": 9720,
+        "lossless|fallback": 546,
+        "euc_kr_retained|fallback": 546,
+        "lossless|error": 30,
+        "euc_kr_retained|error": 30
+      },
+      "errors": {
+        "lossless|truncated_field|41": 142,
+        "euc_kr_retained|truncated_field|41": 142,
+        "lossless|truncated_field|126": 34,
+        "euc_kr_retained|truncated_field|126": 34,
+        "lossless|invalid_length_prefix|118": 8,
+        "euc_kr_retained|invalid_length_prefix|118": 8,
+        "lossless|field_length_exceeds_limit|118": 22,
+        "euc_kr_retained|field_length_exceeds_limit|118": 22,
+        "lossless|truncated_field|118": 2,
+        "euc_kr_retained|truncated_field|118": 2,
+        "lossless|truncated_field|60": 2,
+        "euc_kr_retained|truncated_field|60": 2
+      },
+      "warnings": {
+        "lossless|unparsed_rest": 1075,
+        "euc_kr_retained|unparsed_rest": 1075,
+        "lossless|missing_text_envelope_tail": 398,
+        "lossless|recovered_outer_trailing_bytes": 366,
+        "euc_kr_retained|missing_text_envelope_tail": 398,
+        "euc_kr_retained|recovered_outer_trailing_bytes": 366,
+        "lossless|declared_length_mismatch": 36,
+        "euc_kr_retained|declared_length_mismatch": 36
+      },
+      "with_fields": {
+        "lossless": 10296,
+        "euc_kr_retained": 10296
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "win_ic",
+      "route": "s_service_win_ic",
+      "events": 3826,
+      "counts": {
+        "lossless|ok": 3826,
+        "euc_kr_retained|ok": 3826
+      },
+      "errors": {
+      },
+      "warnings": {
+      },
+      "with_fields": {
+        "lossless": 3826,
+        "euc_kr_retained": 3826
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "wrc",
+      "route": "s_service_wrc_sum",
+      "events": 49640,
+      "counts": {
+        "lossless|ok": 48111,
+        "euc_kr_retained|ok": 48111,
+        "lossless|fallback": 1490,
+        "euc_kr_retained|fallback": 1490,
+        "lossless|error": 39,
+        "euc_kr_retained|error": 39
+      },
+      "errors": {
+        "lossless|invalid_numeric_value|49": 38,
+        "lossless|redacted_length_prefix|118": 38,
+        "euc_kr_retained|invalid_numeric_value|49": 38,
+        "euc_kr_retained|redacted_length_prefix|118": 38,
+        "lossless|invalid_numeric_value|70": 1,
+        "euc_kr_retained|invalid_numeric_value|70": 1
+      },
+      "warnings": {
+        "lossless|missing_bracket_envelope_tail": 1492,
+        "euc_kr_retained|missing_bracket_envelope_tail": 1492
+      },
+      "with_fields": {
+        "lossless": 49640,
+        "euc_kr_retained": 49640
+      },
+      "loss_truncated": 0,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "route": "s_service_win_ms",
+      "events": 56568,
+      "counts": {
+        "lossless|ok": 51690,
+        "euc_kr_retained|ok": 47970,
+        "euc_kr_retained|fallback": 8598,
+        "lossless|fallback": 4878
+      },
+      "errors": {
+        "euc_kr_retained|input_decoding_loss|": 5775,
+        "euc_kr_retained|truncated_field|35": 6914,
+        "lossless|truncated_field|35": 3194,
+        "lossless|truncated_field|43": 77,
+        "euc_kr_retained|truncated_field|43": 77
+      },
+      "warnings": {
+        "euc_kr_retained|declared_length_mismatch": 6914,
+        "lossless|declared_length_mismatch": 3194,
+        "lossless|legacy_space_padding": 1607,
+        "euc_kr_retained|legacy_space_padding": 1607,
+        "lossless|missing_text_envelope_tail": 77,
+        "euc_kr_retained|missing_text_envelope_tail": 77
+      },
+      "with_fields": {
+        "lossless": 56568,
+        "euc_kr_retained": 56568
+      },
+      "loss_truncated": 5775,
+      "message_mutations": 0,
+      "field_value_mismatches": 0,
+      "reversible_result_mismatches": 0
+    }
+  ],
+  "elapsed_seconds": 640.094,
+  "totals": {
+    "events": 1208914,
+    "counts": {
+      "lossless|control": 14880,
+      "euc_kr_retained|control": 14880,
+      "lossless|ok": 1145552,
+      "euc_kr_retained|ok": 1128182,
+      "lossless|error": 535,
+      "euc_kr_retained|error": 535,
+      "euc_kr_retained|fallback": 65317,
+      "lossless|fallback": 47947
+    },
+    "loss_truncated": 22911,
+    "message_mutations": 0,
+    "field_value_mismatches": 0,
+    "reversible_result_mismatches": 0
+  }
+}

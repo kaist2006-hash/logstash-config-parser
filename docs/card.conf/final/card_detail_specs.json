@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
-  "version": "2026-10-18.final10",
+  "version": "2026-10-30.final11",
+  "text_encoding": "CP949",
+  "recover_lossy_prefix": true,
   "emv_export": {
     "95": {"name": "terminal_verification_results", "length": 5},
     "9F33": {"name": "terminal_capabilities", "length": 3},
@@ -346,8 +348,10 @@
       }
     },
     {
-      "id":"samsung_ms","alias":"s_service_win_ms","issuer":"삼성카드","service":"MS","wire":"ascii","enabled":false,
-      "validation_stage":"document_verified_no_real_log","header_offsets":[0],"max_bitmaps":2,
+      "id":"samsung_ms","alias":"s_service_win_ms","issuer":"삼성카드","service":"MS","wire":"ascii","enabled":true,
+      "validation_stage":"real_log_replay","header_offsets":[0],"max_bitmaps":2,
+      "transport":{"response_prefix":"RESPDATA"},
+      "trailing_padding":{"headers":["ISO023400053"],"mtis":["0210"],"after_field":55,"byte":32,"length":11},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
       "fields":{
         "3":{"kind":"fixed","length":6,"emit":"processing_code","encoding":"ascii","numeric":true},
@@ -365,12 +369,12 @@
         "52":{"kind":"fixed","length":16},"70":{"kind":"fixed","length":3,"emit":"network_code","encoding":"ascii","numeric":true},
         "82":{"kind":"fixed","length":12},"83":{"kind":"fixed","length":12},
         "32":{"kind":"var","prefix":"ascii2","unit":"bytes","max":6},
-        "35":{"kind":"var","prefix":"ascii2","unit":"bytes","max":35},
-        "55":{"kind":"var","prefix":"ascii3","unit":"bytes","max":2},
-        "56":{"kind":"var","prefix":"ascii3","unit":"bytes","max":8},
+        "35":{"kind":"var","prefix":"ascii2","unit":"bytes","max":37},
+        "55":{"kind":"var","prefix":"ascii3","unit":"bytes","max":2,"emit":"installment_months","encoding":"ascii","numeric":true},
+        "56":{"kind":"var","prefix":"ascii3","unit":"bytes","max":8,"emit":"approval_number","encoding":"ascii","numeric":false},
         "126":{"kind":"var","prefix":"ascii3","unit":"bytes","max":80},
-        "127":{"kind":"blocked","reason":"하위항목 합계와512표기 및 거래별 확장 확인 필요"},
-        "90":{"kind":"blocked","reason":"MS 취소/대행 거래별 original data 형식 확인 필요"}
+        "127":{"kind":"var","prefix":"ascii3","unit":"bytes","max":512},
+        "90":{"kind":"fixed","length":42}
       }
     },
     {
@@ -638,4 +642,3 @@
     }
   ]
 }
-

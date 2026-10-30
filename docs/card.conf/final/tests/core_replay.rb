@@ -9,7 +9,9 @@ directory = ENV.fetch('CARD_PARSER_DIR')
 parser = Object.new
 parser.instance_eval(File.read(File.join(directory, 'card_detail_parser.rb')), 'card_detail_parser.rb')
 params = { 'specs_path' => File.join(directory, 'card_detail_specs.json') }
-params['text_encoding'] = ENV['CARD_TEXT_ENCODING'] if ENV['CARD_TEXT_ENCODING']
+# This reference runner creates byte-preserving Latin-1 input strings. Override
+# the deployed collector default accordingly; EUC-KR is audited separately.
+params['text_encoding'] = ENV.fetch('CARD_TEXT_ENCODING', 'ISO-8859-1')
 params['enabled_profiles'] = ENV['CARD_ENABLED_PROFILES'] if ENV['CARD_ENABLED_PROFILES']
 parser.register(params)
 reference = nil
@@ -240,4 +242,3 @@ report['elapsed_seconds'] = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - s
 File.write(ENV.fetch('CARD_CORE_REPORT'), JSON.pretty_generate(report))
 puts JSON.generate({ 'events' => merged['events'], 'errors' => merged['errors'].values.sum, 'elapsed_seconds' => report['elapsed_seconds'] })
 raise 'parser mutated input events' unless merged['message_mutations'].zero? && merged['route_mutations'].zero?
-
