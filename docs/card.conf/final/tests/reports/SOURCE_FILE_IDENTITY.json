@@ -1,0 +1,38 @@
+{
+  "files": [
+    {
+      "source": "archived_bcc_ms",
+      "bytes": 8604874,
+      "physical_lines": 22728,
+      "sha256": "459dfcaf3cd803a0b17fe2d704cafbff65250c0fc414ac271e4bc8f33e588be2"
+    },
+    {
+      "source": "archived_win_ms",
+      "bytes": 8604874,
+      "physical_lines": 22728,
+      "sha256": "459dfcaf3cd803a0b17fe2d704cafbff65250c0fc414ac271e4bc8f33e588be2"
+    },
+    {
+      "source": "actual_samsung_ms",
+      "bytes": 112173340,
+      "physical_lines": 113192,
+      "sha256": "bd71e484b9ea3bb2b09f2b3736d29b6a927edec4785fe4d08cf946270e280dd1"
+    }
+  ],
+  "old_win_ms_is_duplicate_bc": true,
+  "expected_gateways": {
+    "BC_MS": "GINST_0005_D01",
+    "SAMSUNG_MS": "GINST_0005_A01"
+  },
+  "same_bc_source_by_selected_profile": {
+    "s_service_win_ms": {
+      "error": 13456
+    },
+    "s_service_bcc_ms": {
+      "ok": 5776,
+      "control": 7680
+    }
+  },
+  "photo_document_count": 13456,
+  "conclusion": "The photographed win_ms input is archived BC MS, gateway D01, not the new Samsung A01 source. Correct the test source/routing; do not use the Samsung layout for BC records."
+}

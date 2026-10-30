@@ -1,0 +1,17 @@
+{
+  "events": 186,
+  "transitions": {
+    "error->fallback": 142,
+    "fallback->fallback": 44
+  },
+  "recovered_common_tuple_mismatches": 0,
+  "calendar_valid": 186,
+  "old_common_tuple_missing_or_wrong": 186,
+  "new_error_tags": 0,
+  "new_field_names": {
+    "transmission_datetime": 186,
+    "trace_number": 186,
+    "network_code": 186
+  },
+  "scope": "All 186 observed NH compact network records, compared with original raw field spans and FINAL15; no raw transaction values exported."
+}

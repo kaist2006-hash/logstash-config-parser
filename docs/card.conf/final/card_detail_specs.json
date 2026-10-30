@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "2026-10-30.final15",
+  "version": "2026-10-30.final16",
   "diagnostics": "minimal",
   "text_encoding": "CP949",
   "recover_lossy_prefix": true,
@@ -152,7 +152,8 @@
         "139":{"kind":"var","prefix":"binary","unit":"bytes","max":255}, "142":{"kind":"var","prefix":"binary","unit":"bytes","max":255},
         "143":{"kind":"var","prefix":"binary","unit":"bytes","max":255}
       },
-      "expected_headers": ["ISO023400053"]
+      "expected_headers": ["ISO023400053"],
+      "common_header_fallback": {"headers":["ISO023400075"],"mtis":["0200"]}
     },
     {
       "id":"kb_ms","alias":"s_service_cnb_ms","issuer":"국민카드","service":"MS","wire":"ascii","enabled":true,
@@ -188,7 +189,7 @@
     {
       "id":"lotte_ms","alias":"s_service_ltc_ms","issuer":"롯데카드","service":"MS","wire":"ascii","enabled":true,
       "validation_stage":"real_log_replay","header_offsets":[0,8],"max_bitmaps":2,
-      "expected_headers":["ISO023400053"],
+      "expected_headers":["ISO023400053"],"common_header_fallback":{"headers":["ISO023400050"],"mtis":["0420"]},
       "mtis":["0200","0210","0420","0430","0800","0810"],"trim_to_declared_length":true,
       "fields":{
         "3":{"kind":"fixed","length":6,"emit":"processing_code","encoding":"ascii","numeric":true},
@@ -269,6 +270,7 @@
       "expected_headers":["ISO000000000"],
       "transport":{"outbound_declared_trailer_bytes":8},
       "mtis":["0100","0110","0120","0130","0200","0210","0220","0230","0400","0410","0420","0430","0500","0510","0600","0610","0800","0810"],
+      "network_common_fallback": {"header": "ISO000000000", "mtis": ["0800", "0810"], "iso_length": 211, "bitmap": "F23C66812EC098100000000000000400", "user_area": "NHCARD   ", "padding": [[48, 60], [131, 80]], "field_offsets": {"7": 108, "11": 122, "70": 128}},
       "fields":{
         "2":{"kind":"fixed","length":21},
         "3":{"kind":"fixed","length":6,"emit":"processing_code","encoding":"ascii","numeric":true},

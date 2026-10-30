@@ -1,6 +1,6 @@
 # 카드 전문 수집 인코딩 수정 안내
 
-> 현재 FINAL15는 Filebeat euc-kr을 유지한다. [최신 적용 안내](APPLY_GUIDE_FINAL15.md)와 [검증서](VALIDATION_FINAL15.md)를 따른다. 아래는 이전 인코딩 원인 분석 이력이다.
+> 현재 FINAL16은 Filebeat euc-kr을 유지한다. [적용 안내](APPLY_GUIDE_FINAL16.md)를 따르며 아래는 이전 인코딩 원인 분석 이력이다.
 
 확인일: 2026-10-30. 대상 파서: `2026-10-18.final10`.
 

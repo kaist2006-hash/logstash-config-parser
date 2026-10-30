@@ -1,6 +1,6 @@
 # 카드사별 공통 필드 정의 및 검증 범위
 
-기준: `2026-10-30.final15`. 카드사별 공통/상세 분류·출력 위치·관측 건수는 [FINAL15 필드표](CARD_FIELDS_FINAL15.md), 결과와 범위는 [검증서](VALIDATION_FINAL15.md), 적용은 [안내](APPLY_GUIDE_FINAL15.md)를 따른다. fallback은 공통필드만 추출하며 error에는 업무 값을 출력하지 않는다.
+기준: `2026-10-30.final16`. 카드사별 필드 출처·공통/상세 구분·관측 수는 [FINAL16 필드표](CARD_FIELDS_FINAL16.md), 헤더 및 농협 망관리 배치 복구는 [검증서](VALIDATION_FINAL16.md), 적용은 [안내](APPLY_GUIDE_FINAL16.md), 삼성/BC 원본 구분은 [입력 안내](SERVICE_INPUT_GUIDE_FINAL16.md)를 따른다.
 
 ## 먼저 알아야 할 점
 
@@ -79,4 +79,4 @@ final10에서는 **농협 IC·MS에만** 규격으로 해석한 필드 뒤의 �
 
 FINAL14의 DE42 출력 경계: 하나 통합은 앞 11자리, 현대 MS·신한 MS는 앞 10자리만 가맹점번호로 출력하고 전체 15바이트를 소비·검증한다. 신한 IC는 문서상 15바이트 정의를 유지한다. 국민 IC의 DE42 HOST ID와 DE118 국내 가맹점번호는 별도 필드다.
 
-위 공통 8개 이름은 카드사 간 교집합이다. FINAL15의 fallback 공통 범위는 프로필별 emit 중 DE3~49와 network_code이며, 각 항목은 FINAL15 필드표의 공통/상세 열에 표시했다. 상세 규격 불일치라도 공통정보가 검증되면 fallback이며, 최소 공통정보가 부족하면 error다.
+위 공통 8개 이름은 카드사 간 교집합이다. FINAL16의 fallback 공통 범위는 프로필별 emit 중 DE3~49와 network_code이며, 각 항목은 FINAL16 필드표의 공통/상세 열에 표시했다. 상세 규격 불일치라도 공통정보가 검증되면 fallback이며, 최소 공통정보가 부족하면 error다.

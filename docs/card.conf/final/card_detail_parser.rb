@@ -66,6 +66,20 @@ def register(params)
     raise ArgumentError, 'invalid enabled flag' unless [true, false].include?(profile['enabled'])
     raise ArgumentError, 'invalid rest policy' unless [true, false].include?(profile.fetch('allow_unparsed_rest', false))
     profile['_binary'] = profile['wire'] == 'binary'
+    if (rule = profile['common_header_fallback'])
+      raise ArgumentError, 'common header fallback requires an ISO profile with expected headers' unless profile['format'] == 'iso8583' && profile['expected_headers']
+      raise ArgumentError, 'invalid common fallback headers' unless rule['headers'].is_a?(Array) && (1..8).cover?(rule['headers'].size) &&
+        rule['headers'].all? { |header| /\AISO[0-9]{9}\z/.match?(header) && !profile['expected_headers'].include?(header) }
+      raise ArgumentError, 'invalid common fallback MTIs' unless rule['mtis'].is_a?(Array) && (1..32).cover?(rule['mtis'].size) &&
+        rule['mtis'].all? { |mti| /\A[0-9]{4}\z/.match?(mti) && profile['mtis'].include?(mti) }
+      profile['_common_header_prefixes'] = {}
+      profile['_common_header_width'] = profile['_binary'] ? 14 : 16
+      rule['headers'].each do |header|
+        rule['mtis'].each do |mti|
+          profile['_common_header_prefixes'][header + (profile['_binary'] ? [mti].pack('H*') : mti)] = true
+        end
+      end
+    end
 
     # Defaults and constant byte strings are prepared once, never per event.
     transport = profile['transport'] = profile.fetch('transport', {})
@@ -161,6 +175,35 @@ def register(params)
       raise ArgumentError, 'fallback evidence is not a common output field' unless required.all? { |name| profile['_fallback_fields'].key?(name) }
       raise ArgumentError, 'no network context field' unless @fallback_policy['network_context_fields'].any? { |name| profile['_fallback_fields'].key?(name) }
       raise ArgumentError, 'no network reference field' unless @fallback_policy['network_identifier_fields'].any? { |name| profile['_fallback_fields'].key?(name) }
+    end
+    if (layout = profile['network_common_fallback'])
+      raise ArgumentError, 'invalid network common profile' unless profile['format'] == 'iso8583' && !profile['_binary'] && profile['expected_headers'].include?(layout.fetch('header'))
+      raise ArgumentError, 'invalid network MTIs' unless layout.fetch('mtis').is_a?(Array) && !layout['mtis'].empty? && layout['mtis'].all? { |mti| %w[0800 0810].include?(mti) && profile['mtis'].include?(mti) }
+      raise ArgumentError, 'invalid network layout size' unless (64..4096).cover?(layout.fetch('iso_length'))
+      raise ArgumentError, 'invalid network bitmap' unless /\A[0-9A-F]{32}\z/.match?(layout.fetch('bitmap'))
+      raise ArgumentError, 'invalid network user area' unless layout.fetch('user_area').ascii_only? && (1..32).cover?(layout['user_area'].bytesize)
+      raise ArgumentError, 'invalid network common DEs' unless layout.fetch('field_offsets').keys.sort == %w[11 7 70]
+      regions = [[0, 48]]
+      layout['_fields'] = layout['field_offsets'].map do |key, position|
+        bit = Integer(key, 10)
+        spec = compiled[bit]
+        raise ArgumentError, 'invalid network common field' unless position.is_a?(Integer) && position >= 48 && spec && spec['kind'] == 'fixed' && spec['encoding'] == 'ascii' && spec['numeric'] && profile['_fallback_fields'][spec['emit']]
+        regions << [position, spec['length']]
+        [bit, position, spec]
+      end
+      layout['_fields'].sort_by! { |bit, _, _| bit }
+      layout['_data_start'] = layout['_fields'].map { |_, position, _| position }.min
+      layout['_padding'] = layout.fetch('padding').map do |position, length|
+        raise ArgumentError, 'invalid network padding' unless position.is_a?(Integer) && position >= 48 && length.is_a?(Integer) && (1..512).cover?(length)
+        regions << [position, length]
+        [position, (' '.b * length)]
+      end
+      boundary = 0
+      regions.sort.each do |position, length|
+        raise ArgumentError, 'network layout has gaps or overlaps' unless position == boundary
+        boundary += length
+      end
+      raise ArgumentError, 'network layout size mismatch' unless boundary == layout['iso_length']
     end
     profile['compiled'] = compiled
     @profiles[profile['alias']] = profile
@@ -431,12 +474,57 @@ def card_parse_fixed(raw, profile, result)
   result['frame_status'] = 'complete'
 end
 
+def card_network_common(raw, offset, profile, result)
+  layout = profile['network_common_fallback']
+  return false unless layout && layout['header'] == result['iso_header'] &&
+    layout['mtis'].include?(result['mti']) && layout['bitmap'] == result['bitmap']
+  user = layout['user_area']
+  user_offset = offset - user.bytesize
+  return false unless [0, 4].include?(user_offset) && raw.byteslice(user_offset, user.bytesize) == user
+  if user_offset == 4
+    length = raw.byteslice(0, 4)
+    return false unless /\A[0-9]{4}\z/.match?(length) && length.to_i == user.bytesize + layout['iso_length']
+  end
+  available = raw.bytesize - offset
+  available = [available, result['declared_bytes'] - offset].min if result['declared_bytes']
+  return false if available < layout['_data_start']
+  layout['_padding'].each do |position, bytes|
+    width = [[available - position, 0].max, bytes.bytesize].min
+    return false unless raw.byteslice(offset + position, width).to_s == bytes.byteslice(0, width)
+  end
+  values = {}
+  layout['_fields'].each do |bit, position, spec|
+    if position + spec['length'] > available
+      card_error(result, 'truncated_field', bit, offset + position, spec['length'], [available - position, 0].max)
+      break
+    end
+    value = card_value(raw.byteslice(offset + position, spec['length']), spec, result, bit, offset + position)
+    break if value.nil?
+    values[spec['emit']] = value
+  end
+  result['fields'] = values unless values.empty?
+  result['parsed_field_count'] = values.size
+  result['consumed_bytes'] = offset + [available, layout['iso_length']].min
+  result['remaining_bytes'] = raw.bytesize - result['consumed_bytes']
+  result['frame_status'] = 'partial'
+  card_warn(result, 'network_layout_common_only')
+  true
+end
+
 def card_parse(raw, profile, result)
   result['payload_bytes'] = raw.bytesize
+  common_only = false
   expected_headers = profile['expected_headers']
   offset = profile['header_offsets'].find do |candidate|
     header = raw.byteslice(candidate, 12)
     expected_headers ? expected_headers.include?(header) : @iso_header_re.match?(header)
+  end
+  if !offset && profile['_common_header_prefixes']
+    offset = profile['header_offsets'].find { |candidate| profile['_common_header_prefixes'].key?(raw.byteslice(candidate, profile['_common_header_width'])) }
+    if offset
+      common_only = true
+      card_warn(result, 'header_variant_common_only')
+    end
   end
   unless offset && raw.bytesize >= offset + 12
     control = profile['control_records'].find do |candidate|
@@ -454,7 +542,11 @@ def card_parse(raw, profile, result)
       result['remaining_bytes'] = 0
       return
     end
-    card_error(result, 'missing_iso_header')
+    has_iso_header = profile['header_offsets'].any? do |candidate|
+      header = raw.byteslice(candidate, 12)
+      header && @iso_header_re.match?(header)
+    end
+    card_error(result, has_iso_header ? 'unexpected_iso_header' : 'missing_iso_header')
     return
   end
   header = raw.byteslice(offset, 12)
@@ -511,10 +603,14 @@ def card_parse(raw, profile, result)
     end
   end
   result['present_fields'] = active
+  return if profile['network_common_fallback'] && card_network_common(raw, offset, profile, result)
 
   values = {}
   consumed_fields = 0
   active.each_with_index do |bit, field_index|
+    # A configured header variant establishes only the documented common prefix.
+    # Stop before detailed DEs instead of assuming their layout is unchanged.
+    break if common_only && bit > @fallback_policy['common_max_de']
     spec = profile['compiled'][bit]
     if spec.nil? || spec['kind'] == 'blocked'
       card_error(result, spec.nil? ? 'unknown_field' : 'unresolved_spec_field', bit, pos)

@@ -1,2 +1,2 @@
-# Compatibility entry point: FINAL15 supersedes the earlier classification contract.
-load File.expand_path('output_contracts_final15.rb', __dir__)
+# Compatibility entry point; current contract includes header-variant recovery.
+load File.expand_path('output_contracts_final16.rb', __dir__)

@@ -26,9 +26,9 @@
       "name": "short_detail_valid_common",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "truncated_field"
@@ -38,12 +38,12 @@
       "name": "samsung_blank_f55_length",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
+        "processing_code",
+        "retrieval_reference",
         "transmission_datetime",
         "merchant_number",
-        "currency_code",
-        "retrieval_reference"
+        "currency_code"
       ],
       "codes": [
         "invalid_length_prefix"
@@ -85,9 +85,9 @@
       "name": "unknown_trailer_valid_common",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "trailing_bytes"
@@ -107,9 +107,9 @@
       "name": "decoding_loss_after_common",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "input_decoding_loss",
@@ -132,9 +132,9 @@
       "name": "invalid_currency_after_valid_common",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "invalid_numeric_value"
@@ -145,8 +145,8 @@
       "status": "fallback",
       "fields": [
         "transmission_datetime",
-        "network_code",
-        "trace_number"
+        "trace_number",
+        "network_code"
       ],
       "codes": [
         "invalid_length_prefix"
@@ -167,8 +167,8 @@
       "name": "network_without_transmission_date",
       "status": "fallback",
       "fields": [
-        "network_code",
-        "trace_number"
+        "trace_number",
+        "network_code"
       ],
       "codes": [
         "invalid_length_prefix"
@@ -178,8 +178,8 @@
       "name": "network_time_and_merchant_common",
       "status": "fallback",
       "fields": [
-        "merchant_number",
-        "local_time"
+        "local_time",
+        "merchant_number"
       ],
       "codes": [
         "invalid_length_prefix"
@@ -200,9 +200,9 @@
       "name": "nh_padding_common_only",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
 
@@ -212,9 +212,9 @@
       "name": "nh_bad_detail_padding_common_only",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "invalid_field_slot_padding"
@@ -224,9 +224,9 @@
       "name": "nh_short_detail_padding_common_only",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "truncated_field"
@@ -236,9 +236,9 @@
       "name": "compound_detail_failure_common_only",
       "status": "fallback",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
         "invalid_numeric_value"
@@ -248,12 +248,205 @@
       "name": "nh_accepted_rest_remains_ok",
       "status": "ok",
       "fields": [
-        "processing_code",
         "transaction_amount",
-        "transmission_datetime"
+        "transmission_datetime",
+        "processing_code"
       ],
       "codes": [
 
+      ]
+    },
+    {
+      "name": "lotte_header_variant_common_only",
+      "status": "fallback",
+      "fields": [
+        "transaction_amount",
+        "transmission_datetime",
+        "merchant_number",
+        "currency_code",
+        "processing_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "lotte_variant_insufficient_common_error",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "lotte_variant_bad_common_error",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_numeric_value",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "lotte_unconfigured_header_error",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "unexpected_iso_header"
+      ]
+    },
+    {
+      "name": "lotte_variant_unconfigured_mti_error",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "unexpected_iso_header"
+      ]
+    },
+    {
+      "name": "lotte_regular_header_unchanged",
+      "status": "ok",
+      "fields": [
+        "transaction_amount",
+        "transmission_datetime",
+        "processing_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "lotte_ic_does_not_inherit_ms_variant",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "unexpected_iso_header"
+      ]
+    },
+    {
+      "name": "lotte_variant_decoding_loss_after_common",
+      "status": "fallback",
+      "fields": [
+        "transaction_amount",
+        "transmission_datetime",
+        "processing_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "nh_observed_network_reserved_layout",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "trace_number",
+        "network_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "nh_observed_network_response",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "trace_number",
+        "network_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "nh_network_logger_buffer_after_frame",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "trace_number",
+        "network_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "nh_network_short_reserved_tail",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "trace_number",
+        "network_code"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "nh_network_short_management_code",
+      "status": "fallback",
+      "fields": [
+        "trace_number",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "truncated_field"
+      ]
+    },
+    {
+      "name": "nh_network_short_trace_is_error",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "nh_network_bad_trace_is_error",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_numeric_value",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "nh_network_changed_reserved_pattern",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "kb_ic_binary_header_variant_common_only",
+      "status": "fallback",
+      "fields": [
+        "transaction_amount",
+        "transmission_datetime",
+        "merchant_number",
+        "currency_code",
+        "processing_code"
       ]
     },
     {

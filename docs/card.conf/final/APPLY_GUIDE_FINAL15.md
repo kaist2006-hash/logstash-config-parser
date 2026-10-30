@@ -1,5 +1,7 @@
 # FINAL15 적용 안내
 
+> 최신 파일과 적용 방법은 [FINAL16 안내](APPLY_GUIDE_FINAL16.md)를 따른다. 아래는 이전 버전 이력이다.
+
 FINAL14를 대체합니다. 상세 불일치 시 공통필드를 복구하는 fallback 기준을 바로잡았습니다. fallback은 공통 값만, error는 업무 값 없이 원인만 출력합니다. 상세 규격을 모르는 상태를 ok로 승격한 버전이 아닙니다.
 
 1. 같은 배포본의 card_detail_parser.rb와 card_detail_specs.json을 함께 교체합니다.

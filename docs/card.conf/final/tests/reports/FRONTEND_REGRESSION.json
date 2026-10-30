@@ -1,0 +1,17 @@
+{
+  "runtime": "Actual Logstash 8.17.6 with unchanged dissect/grok/path routing before final16 Ruby",
+  "inputs": 197,
+  "outputs": 192,
+  "diagnostic_csv_rows_dropped": 5,
+  "result": "passed",
+  "business_differences": 0,
+  "message_mutations": 0,
+  "groups": {
+    "nh_ms": 186,
+    "lotte_ms": 4,
+    "samsung_ms": 2
+  },
+  "tags": {
+    "fallback": 191
+  }
+}

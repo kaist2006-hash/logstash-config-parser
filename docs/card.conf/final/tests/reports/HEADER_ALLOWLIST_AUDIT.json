@@ -1,0 +1,173 @@
+{
+  "scope": "All 16 source files, numeric ISO headers in text or hex dumps only. Non-ISO default BCINTMSG headers are intentionally not counted by this inventory. Observed outside the primary allowlist does not itself mean an abnormal log.",
+  "files": [
+    {
+      "file": "BCC_IC",
+      "profile": "bcc_ic",
+      "expected_headers": [
+        "BCINTMSG0001"
+      ],
+      "observed_headers": {
+        "ISO023400053": 42
+      },
+      "outside_allowlist": {
+        "ISO023400053": 42
+      }
+    },
+    {
+      "file": "bcc_ms",
+      "profile": "bcc_ms",
+      "expected_headers": null,
+      "observed_headers": {},
+      "outside_allowlist": {}
+    },
+    {
+      "file": "CNB_IC",
+      "profile": "kb_ic",
+      "expected_headers": [
+        "ISO023400053"
+      ],
+      "observed_headers": {
+        "ISO023400053": 302189,
+        "ISO023400075": 2
+      },
+      "outside_allowlist": {
+        "ISO023400075": 2
+      }
+    },
+    {
+      "file": "CNB_MS",
+      "profile": "kb_ms",
+      "expected_headers": [
+        "ISO023400053",
+        "ISO025000053"
+      ],
+      "observed_headers": {
+        "ISO023400053": 65480,
+        "ISO025000053": 5998
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "din_ic",
+      "profile": "hyundai_ic",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 5474
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "din_ms",
+      "profile": "hyundai_ms",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 13396
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "keb_sum",
+      "profile": "hana_sum",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 84674,
+        "ISO023400055": 58029
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "lgc_ic",
+      "profile": "shinhan_ic",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 194098
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "lgc_ms",
+      "profile": "shinhan_ms",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 115196
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "LTC_IC",
+      "profile": "lotte_ic",
+      "expected_headers": [
+        "ISO023400053"
+      ],
+      "observed_headers": {
+        "ISO023400053": 12109
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "LTC_MS",
+      "profile": "lotte_ms",
+      "expected_headers": [
+        "ISO023400053"
+      ],
+      "observed_headers": {
+        "ISO023400053": 52074,
+        "ISO023400050": 4
+      },
+      "outside_allowlist": {
+        "ISO023400050": 4
+      }
+    },
+    {
+      "file": "NIC_IC",
+      "profile": "nh_ic",
+      "expected_headers": [
+        "ISO000000000"
+      ],
+      "observed_headers": {
+        "ISO000000000": 111470
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "NIC_MS",
+      "profile": "nh_ms",
+      "expected_headers": [
+        "ISO000000000"
+      ],
+      "observed_headers": {
+        "ISO000000000": 10298
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "win_ic",
+      "profile": "samsung_ic",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 3826
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "wrc",
+      "profile": "woori_sum",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO023400053": 85473
+      },
+      "outside_allowlist": {}
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "profile": "samsung_ms",
+      "expected_headers": null,
+      "observed_headers": {
+        "ISO025000053": 110136,
+        "ISO023400053": 3705
+      },
+      "outside_allowlist": {}
+    }
+  ]
+}
