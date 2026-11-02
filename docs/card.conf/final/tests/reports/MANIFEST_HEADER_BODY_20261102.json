@@ -1,0 +1,38 @@
+{
+  "frontend_revision": "2026-11-02.header-body",
+  "parser_version": "2026-10-30.final17",
+  "files": {
+    "card.conf": {
+      "bytes": 5839,
+      "sha256": "883aad06c23dcae86869e72455c5dc09d704143fdfcdd9dd7c7a2c1ed01938ba"
+    },
+    "REPLACE_TEXT_BRANCHES_20261102.conf.txt": {
+      "bytes": 1164,
+      "sha256": "2f411e6befb0a654ff0be6da64014f376c7b623c7dfd4c1db759407e07f9868e"
+    },
+    "CHANGES_HEADER_BODY_20261102.patch": {
+      "bytes": 2083,
+      "sha256": "cee926ffbd2c1d2145933d3d84eb1b0a7371717a042777e5971ceccb5f519f2b"
+    },
+    "APPLY_HEADER_BODY_20261102.md": {
+      "bytes": 4350,
+      "sha256": "1fd0168262d1b1c0657adf3251da00879f49cd412872a041b13f20774f5ac862"
+    },
+    "ALL_CARD_HEADER_BODY_20261102.json": {
+      "bytes": 2697,
+      "sha256": "efa9c14e8c6eb459f61f0481a5e6ca1facb302cc05ebb1e4ed6a7dc12bce2879"
+    },
+    "SAMPLE_HEADER_BODY_20261102.json": {
+      "bytes": 1337,
+      "sha256": "057ae9a1ff1bb79b21eda169d8cdc4da18a75462120641939d14a098257585ae"
+    },
+    "STATIC_HEADER_BODY_20261102.json": {
+      "bytes": 3721,
+      "sha256": "47f3204bc934dd8fac84a9baf63d2f73d27a932615b469700195a0ecfa55370e"
+    }
+  },
+  "unchanged_parser_files": {
+    "card_detail_parser.rb": "fc050db89d8672236d2f13e3f7e031e4ba9c70d5dda2e12dc43ef02f4a5e5657",
+    "card_detail_specs.json": "3c86b8e57d19307ad9368df70835cad739d2918bd654742bf39814781ade94aa"
+  }
+}

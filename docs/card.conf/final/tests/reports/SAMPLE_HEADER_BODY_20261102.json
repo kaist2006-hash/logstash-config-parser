@@ -1,0 +1,53 @@
+{
+  "result": "passed",
+  "runtime": "Logstash 8.17.6 / 4 workers",
+  "inputs": 990,
+  "outputs": 984,
+  "real_source_outputs": 982,
+  "synthetic_outputs": 2,
+  "unchanged_drops": 6,
+  "business_value_differences": 0,
+  "message_changes": 0,
+  "profiles": {
+    "lotte_ms": 40,
+    "samsung_ms": 118,
+    "nh_ms": 405,
+    "bcc_ic": 32,
+    "bcc_ms": 32,
+    "kb_ms": 32,
+    "hyundai_ms": 32,
+    "kb_ic": 34,
+    "hyundai_ic": 32,
+    "hana_sum": 32,
+    "shinhan_ms": 32,
+    "lotte_ic": 32,
+    "shinhan_ic": 32,
+    "nh_ic": 33,
+    "samsung_ic": 32,
+    "woori_sum": 32
+  },
+  "real_header_packet_leaks": 0,
+  "real_missing_split_fields": 0,
+  "real_body_direction_errors": 0,
+  "real_split_roundtrip_errors": 0,
+  "real_filter_failures": 0,
+  "before_real_header_packet_leaks": 492,
+  "before_real_wrong_body_direction": 498,
+  "before_real_missing_split_fields": 6,
+  "samsung_photo_cases": {
+    "PHOTO_DISSECT_69682": {
+      "header_clean": true,
+      "body_direction_ok": true,
+      "roundtrip_ok": true,
+      "filter_failure": false,
+      "parser_status": "fallback"
+    },
+    "PHOTO_DISSECT_86280": {
+      "header_clean": true,
+      "body_direction_ok": true,
+      "roundtrip_ok": true,
+      "filter_failure": false,
+      "parser_status": "fallback"
+    }
+  }
+}

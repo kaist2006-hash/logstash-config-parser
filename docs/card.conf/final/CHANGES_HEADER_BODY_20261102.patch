@@ -1,0 +1,35 @@
+--- previous-card.conf
++++ header-body-fixed-card.conf
+@@ -1,3 +1,3 @@
+-# Simplified frontend: 2026-11-02; Ruby/JSON engine remains 2026-10-30.final17.
++# Header/body correction: 2026-11-02; keep the linename branches and FINAL17 engine.
+ # Logstash 8.17.x - FINAL17 card detail parser reference
+ #
+@@ -21,17 +21,16 @@
+   }
+ 
+-  # Shared text handling: separate only legacy envelopes with a real delimiter.
+-  if [message] =~ /\b(?:get|put)(?:_msg_complete)?(?:\(|\[)/ {
+-    if [message] =~ /(get|put)\(/ {
+-      if "linename" in [message] and "] " in [message] {
+-        dissect { mapping => { "message" => "%{a_header}] %{b_body}" } }
+-      }
+-      else if "* " in [message] {
+-        dissect { mapping => { "message" => "%{a_header}* %{b_body}" } }
+-      }
++  # Split the outer logger prefix from the wire wrapper, not at a payload closing bracket.
++  if [message] =~ /\b(?:get|put)(?:_msg_complete)?(?:\(|\[)/ and "linename" in [message] {
++    grok {
++      overwrite => ["a_header", "b_body", "gateway", "status"]
++      match => { "message" => "^(?<a_header>\([A-Za-z]\)\s*:\s*[^:\r\n]+:[^:\r\n]+:(?<gateway>[^:\r\n]+):[^:\r\n]+:[^:\r\n]+:[0-9]+:(?:\s*linename\[[^\]\r\n]*\])?)(?:\s*\*\s*|\s+)?(?<b_body>(?<status>get|put)(?:_msg_complete)?(?:\(|\[)[\s\S]*)\z" }
+     }
++    mutate { gsub => [ "b_body", "^get", "IN", "b_body", "^put", "OUT", "status", "^get", "IN", "status", "^put", "OUT" ] }
++  }
++  else if [message] =~ /\b(?:get|put)(?:_msg_complete)?(?:\(|\[)/ {
+     grok {
+-      id => "card_text_header"
+-      match => { "message" => "^\([A-Za-z]\)\s*:\s*[^:]+:[^:]+:(?<gateway>[^:]+):[^:]+:(?<status>get|put)" }
++      overwrite => ["a_header", "b_body", "gateway", "status"]
++      match => { "message" => "^(?<a_header>\([A-Za-z]\)\s*:\s*[^:\r\n]+:[^:\r\n]+:(?<gateway>[^:\r\n]+):[^:\r\n]+:[^:\r\n]+:[0-9]+:(?:\s*linename\[[^\]\r\n]*\])?)(?:\s*\*\s*|\s+)?(?<b_body>(?<status>get|put)(?:_msg_complete)?(?:\(|\[)[\s\S]*)\z" }
+     }
+     mutate { gsub => [ "b_body", "^get", "IN", "b_body", "^put", "OUT", "status", "^get", "IN", "status", "^put", "OUT" ] }

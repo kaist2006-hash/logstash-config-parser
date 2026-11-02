@@ -1,0 +1,133 @@
+{
+  "runtime": "Logstash 8.17.6 / 4 workers",
+  "scope": "entire source frontend replay, without Ruby detail parser; business replay sample is separate",
+  "physical_inputs": 1932571,
+  "outputs": 1265482,
+  "bad_events": 0,
+  "files": [
+    {
+      "file": "BCC_IC",
+      "outputs": 56134,
+      "text": 28067,
+      "IN": 28067,
+      "hex": 28067,
+      "OUT": 28067
+    },
+    {
+      "file": "bcc_ms",
+      "outputs": 13456,
+      "text": 13456,
+      "OUT": 6728,
+      "IN": 6728
+    },
+    {
+      "file": "CNB_IC",
+      "outputs": 302191,
+      "hex": 302191,
+      "OUT": 151100,
+      "IN": 151091
+    },
+    {
+      "file": "CNB_MS",
+      "outputs": 71302,
+      "text": 71302,
+      "IN": 35651,
+      "OUT": 35651
+    },
+    {
+      "file": "din_ic",
+      "outputs": 5474,
+      "hex": 5474,
+      "OUT": 2737,
+      "IN": 2737
+    },
+    {
+      "file": "din_ms",
+      "outputs": 13180,
+      "text": 13180,
+      "OUT": 6590,
+      "IN": 6590
+    },
+    {
+      "file": "keb_sum",
+      "outputs": 142703,
+      "hex": 142703,
+      "OUT": 71354,
+      "IN": 71349
+    },
+    {
+      "file": "lgc_ic",
+      "outputs": 194098,
+      "hex": 194098,
+      "OUT": 97047,
+      "IN": 97051
+    },
+    {
+      "file": "lgc_ms",
+      "outputs": 114824,
+      "text": 114824,
+      "OUT": 57410,
+      "IN": 57414
+    },
+    {
+      "file": "LTC_IC",
+      "outputs": 12104,
+      "text": 12104,
+      "OUT": 6052,
+      "IN": 6052
+    },
+    {
+      "file": "LTC_MS",
+      "outputs": 51766,
+      "text": 51766,
+      "OUT": 25883,
+      "IN": 25883
+    },
+    {
+      "file": "NIC_IC",
+      "outputs": 111352,
+      "text": 111352,
+      "OUT": 55673,
+      "IN": 55679
+    },
+    {
+      "file": "NIC_MS",
+      "outputs": 10296,
+      "text": 10296,
+      "OUT": 6864,
+      "IN": 3432
+    },
+    {
+      "file": "win_ic",
+      "outputs": 3826,
+      "hex": 3826,
+      "OUT": 1913,
+      "IN": 1913
+    },
+    {
+      "file": "wrc",
+      "outputs": 49640,
+      "hex": 49640,
+      "OUT": 24820,
+      "IN": 24820
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "outputs": 113136,
+      "text": 113136,
+      "OUT": 56568,
+      "IN": 56568
+    }
+  ],
+  "bad_mask_meaning": {
+    "1": "missing split fields",
+    "2": "packet marker in a_header",
+    "4": "wrong IN/OUT body prefix",
+    "8": "split does not reconstruct message",
+    "16": "wrong gateway",
+    "32": "wrong root direction",
+    "64": "filter failure tag"
+  },
+  "metadata_scope": "CP949-compatible input decoding, no live Filebeat/Elasticsearch",
+  "result": "passed"
+}

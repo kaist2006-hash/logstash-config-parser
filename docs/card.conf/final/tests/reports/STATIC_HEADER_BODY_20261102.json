@@ -1,0 +1,148 @@
+{
+  "files": [
+    {
+      "file": "BCC_IC",
+      "physical_lines": 112268,
+      "admitted": 56134,
+      "hex": 28067,
+      "text": 28067,
+      "new_prefix_matched": 28067,
+      "old_header_contained_packet": 28067,
+      "old_body_not_get_put": 28067,
+      "unmatched_lines": []
+    },
+    {
+      "file": "bcc_ms",
+      "physical_lines": 22728,
+      "admitted": 13456,
+      "text": 13456,
+      "new_prefix_matched": 13456,
+      "old_header_contained_packet": 13419,
+      "old_body_not_get_put": 13419,
+      "unmatched_lines": []
+    },
+    {
+      "file": "CNB_IC",
+      "physical_lines": 453297,
+      "admitted": 302191,
+      "hex": 302191,
+      "unmatched_lines": []
+    },
+    {
+      "file": "CNB_MS",
+      "physical_lines": 71346,
+      "admitted": 71302,
+      "text": 71302,
+      "new_prefix_matched": 71302,
+      "old_header_contained_packet": 35651,
+      "old_body_not_get_put": 35651,
+      "unmatched_lines": []
+    },
+    {
+      "file": "din_ic",
+      "physical_lines": 10948,
+      "admitted": 5474,
+      "hex": 5474,
+      "unmatched_lines": []
+    },
+    {
+      "file": "din_ms",
+      "physical_lines": 19770,
+      "admitted": 13180,
+      "text": 13180,
+      "new_prefix_matched": 13180,
+      "old_header_contained_packet": 12754,
+      "old_body_not_get_put": 12754,
+      "unmatched_lines": []
+    },
+    {
+      "file": "keb_sum",
+      "physical_lines": 214234,
+      "admitted": 142703,
+      "hex": 142703,
+      "unmatched_lines": []
+    },
+    {
+      "file": "lgc_ic",
+      "physical_lines": 291157,
+      "admitted": 194098,
+      "hex": 194098,
+      "unmatched_lines": []
+    },
+    {
+      "file": "lgc_ms",
+      "physical_lines": 347806,
+      "admitted": 114824,
+      "text": 114824,
+      "new_prefix_matched": 114824,
+      "old_header_contained_packet": 104725,
+      "old_body_not_get_put": 104725,
+      "unmatched_lines": []
+    },
+    {
+      "file": "LTC_IC",
+      "physical_lines": 12110,
+      "admitted": 12104,
+      "text": 12104,
+      "new_prefix_matched": 12104,
+      "old_header_contained_packet": 5869,
+      "old_body_not_get_put": 5869,
+      "unmatched_lines": []
+    },
+    {
+      "file": "LTC_MS",
+      "physical_lines": 51818,
+      "admitted": 51766,
+      "text": 51766,
+      "new_prefix_matched": 51766,
+      "old_header_contained_packet": 23042,
+      "old_body_not_get_put": 23042,
+      "unmatched_lines": []
+    },
+    {
+      "file": "NIC_IC",
+      "physical_lines": 111434,
+      "admitted": 111352,
+      "text": 111352,
+      "new_prefix_matched": 111352,
+      "old_header_contained_packet": 111352,
+      "old_body_not_get_put": 111352,
+      "unmatched_lines": []
+    },
+    {
+      "file": "NIC_MS",
+      "physical_lines": 10348,
+      "admitted": 10296,
+      "text": 10296,
+      "new_prefix_matched": 10296,
+      "old_header_contained_packet": 6466,
+      "old_body_not_get_put": 6466,
+      "unmatched_lines": []
+    },
+    {
+      "file": "win_ic",
+      "physical_lines": 5739,
+      "admitted": 3826,
+      "hex": 3826,
+      "unmatched_lines": []
+    },
+    {
+      "file": "wrc",
+      "physical_lines": 84376,
+      "admitted": 49640,
+      "hex": 49640,
+      "unmatched_lines": []
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "physical_lines": 113192,
+      "admitted": 113136,
+      "text": 113136,
+      "new_prefix_matched": 113136,
+      "old_header_contained_packet": 106086,
+      "old_body_not_get_put": 106086,
+      "unmatched_lines": []
+    }
+  ],
+  "scope": "all source physical lines; static prefix and old delimiter comparison"
+}

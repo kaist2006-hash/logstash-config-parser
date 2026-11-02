@@ -1,0 +1,15 @@
+  # Split the outer logger prefix from the wire wrapper, not at a payload closing bracket.
+  if [message] =~ /\b(?:get|put)(?:_msg_complete)?(?:\(|\[)/ and "linename" in [message] {
+    grok {
+      overwrite => ["a_header", "b_body", "gateway", "status"]
+      match => { "message" => "^(?<a_header>\([A-Za-z]\)\s*:\s*[^:\r\n]+:[^:\r\n]+:(?<gateway>[^:\r\n]+):[^:\r\n]+:[^:\r\n]+:[0-9]+:(?:\s*linename\[[^\]\r\n]*\])?)(?:\s*\*\s*|\s+)?(?<b_body>(?<status>get|put)(?:_msg_complete)?(?:\(|\[)[\s\S]*)\z" }
+    }
+    mutate { gsub => [ "b_body", "^get", "IN", "b_body", "^put", "OUT", "status", "^get", "IN", "status", "^put", "OUT" ] }
+  }
+  else if [message] =~ /\b(?:get|put)(?:_msg_complete)?(?:\(|\[)/ {
+    grok {
+      overwrite => ["a_header", "b_body", "gateway", "status"]
+      match => { "message" => "^(?<a_header>\([A-Za-z]\)\s*:\s*[^:\r\n]+:[^:\r\n]+:(?<gateway>[^:\r\n]+):[^:\r\n]+:[^:\r\n]+:[0-9]+:(?:\s*linename\[[^\]\r\n]*\])?)(?:\s*\*\s*|\s+)?(?<b_body>(?<status>get|put)(?:_msg_complete)?(?:\(|\[)[\s\S]*)\z" }
+    }
+    mutate { gsub => [ "b_body", "^get", "IN", "b_body", "^put", "OUT", "status", "^get", "IN", "status", "^put", "OUT" ] }
+  }
