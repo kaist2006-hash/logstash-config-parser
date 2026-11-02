@@ -1,0 +1,135 @@
+{
+  "result": "passed",
+  "scope": "Static branch predicates over every supplied physical source line; not a full parser replay for other issuers",
+  "physical_lines": 1932571,
+  "files": [
+    {
+      "file": "BCC_IC",
+      "physical_lines": 112268,
+      "new_gate_candidates": 56134,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "bcc_ms",
+      "physical_lines": 22728,
+      "new_gate_candidates": 13456,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "CNB_IC",
+      "physical_lines": 453297,
+      "new_gate_candidates": 302191,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "CNB_MS",
+      "physical_lines": 71346,
+      "new_gate_candidates": 71302,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "din_ic",
+      "physical_lines": 10948,
+      "new_gate_candidates": 5474,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "din_ms",
+      "physical_lines": 19770,
+      "new_gate_candidates": 13180,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "keb_sum",
+      "physical_lines": 214234,
+      "new_gate_candidates": 142703,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "lgc_ic",
+      "physical_lines": 291157,
+      "new_gate_candidates": 194098,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "lgc_ms",
+      "physical_lines": 347806,
+      "new_gate_candidates": 114824,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "LTC_IC",
+      "physical_lines": 12110,
+      "new_gate_candidates": 12104,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "LTC_MS",
+      "physical_lines": 51818,
+      "new_gate_candidates": 51766,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "NIC_IC",
+      "physical_lines": 111434,
+      "new_gate_candidates": 111352,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "NIC_MS",
+      "physical_lines": 10348,
+      "new_gate_candidates": 10296,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "win_ic",
+      "physical_lines": 5739,
+      "new_gate_candidates": 3826,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "wrc",
+      "physical_lines": 84376,
+      "new_gate_candidates": 49640,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 0
+    },
+    {
+      "file": "NEW_SAMSUNG_MS",
+      "physical_lines": 113192,
+      "new_gate_candidates": 113136,
+      "additional_gate_candidates": 0,
+      "lost_gate_candidates": 0,
+      "completed_first_branch": 56568
+    }
+  ]
+}

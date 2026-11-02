@@ -1,0 +1,53 @@
+{
+  "result": "passed",
+  "frontend_revision": "2026-11-02",
+  "parser_version": "2026-10-30.final17",
+  "runtime": "Logstash 8.17.6 / 4 workers",
+  "regression": {
+    "inputs": 276,
+    "outputs": 271,
+    "trace_lines_dropped": 5,
+    "before_dissect_failures": 2,
+    "after_dissect_failures": 0,
+    "business_field_differences": 0,
+    "photo_shape_cases": {
+      "PHOTO_DISSECT_69682": {
+        "before_failure_tags": [
+          "_dissectfailure",
+          "_grokparsefailure"
+        ],
+        "after_failure_tags": [],
+        "gateway_restored": true,
+        "root_status": "OUT"
+      },
+      "PHOTO_DISSECT_86280": {
+        "before_failure_tags": [
+          "_dissectfailure",
+          "_grokparsefailure"
+        ],
+        "after_failure_tags": [],
+        "gateway_restored": true,
+        "root_status": "OUT"
+      }
+    }
+  },
+  "samsung_full_pipeline": {
+    "physical_inputs": 113192,
+    "outputs": 113136,
+    "non_wrapper_fragments_dropped": 56,
+    "direction": {
+      "OUT": 56568,
+      "IN": 56568
+    },
+    "status": {
+      "ok": 95967,
+      "fallback": 17169
+    },
+    "dissect_failure": 0,
+    "grok_failure": 0,
+    "gateway_errors": 0,
+    "root_direction_errors": 0,
+    "field_presence_equal_to_final17": true
+  },
+  "scope": "Local real Logstash replay with CP949-compatible euc-kr decoding; not a live production Filebeat/Elasticsearch session."
+}

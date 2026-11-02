@@ -16,18 +16,11 @@ ruby {
 
 현재 카드사별 `[@metadata][target_alias]` 라우팅을 유지합니다. JSON은 등록 시 한 번 읽으므로 파일 교체 후 파이프라인 재시작 또는 설정 재로딩이 필요합니다. 기본 출력은 `minimal`이며 버전은 `[@metadata][card_detail_parser_version]`에 저장됩니다.
 
-## get만 보이는 경우: 앞단 필터 수정 필요
+## 삼성 요청 앞단 분기 순서 — 2026-11-02 수정
 
-실제 삼성 파일에는 `put_msg_complete[...]` 요청 56,568건과 `get(data[...)` 응답 56,568건이 있습니다. `put_msg_complete[`는 `put(` 조건에 포함되지 않습니다. 기존 앞단의 마지막 `else { drop { } }` **직전**, 기존 `else if` 체인에 다음 분기를 연결합니다.
+`put_msg_complete[`용 처리는 일반 get/put 조건 **앞의 첫 if**에 둡니다. 일반 조건을 넓힌 상태에서 삼성 분기를 마지막 drop 앞에만 두면 먼저 실행되는 일반 dissect 분기로 삼성 요청이 들어가 경고가 발생할 수 있습니다.
 
-```logstash
-else if [message] =~ /put_msg_complete\[/ {
-    grok { match => { "message" => "^\(I\)\s*[^:]+:[^:]+:[^:]+:%{DATA:gateway}:" } }
-    mutate { replace => { "status" => "OUT" } }
-  }
-```
-
-이 분기를 독립된 conf 파일로 추가하는 방식은 사용할 수 없습니다. 기존 drop 분기를 수정해야 합니다. Ruby 필터에 도달하기 전에 제거된 이벤트는 rb/json 교체로 복구되지 않습니다. 첨부 `card.conf`는 이 분기를 포함한 전체 참고 설정이며, 운영의 기존 input/output·라우팅은 환경에 맞게 유지합니다.
+[최신 앞단 적용 안내 및 현재 정규식 설명](APPLY_FRONTEND_FIX_20261102.md)을 적용하세요. `card.conf`도 해당 순서로 수정했습니다. Ruby와 JSON은 FINAL17을 계속 사용합니다. 현재 카드사별 라우팅과 운영 input/output은 유지합니다.
 
 ## 변경 후 확인
 

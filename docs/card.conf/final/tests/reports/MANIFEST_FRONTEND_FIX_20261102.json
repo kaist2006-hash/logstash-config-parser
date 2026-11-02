@@ -1,0 +1,27 @@
+{
+  "frontend_revision": "2026-11-02",
+  "parser_version": "2026-10-30.final17",
+  "files": {
+    "card.conf": {
+      "sha256": "a7f56a450c810407e4b2d17ae419df0924f9af53e237604a26e2db418bbdd994",
+      "bytes": 5948
+    },
+    "APPLY_FRONTEND_FIX_20261102.md": {
+      "sha256": "740ff3a942847dd1a24868aead437ca77d06ade0334389e15d81952bf6273899",
+      "bytes": 5743
+    },
+    "VALIDATION_FRONTEND_FIX_20261102.json": {
+      "sha256": "de90ed81f7c7fc4ea711fd2ac0b8ba6e551963de0b8dbeec0adeac88346399ea",
+      "bytes": 1450
+    },
+    "BRANCH_COVERAGE_20261102.json": {
+      "sha256": "85891a02c5ace28c1416051be9354061911ed716e0d7001e5d95139119369a39",
+      "bytes": 3708
+    }
+  },
+  "unchanged_parser_files": {
+    "card_detail_parser.rb": "fc050db89d8672236d2f13e3f7e031e4ba9c70d5dda2e12dc43ef02f4a5e5657",
+    "card_detail_specs.json": "3c86b8e57d19307ad9368df70835cad739d2918bd654742bf39814781ade94aa"
+  },
+  "historical_manifest": "MANIFEST_FINAL17.json describes the frozen 2026-10-30 archive; this manifest describes the 2026-11-02 frontend correction."
+}
