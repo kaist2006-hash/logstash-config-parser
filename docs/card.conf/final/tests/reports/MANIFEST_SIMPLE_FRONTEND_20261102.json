@@ -1,0 +1,30 @@
+{
+  "frontend_revision": "2026-11-02.simple",
+  "parser_version": "2026-10-30.final17",
+  "files": {
+    "card.conf": {
+      "bytes": 5393,
+      "sha256": "b0f9788a8a57f7768e5338aeeb56f1aa72acb51acc210e4cc88a6b6aba3dabc3"
+    },
+    "APPLY_SIMPLE_FRONTEND_20261102.md": {
+      "bytes": 4732,
+      "sha256": "4b40a450b1f7c742d1839dfdcf94db9262829fbe38dfe1e3a78e6511ec6275d1"
+    },
+    "ALL_CARD_SAMPLE_SIMPLE_20261102.json": {
+      "bytes": 1054,
+      "sha256": "8030c487c91a5a6b79a29ac76a81b748b2c0c2421bb37a325debfa904848d454"
+    },
+    "SAMSUNG_SIMPLE_FRONTEND_20261102.json": {
+      "bytes": 651,
+      "sha256": "4b38df44ba7d620e14bc66b4fbada8f20c0c413b5e993b34c8f177ef78def2df"
+    },
+    "HEADER_COMPATIBILITY_20261102.json": {
+      "bytes": 3925,
+      "sha256": "61bfcc28da7581e88db62bccdee510e45baf6c6f8cd3035cf91bc2d86503dca8"
+    }
+  },
+  "unchanged_parser_files": {
+    "card_detail_parser.rb": "fc050db89d8672236d2f13e3f7e031e4ba9c70d5dda2e12dc43ef02f4a5e5657",
+    "card_detail_specs.json": "3c86b8e57d19307ad9368df70835cad739d2918bd654742bf39814781ade94aa"
+  }
+}

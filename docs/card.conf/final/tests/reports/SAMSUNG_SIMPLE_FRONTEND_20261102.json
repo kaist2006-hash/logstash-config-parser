@@ -1,0 +1,24 @@
+{
+  "result": "passed",
+  "runtime": "Logstash 8.17.6 / 4 workers",
+  "frontend_revision": "2026-11-02.simple",
+  "parser_version": "2026-10-30.final17",
+  "physical_inputs": 113192,
+  "outputs": 113136,
+  "dropped_non_wrapper_fragments": 56,
+  "status": {
+    "ok": 95967,
+    "fallback": 17169
+  },
+  "direction": {
+    "IN": 56568,
+    "OUT": 56568
+  },
+  "dissect_failure": 0,
+  "grok_failure": 0,
+  "mutate_error": 0,
+  "gateway_errors": 0,
+  "root_direction_errors": 0,
+  "field_presence_equal_to_final17": true,
+  "scope": "local real Logstash with CP949-compatible decoding; not live production Filebeat/Elasticsearch"
+}

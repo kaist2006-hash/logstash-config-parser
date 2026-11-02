@@ -1,0 +1,53 @@
+{
+  "result": "passed",
+  "inputs": 990,
+  "outputs": 984,
+  "dropped": 6,
+  "business_value_differences": 0,
+  "message_changes": 0,
+  "legacy_metadata_differences": 0,
+  "tag_differences": [
+    {
+      "case": "ALL_CARD_synthetic_severely_short",
+      "before": [
+        "_dissectfailure",
+        "_grokparsefailure",
+        "error"
+      ],
+      "after": [
+        "_grokparsefailure",
+        "error"
+      ]
+    },
+    {
+      "case": "ALL_CARD_synthetic_invalid_common",
+      "before": [
+        "_dissectfailure",
+        "_grokparsefailure",
+        "error"
+      ],
+      "after": [
+        "_grokparsefailure",
+        "error"
+      ]
+    }
+  ],
+  "profiles": {
+    "lotte_ms": 40,
+    "samsung_ms": 120,
+    "nh_ms": 405,
+    "kb_ms": 32,
+    "hyundai_ms": 32,
+    "hyundai_ic": 32,
+    "hana_sum": 32,
+    "shinhan_ic": 32,
+    "shinhan_ms": 32,
+    "lotte_ic": 32,
+    "nh_ic": 33,
+    "samsung_ic": 32,
+    "woori_sum": 32,
+    "bcc_ic": 32,
+    "bcc_ms": 32,
+    "kb_ic": 34
+  }
+}

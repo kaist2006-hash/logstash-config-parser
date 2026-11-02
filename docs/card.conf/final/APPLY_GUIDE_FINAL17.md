@@ -16,11 +16,11 @@ ruby {
 
 현재 카드사별 `[@metadata][target_alias]` 라우팅을 유지합니다. JSON은 등록 시 한 번 읽으므로 파일 교체 후 파이프라인 재시작 또는 설정 재로딩이 필요합니다. 기본 출력은 `minimal`이며 버전은 `[@metadata][card_detail_parser_version]`에 저장됩니다.
 
-## 삼성 요청 앞단 분기 순서 — 2026-11-02 수정
+## 앞단 공통 처리 — 2026-11-02 간소화
 
-`put_msg_complete[`용 처리는 일반 get/put 조건 **앞의 첫 if**에 둡니다. 일반 조건을 넓힌 상태에서 삼성 분기를 마지막 drop 앞에만 두면 먼저 실행되는 일반 dissect 분기로 삼성 요청이 들어가 경고가 발생할 수 있습니다.
+[최신 공통 분기 및 적용 안내](APPLY_SIMPLE_FRONTEND_20261102.md)를 사용합니다. 삼성 전용 긴 첫 분기를 제거하고, 실제 구분자가 있을 때만 legacy dissect를 수행합니다. gateway/status는 원본 message에서 공통 Grok로 추출합니다. Ruby/JSON은 FINAL17 그대로 사용합니다.
 
-[최신 앞단 적용 안내 및 현재 정규식 설명](APPLY_FRONTEND_FIX_20261102.md)을 적용하세요. `card.conf`도 해당 순서로 수정했습니다. Ruby와 JSON은 FINAL17을 계속 사용합니다. 현재 카드사별 라우팅과 운영 input/output은 유지합니다.
+운영 input/output·라우팅을 유지하고 기존 텍스트 처리 블록을 교체합니다. 이전 삼성 전용 분기와 공통 처리 블록을 중복 실행하지 않습니다.
 
 ## 변경 후 확인
 
