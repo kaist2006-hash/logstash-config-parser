@@ -1,3 +1,5 @@
+> Ruby/JSON 최신 적용본은 [FINAL18](APPLY_GUIDE_FINAL18.md)입니다. 아래의 2026-11-02 헤더·바디 분리 방식은 유지합니다.
+
 # CARD FINAL17 적용 안내
 
 버전: `2026-10-30.final17`. `card_detail_parser.rb`와 `card_detail_specs.json`을 함께 교체합니다. Filebeat `encoding: euc-kr`은 유지합니다.

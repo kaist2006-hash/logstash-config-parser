@@ -1,0 +1,50 @@
+{
+  "runtime": "Logstash 8.17.6, 4 pipeline workers",
+  "input_events": 990,
+  "output_events": 984,
+  "same_dropped_events": 6,
+  "profiles": {
+    "lotte_ms": 40,
+    "samsung_ms": 120,
+    "nh_ms": 405,
+    "bcc_ic": 32,
+    "bcc_ms": 32,
+    "kb_ms": 32,
+    "hyundai_ms": 32,
+    "kb_ic": 34,
+    "hyundai_ic": 32,
+    "hana_sum": 32,
+    "woori_sum": 32,
+    "shinhan_ms": 32,
+    "lotte_ic": 32,
+    "shinhan_ic": 32,
+    "nh_ic": 33,
+    "samsung_ic": 32
+  },
+  "status": {
+    "fallback": 497,
+    "ok": 461,
+    "control": 24,
+    "error": 2
+  },
+  "event_differences": 0,
+  "verified_equal": [
+    "business values (SHA256)",
+    "EMV values (SHA256)",
+    "rest values (SHA256)",
+    "message (SHA256)",
+    "profile",
+    "parser status",
+    "direction",
+    "header/body roundtrip",
+    "root direction",
+    "gateway",
+    "tags",
+    "error codes"
+  ],
+  "filter_failures": 2,
+  "real_source_events": 982,
+  "synthetic_negative_events": 2,
+  "synthetic_negative_filter_failures": 2,
+  "real_source_filter_failures": 0
+}

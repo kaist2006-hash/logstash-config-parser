@@ -1,0 +1,14 @@
+{
+  "version": "2026-11-04.final18",
+  "files": {
+    "ALL_PROFILE_PIPELINE_REGRESSION.json": "0bb9fedea15c512b471a69d00153bf2eac45ecf2f161745ffa54ea4cb7963f38",
+    "APPLY_GUIDE_FINAL18.md": "d30cd7ebee0c97958e1509c1f69ab6fd9fc8a7d478efaa756d9df355504c30a3",
+    "card_detail_parser.rb": "3bec8987547a208b2577b7f937304204cc83ee71424eea50be8fb98cf8285cb1",
+    "card_detail_specs.json": "c9145293bafef82f196b8c3fcf7b13aa8fccee7bdd2aeb31d504887dfc2a8bfa",
+    "encoding_boundary_final18.rb": "9bfbe85fe36acede274cf79499bf6da766c8824687e27810c35eae2ca888abe5",
+    "ENCODING_BOUNDARY_VERIFICATION.json": "be966559891351722e558ffdf287ed71737b3c3e61b899d48da8d1beea7218bb",
+    "envelope_variable_final18.rb": "aeb81e29add94ce668b30cad5dd425fceee87a77cd539b93d9ed995627c4f580",
+    "output_contracts_final18.rb": "b342150a0f26e4ae0abfa3124bbe8f32d20ee9384e4309d2fc16c7b9f3a53725",
+    "VALIDATION_FINAL18.md": "992175fdb2963e304809029a7a7ce429607ce7a7b61fbf4efaadc87516d9caa8"
+  }
+}

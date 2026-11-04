@@ -1,0 +1,180 @@
+{
+  "runtime": "jruby 9.4.9.0 (3.1.4) 2024-11-04 547c6b150e OpenJDK 64-Bit Server VM 21.0.7+6-LTS on 21.0.7+6-LTS +jit [x86_64-mswin32]",
+  "version": "2026-11-04.final18",
+  "source_decoder_note": "CP949 replacement and source-derived Go-table/WHATWG decoder emulations; no live Filebeat/production-event JSON replay",
+  "regressions": {
+    "output_contracts_final17.rb": "passed",
+    "envelope_variable_final17.rb": "passed"
+  },
+  "photo_source_fixtures": [
+    {
+      "decoder_fixture": "nh_ic_photo_go_20261104.json",
+      "source_line": 31414,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_go_20261104.json",
+      "source_line": 31469,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_go_20261104.json",
+      "source_line": 95549,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_go_20261104.json",
+      "source_line": 97923,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_go_20261104.json",
+      "source_line": 105809,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_whatwg_20261104.json",
+      "source_line": 31414,
+      "before_status": "error",
+      "before_codes": [
+        "input_encoding_not_reversible"
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_whatwg_20261104.json",
+      "source_line": 31469,
+      "before_status": "error",
+      "before_codes": [
+        "input_encoding_not_reversible"
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_whatwg_20261104.json",
+      "source_line": 97923,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    },
+    {
+      "decoder_fixture": "nh_ic_photo_whatwg_20261104.json",
+      "source_line": 105809,
+      "before_status": "ok",
+      "before_codes": [
+
+      ],
+      "after_status": "ok",
+      "after_field_count": 22,
+      "after_emv_count": 12
+    }
+  ],
+  "outside_suffix_cases": [
+    {
+      "case": 1,
+      "before_status": "error",
+      "after_status": "ok",
+      "business_equal_to_exact_payload": true
+    },
+    {
+      "case": 2,
+      "before_status": "error",
+      "after_status": "ok",
+      "business_equal_to_exact_payload": true
+    },
+    {
+      "case": 3,
+      "before_status": "error",
+      "after_status": "ok",
+      "business_equal_to_exact_payload": true
+    },
+    {
+      "case": 4,
+      "before_status": "error",
+      "after_status": "ok",
+      "business_equal_to_exact_payload": true
+    },
+    {
+      "case": 5,
+      "before_status": "ok",
+      "after_status": "ok",
+      "business_equal_to_exact_payload": true
+    },
+    {
+      "case": 6,
+      "before_status": "error",
+      "after_status": "ok",
+      "business_equal_to_exact_payload": true
+    }
+  ],
+  "inside_suffix_cases": [
+    {
+      "case": 1,
+      "before_status": "error",
+      "after_status": "error",
+      "unchanged": true
+    },
+    {
+      "case": 2,
+      "before_status": "error",
+      "after_status": "error",
+      "unchanged": true
+    },
+    {
+      "case": 3,
+      "before_status": "error",
+      "after_status": "error",
+      "unchanged": true
+    }
+  ],
+  "nh_ic_full_source_comparison": {
+    "events": 111352,
+    "differences": 0,
+    "old_status": {
+      "ok": 98855,
+      "fallback": 12497
+    },
+    "new_status": {
+      "ok": 98855,
+      "fallback": 12497
+    }
+  }
+}

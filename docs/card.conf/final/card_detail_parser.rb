@@ -863,6 +863,16 @@ def filter(event)
       end
     end
 
+    # The declared text payload can be bounded before reverse conversion only
+    # when its entire prefix is ASCII, so character and byte offsets agree.
+    # Ignore logger-buffer bytes outside that existing transport boundary.
+    if raw && result['log_encoding'] == 'text' && profile['trim_to_declared_length'] &&
+       result['declared_bytes'] && !transport['embedded_length'][result['log_encoding']] &&
+       raw.length > result['declared_bytes']
+      prefix = raw[0, result['declared_bytes']]
+      raw = prefix if prefix.ascii_only?
+    end
+
     completed_loss_tail = false
     if raw && result['log_encoding'] != 'hex'
       result['input_text_encoding'] = @text_encoding.name
