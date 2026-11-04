@@ -1,0 +1,522 @@
+{
+  "result": "passed",
+  "real_source_profile_fixtures": 16,
+  "filename_variations_per_fixture": 4,
+  "renamed_or_mislabeled_filename_cases": 64,
+  "unknown_gateway_does_not_guess": true,
+  "filename_alone_does_not_select": true,
+  "cases": [
+    {
+      "original_fixture_profile": "lotte_ms",
+      "gateway": "GCLTC_X25A_P01",
+      "selected_profile": "lotte_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ms",
+      "gateway": "GCLTC_X25A_P01",
+      "selected_profile": "lotte_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ms",
+      "gateway": "GCLTC_X25A_P01",
+      "selected_profile": "lotte_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ms",
+      "gateway": "GCLTC_X25A_P01",
+      "selected_profile": "lotte_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ms",
+      "gateway": "GINST_0003_A10",
+      "selected_profile": "nh_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ms",
+      "gateway": "GINST_0003_A10",
+      "selected_profile": "nh_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ms",
+      "gateway": "GINST_0003_A10",
+      "selected_profile": "nh_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ms",
+      "gateway": "GINST_0003_A10",
+      "selected_profile": "nh_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "fallback",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ms",
+      "gateway": "GINST_0005_A01",
+      "selected_profile": "samsung_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ms",
+      "gateway": "GINST_0005_A01",
+      "selected_profile": "samsung_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ms",
+      "gateway": "GINST_0005_A01",
+      "selected_profile": "samsung_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ms",
+      "gateway": "GINST_0005_A01",
+      "selected_profile": "samsung_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ic",
+      "gateway": "GINST_0004_D01",
+      "selected_profile": "bcc_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "control",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ic",
+      "gateway": "GINST_0004_D01",
+      "selected_profile": "bcc_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "control",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ic",
+      "gateway": "GINST_0004_D01",
+      "selected_profile": "bcc_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "control",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ic",
+      "gateway": "GINST_0004_D01",
+      "selected_profile": "bcc_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "control",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ms",
+      "gateway": "GINST_0005_D01",
+      "selected_profile": "bcc_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ms",
+      "gateway": "GINST_0005_D01",
+      "selected_profile": "bcc_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ms",
+      "gateway": "GINST_0005_D01",
+      "selected_profile": "bcc_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "bcc_ms",
+      "gateway": "GINST_0005_D01",
+      "selected_profile": "bcc_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ic",
+      "gateway": "GICNB_X25A_P01",
+      "selected_profile": "kb_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ic",
+      "gateway": "GICNB_X25A_P01",
+      "selected_profile": "kb_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ic",
+      "gateway": "GICNB_X25A_P01",
+      "selected_profile": "kb_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ic",
+      "gateway": "GICNB_X25A_P01",
+      "selected_profile": "kb_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ms",
+      "gateway": "GCCNB_X25A_P01",
+      "selected_profile": "kb_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ms",
+      "gateway": "GCCNB_X25A_P01",
+      "selected_profile": "kb_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ms",
+      "gateway": "GCCNB_X25A_P01",
+      "selected_profile": "kb_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "kb_ms",
+      "gateway": "GCCNB_X25A_P01",
+      "selected_profile": "kb_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ic",
+      "gateway": "GINST_0009_A01",
+      "selected_profile": "hyundai_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ic",
+      "gateway": "GINST_0009_A01",
+      "selected_profile": "hyundai_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ic",
+      "gateway": "GINST_0009_A01",
+      "selected_profile": "hyundai_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ic",
+      "gateway": "GINST_0009_A01",
+      "selected_profile": "hyundai_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ms",
+      "gateway": "GINST_0008_A01",
+      "selected_profile": "hyundai_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ms",
+      "gateway": "GINST_0008_A01",
+      "selected_profile": "hyundai_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ms",
+      "gateway": "GINST_0008_A01",
+      "selected_profile": "hyundai_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hyundai_ms",
+      "gateway": "GINST_0008_A01",
+      "selected_profile": "hyundai_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hana_sum",
+      "gateway": "GIKEB_X25A_P01",
+      "selected_profile": "hana_sum",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hana_sum",
+      "gateway": "GIKEB_X25A_P01",
+      "selected_profile": "hana_sum",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hana_sum",
+      "gateway": "GIKEB_X25A_P01",
+      "selected_profile": "hana_sum",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "hana_sum",
+      "gateway": "GIKEB_X25A_P01",
+      "selected_profile": "hana_sum",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ic",
+      "gateway": "GILGC_X25A_P01",
+      "selected_profile": "shinhan_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ic",
+      "gateway": "GILGC_X25A_P01",
+      "selected_profile": "shinhan_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ic",
+      "gateway": "GILGC_X25A_P01",
+      "selected_profile": "shinhan_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ic",
+      "gateway": "GILGC_X25A_P01",
+      "selected_profile": "shinhan_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ms",
+      "gateway": "GCLGC_X25A_P01",
+      "selected_profile": "shinhan_ms",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ms",
+      "gateway": "GCLGC_X25A_P01",
+      "selected_profile": "shinhan_ms",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ms",
+      "gateway": "GCLGC_X25A_P01",
+      "selected_profile": "shinhan_ms",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "shinhan_ms",
+      "gateway": "GCLGC_X25A_P01",
+      "selected_profile": "shinhan_ms",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ic",
+      "gateway": "GINST_0004_A10",
+      "selected_profile": "nh_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ic",
+      "gateway": "GINST_0004_A10",
+      "selected_profile": "nh_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ic",
+      "gateway": "GINST_0004_A10",
+      "selected_profile": "nh_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "nh_ic",
+      "gateway": "GINST_0004_A10",
+      "selected_profile": "nh_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ic",
+      "gateway": "GIWIN_X25A_P01",
+      "selected_profile": "samsung_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ic",
+      "gateway": "GIWIN_X25A_P01",
+      "selected_profile": "samsung_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ic",
+      "gateway": "GIWIN_X25A_P01",
+      "selected_profile": "samsung_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "samsung_ic",
+      "gateway": "GIWIN_X25A_P01",
+      "selected_profile": "samsung_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "woori_sum",
+      "gateway": "GIWRC_X25A_P01",
+      "selected_profile": "woori_sum",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "woori_sum",
+      "gateway": "GIWRC_X25A_P01",
+      "selected_profile": "woori_sum",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "woori_sum",
+      "gateway": "GIWRC_X25A_P01",
+      "selected_profile": "woori_sum",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "woori_sum",
+      "gateway": "GIWRC_X25A_P01",
+      "selected_profile": "woori_sum",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ic",
+      "gateway": "GILTC_X25A_P01",
+      "selected_profile": "lotte_ic",
+      "arbitrary_filename": "C:/opaque/renamed.bin",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ic",
+      "gateway": "GILTC_X25A_P01",
+      "selected_profile": "lotte_ic",
+      "arbitrary_filename": "/opaque/not-a-card.log",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ic",
+      "gateway": "GILTC_X25A_P01",
+      "selected_profile": "lotte_ic",
+      "arbitrary_filename": "/opaque/bcc_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    },
+    {
+      "original_fixture_profile": "lotte_ic",
+      "gateway": "GILTC_X25A_P01",
+      "selected_profile": "lotte_ic",
+      "arbitrary_filename": "/opaque/win_ms",
+      "status": "ok",
+      "business_fields_equal": true
+    }
+  ]
+}

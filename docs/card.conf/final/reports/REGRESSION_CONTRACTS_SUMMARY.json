@@ -1,0 +1,17 @@
+{
+  "result": "passed",
+  "version": "2026-11-04.final19",
+  "contract_cases": {
+    "BC_PROTOCOL_CONTRACTS.json": 319,
+    "BGF_OUTCOME_CONTRACTS.json": 12,
+    "ISP_COMMON_CONTRACTS.json": 53,
+    "LOTTE_IC_CONTRACTS.json": 20,
+    "output_contracts_final19.json": 43
+  },
+  "samsung_variable_cases": 160,
+  "samsung_negative_boundary_cases": 7,
+  "encoding_boundary_cases": 11,
+  "full_real_source_events": 1291227,
+  "actual_profiles": 16,
+  "production_filebeat_elasticsearch_access": false
+}

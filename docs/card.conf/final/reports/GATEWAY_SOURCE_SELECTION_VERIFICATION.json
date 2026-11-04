@@ -1,0 +1,185 @@
+{
+  "version": "2026-11-04.final19",
+  "selector": "original logger header gateway; no filenames",
+  "profile_count": 16,
+  "gateway_count": 18,
+  "sources": [
+    {
+      "source": "BCC_IC",
+      "physical_lines": 112268,
+      "wire_events": 56134,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0004_D01": 56134
+      }
+    },
+    {
+      "source": "bcc_ms",
+      "physical_lines": 22728,
+      "wire_events": 13456,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0005_D01": 13456
+      }
+    },
+    {
+      "source": "CNB_IC",
+      "physical_lines": 453297,
+      "wire_events": 302191,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GICNB_X25A_P01": 302191
+      }
+    },
+    {
+      "source": "CNB_MS",
+      "physical_lines": 71346,
+      "wire_events": 71302,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GCCNB_X25A_P01": 71302
+      }
+    },
+    {
+      "source": "din_ic",
+      "physical_lines": 10948,
+      "wire_events": 5474,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0009_A01": 5474
+      }
+    },
+    {
+      "source": "din_ms",
+      "physical_lines": 19770,
+      "wire_events": 13180,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0008_A01": 13180
+      }
+    },
+    {
+      "source": "keb_sum",
+      "physical_lines": 214234,
+      "wire_events": 142703,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GIKEB_X25A_P01": 142703
+      }
+    },
+    {
+      "source": "lgc_ic",
+      "physical_lines": 291157,
+      "wire_events": 194098,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GILGC_X25A_P01": 194098
+      }
+    },
+    {
+      "source": "lgc_ms",
+      "physical_lines": 347806,
+      "wire_events": 114824,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GCLGC_X25A_P01": 114824
+      }
+    },
+    {
+      "source": "LTC_IC",
+      "physical_lines": 12110,
+      "wire_events": 12104,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GCLTC_X25A_P01": 12104
+      },
+      "source_label_disagreements": 12104,
+      "note": "Operator confirmed the attachment was MS; GCLTC is MS and GILTC is IC."
+    },
+    {
+      "source": "LTC_MS",
+      "physical_lines": 51818,
+      "wire_events": 51766,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GCLTC_X25A_P01": 51766
+      }
+    },
+    {
+      "source": "NIC_IC",
+      "physical_lines": 111434,
+      "wire_events": 111352,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0004_A10": 111352
+      }
+    },
+    {
+      "source": "NIC_MS",
+      "physical_lines": 10348,
+      "wire_events": 10296,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0003_A10": 10296
+      }
+    },
+    {
+      "source": "win_ic",
+      "physical_lines": 5739,
+      "wire_events": 3826,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GIWIN_X25A_P01": 3826
+      }
+    },
+    {
+      "source": "wrc",
+      "physical_lines": 84376,
+      "wire_events": 49640,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GIWRC_X25A_P01": 49640
+      }
+    },
+    {
+      "source": "NEW_SAMSUNG_MS",
+      "physical_lines": 113192,
+      "wire_events": 113136,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GINST_0005_A01": 113136
+      }
+    },
+    {
+      "source": "NEW_LOTTE_IC",
+      "physical_lines": 38628,
+      "wire_events": 25745,
+      "header_missing": 0,
+      "gateway_mismatches": 0,
+      "gateways": {
+        "GILTC_X25A_P01": 25745
+      }
+    }
+  ],
+  "wire_events": 1291227,
+  "header_missing": 0,
+  "gateway_mismatches": 0,
+  "result": "passed",
+  "source_label_disagreements": 12104
+}

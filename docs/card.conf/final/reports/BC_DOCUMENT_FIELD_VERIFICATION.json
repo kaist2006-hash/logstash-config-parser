@@ -1,0 +1,46 @@
+{
+  "source_workbook": "비씨카드_첨부 1. 0390_0480_인증 전문(배포용)_20250723.xls",
+  "source_sheets": [
+    "일반인증(본인인증)",
+    "통합전문(현장할인)"
+  ],
+  "bcb_events": 5114,
+  "field_values_checked": 56397,
+  "value_differences": 0,
+  "configuration_offset_differences": 0,
+  "cases_by_layout": {
+    "general": 5108,
+    "discount": 6
+  },
+  "exported_field_counts": {
+    "message_code": 5114,
+    "retrieval_reference": 5114,
+    "transmission_datetime": 5114,
+    "authentication_type": 5114,
+    "request_type": 5114,
+    "channel": 5114,
+    "merchant_number": 5114,
+    "customer_category": 5108,
+    "service_provider_code": 5114,
+    "response_code": 2557,
+    "authentication_approval_number": 2531,
+    "processing_result": 2557,
+    "card_product_code": 2556,
+    "business_id": 138,
+    "service_code": 2,
+    "request_count": 2,
+    "transaction_amount": 6,
+    "discount_eligible_amount": 6,
+    "discount_amount": 6,
+    "approved_amount": 6,
+    "partner_share_amount": 3,
+    "member_company_code": 3,
+    "service_management_number": 4
+  },
+  "status_counts": {
+    "ok": 5114,
+    "control": 7680,
+    "fallback": 662
+  },
+  "result": "passed"
+}

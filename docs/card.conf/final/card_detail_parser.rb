@@ -43,6 +43,7 @@ def register(params)
   raise ArgumentError, 'unknown enabled profile' if enabled && !(enabled - known).empty?
 
   @profiles = {}
+  @gateway_profiles = {}
   @version = document.fetch('version')
   prefix_width = { 'binary' => 1, 'ascii2' => 2, 'ascii3' => 3 }.freeze
 
@@ -71,7 +72,7 @@ def register(params)
       raise ArgumentError, 'invalid common fallback headers' unless rule['headers'].is_a?(Array) && (1..8).cover?(rule['headers'].size) &&
         rule['headers'].all? { |header| /\AISO[0-9]{9}\z/.match?(header) && !profile['expected_headers'].include?(header) }
       raise ArgumentError, 'invalid common fallback MTIs' unless rule['mtis'].is_a?(Array) && (1..32).cover?(rule['mtis'].size) &&
-        rule['mtis'].all? { |mti| /\A[0-9]{4}\z/.match?(mti) && profile['mtis'].include?(mti) }
+        rule['mtis'].all? { |mti| /\A[0-9]{4}\z/.match?(mti) }
       profile['_common_header_prefixes'] = {}
       profile['_common_header_width'] = profile['_binary'] ? 14 : 16
       rule['headers'].each do |header|
@@ -112,9 +113,13 @@ def register(params)
       raise ArgumentError, 'invalid embedded envelope encoding' unless %w[hex text bracket_text].include?(encoding)
       raise ArgumentError, 'invalid embedded length prefix' unless %w[bcd2 ascii4].include?(rule.fetch('prefix'))
       raise ArgumentError, 'invalid embedded payload encoding' unless %w[binary hex_ascii].include?(rule.fetch('payload_encoding', 'binary'))
+      if rule['hex_payload_header']
+        raise ArgumentError, 'invalid auto hex header' unless profile['expected_headers'] && profile['expected_headers'].include?(rule['hex_payload_header']) && rule.fetch('payload_encoding', 'binary') == 'binary'
+        rule['_hex_header'] = rule['hex_payload_header'].unpack1('H*').upcase
+      end
     end
 
-    if profile['format'] == 'fixed'
+    if profile['records']
       profile.fetch('records').each do |record|
         raise ArgumentError, 'invalid fixed record direction' unless %w[IN OUT].include?(record.fetch('direction'))
         raise ArgumentError, 'invalid fixed record marker' unless record.fetch('marker').is_a?(String) && !record['marker'].empty?
@@ -144,6 +149,12 @@ def register(params)
         raise ArgumentError, 'invalid length prefix' unless prefix_width.key?(spec.fetch('prefix'))
         raise ArgumentError, 'invalid length unit' unless %w[bytes digits].include?(spec.fetch('unit'))
         raise ArgumentError, 'invalid variable maximum' unless (1..4096).cover?(spec.fetch('max'))
+        if (byte_counts = spec['byte_counts'])
+          raise ArgumentError, 'invalid variable byte count switch' unless spec['prefix'] == 'binary' && spec['unit'] == 'digits' && byte_counts.is_a?(Array) && byte_counts.length <= 16 && byte_counts.all? { |n| n.is_a?(Integer) && (1..spec['max']).cover?(n) }
+        end
+        if spec['alternate_prefix']
+          raise ArgumentError, 'ambiguous alternate length prefix' unless spec['prefix'] == 'binary' && spec['alternate_prefix'] == 'ascii2' && spec['max'] < 48 && spec['unit'] == 'bytes'
+        end
         spec['_prefix_bytes'] = prefix_width[spec['prefix']]
       end
       raise ArgumentError, 'invalid field validation encoding' if spec['encoding'] && !%w[ascii bcd hex].include?(spec['encoding'])
@@ -213,7 +224,68 @@ def register(params)
       end
       raise ArgumentError, 'network layout size mismatch' unless boundary == layout['iso_length']
     end
+    if profile['fixed_layouts']
+      raise ArgumentError, 'fixed layouts require records' unless profile['records']
+      header = profile.fetch('fixed_header_fields')
+      common = profile.fetch('fixed_common_fields')
+      profile['fixed_layouts'].each do |name, fields|
+        raise ArgumentError, 'invalid fixed layout name' unless /\A[a-z][a-z0-9_]{0,63}\z/.match?(name)
+        seen = {}
+        (header + fields).each do |part|
+          emit = part.fetch('emit')
+          raise ArgumentError, 'invalid fixed layout field' unless /\A[a-z][a-z0-9_]{0,63}\z/.match?(emit) && !seen[emit]
+          seen[emit] = true
+          raise ArgumentError, 'invalid fixed layout bounds' unless part['offset'].is_a?(Integer) && part['offset'] >= 0 && part['length'].is_a?(Integer) && (1..512).cover?(part['length']) && part['offset'] + part['length'] <= 4096
+          raise ArgumentError, 'invalid fixed layout encoding' unless part['encoding'] == 'ascii'
+          raise ArgumentError, 'invalid fixed layout directions' if part['directions'] && (!part['directions'].is_a?(Array) || (part['directions'] - %w[IN OUT]).any?)
+          part['_pattern'] = Regexp.new(part['pattern']) if part['pattern']
+          if (condition = part['when'])
+            raise ArgumentError, 'invalid fixed field condition' unless condition['offset'].is_a?(Integer) && condition['offset'] >= 0 && condition['equals'].is_a?(String) && (1..32).cover?(condition['equals'].bytesize) && condition['offset'] + condition['equals'].bytesize <= 4096
+          end
+          profile['_fallback_fields'][emit] = true if part['common']
+        end
+      end
+      raise ArgumentError, 'invalid fixed common evidence' unless common.is_a?(Array) && !common.empty? && common.all? { |name| header.any? { |part| part['emit'] == name && part['required'] && part['common'] } }
+      profile['records'].each do |record|
+        next unless record['layouts']
+        origin = record.fetch('layout_origin')
+        raise ArgumentError, 'invalid fixed layout origin' unless origin.is_a?(Integer) && (0..64).cover?(origin) && record['offsets'].all? { |offset| offset >= origin }
+        record['layouts'].each do |choice|
+          raise ArgumentError, 'unknown fixed layout' unless profile['fixed_layouts'].key?(choice['layout'])
+          raise ArgumentError, 'invalid fixed selector offset' unless choice['offset'].is_a?(Integer) && (0..4096).cover?(choice['offset'])
+          choice['_length'] = choice['value'] ? choice['value'].bytesize : choice.fetch('length')
+          raise ArgumentError, 'invalid fixed selector length' unless (1..32).cover?(choice['_length'])
+          choice['_pattern'] = Regexp.new(choice['pattern']) if choice['pattern']
+          choice['_fields'] = header + profile['fixed_layouts'][choice['layout']]
+        end
+      end
+    end
+    if (overrides = profile.dig('common_header_fallback', 'field_overrides'))
+      profile['_common_compiled'] = compiled.dup
+      overrides.each do |key, rule|
+        bit = Integer(key, 10)
+        original = compiled[bit]
+        raise ArgumentError, 'invalid common field override' unless (2..@fallback_policy['common_max_de']).cover?(bit) && original && original['kind'] == 'fixed' && rule.keys == ['length'] && rule['length'].is_a?(Integer) && (1..4096).cover?(rule['length'])
+        profile['_common_compiled'][bit] = original.merge(rule)
+      end
+    end
+    if (common = profile['fixed_common_fallback'])
+      raise ArgumentError, 'invalid fixed common fallback' unless profile['fixed_header_fields'] && common['markers'].is_a?(Array) && common['markers'].all? { |marker| /\A[A-Z]{3}\z/.match?(marker) } && common['offsets'].all? { |offset| offset.is_a?(Integer) && (0..64).cover?(offset) } && common['origin'].is_a?(Integer) && common['offsets'].all? { |offset| offset >= common['origin'] }
+      profile['_fixed_common_records'] = common['markers'].to_h { |marker| [marker, {'name'=>marker.downcase+'_common','business'=>true,'common_only'=>true,'layout_origin'=>common['origin']}] }
+    end
+    common_records = profile.fetch('common_record_fallbacks', [])
+    raise ArgumentError, 'invalid common record list' unless common_records.is_a?(Array) && common_records.length <= 16
+    profile['_common_records'] = common_records.map do |record|
+      raise ArgumentError, 'invalid common record rule' unless record['name'].is_a?(String) && /\A[a-z][a-z0-9_]{0,63}\z/.match?(record['name']) && %w[IN OUT].include?(record['direction']) && record['pattern'].is_a?(String) && record['pattern'].bytesize <= 256 && record['pattern'].start_with?('\\A') && record['pattern'].end_with?('\\z')
+      record.merge('_pattern'=>Regexp.new(record['pattern']))
+    end
     profile['compiled'] = compiled
+    gateways = profile.fetch('gateways')
+    raise ArgumentError, 'invalid profile gateways' unless gateways.is_a?(Array) && (1..8).cover?(gateways.length) && gateways.uniq == gateways
+    gateways.each do |gateway|
+      raise ArgumentError, 'invalid gateway identifier' unless gateway.is_a?(String) && /\A[A-Z0-9_]{1,64}\z/.match?(gateway) && !@gateway_profiles.key?(gateway)
+      @gateway_profiles[gateway] = profile
+    end
     @profiles[profile['alias']] = profile
   end
 
@@ -227,10 +299,12 @@ def register(params)
   @orphan_text_tail_re = /(?:\] len\[[^\[\]\r\n]*\]?)? (?:(?:uid|fd)\[[^\]\r\n]*\] )?linename\[[^\]\r\n]*\]\)\s*\z/.freeze
   @completed_text_marker_re = /\bput_msg_complete\[/.freeze
   @completed_text_envelope_re = /\bput_msg_complete\[(.*?)\](?:\[([^\[\]\r\n]*)\])?(?:\s+linename\[[^\]]*\])?\s*\z/m.freeze
+  @gateway_header_re = /\A\([A-Za-z]\)\s{0,64}:\s{0,64}[^:\r\n]{1,64}:[^:\r\n]{1,64}:([^:\r\n]{1,64}):/.freeze
   @iso_header_re = /\AISO[0-9]{9}\z/.freeze
   @ascii_bitmap_re = /\A[0-9a-fA-F]{16}\z/.freeze
   @printable_ascii_re = /\A[\x20-\x7E]*\z/n.freeze
   card_freeze(@profiles)
+  @gateway_profiles.freeze
   card_freeze(@emv_export)
   card_freeze(@fallback_policy)
   @version.freeze
@@ -255,7 +329,7 @@ end
 def card_publish(event, result)
   if result['status'] == 'fallback'
     profile = @profiles[event.get('[@metadata][target_alias]')]
-    result['fields'].delete_if { |name, _| !profile['_fallback_fields'].key?(name) }
+    result['fields'].delete_if { |name, _| !profile['_fallback_fields'].key?(name) } if result['fields']
     result.delete('emv')
     result.delete('rest')
   elsif result['status'] == 'error'
@@ -284,6 +358,10 @@ def card_publish(event, result)
 end
 
 def card_common_ready?(profile, result)
+  return true if profile && result['validated_common_header']
+  if profile && profile['fixed_common_fields'] && result['record_type'] && result['fields'].is_a?(Hash)
+    return profile['fixed_common_fields'].all? { |name| result['fields'][name].is_a?(String) && !result['fields'][name].empty? }
+  end
   return false unless profile && profile['format'] == 'iso8583' && result['iso_header'] &&
     result['mti'] && result['present_fields'].is_a?(Array) && result['fields'].is_a?(Hash)
   fields = result['fields']
@@ -307,7 +385,7 @@ def card_external_input_loss(result)
   # payload. Replacement characters occur only in the discarded logger buffer.
   result['input_loss_truncated'] = false
   result['input_loss_outside_payload'] = true
-  result['errors'].reject! { |item| item['code'] == 'input_decoding_loss' }
+  result['errors'].reject! { |item| %w[input_decoding_loss input_encoding_not_reversible].include?(item['code']) }
   result.delete('errors') if result['errors'].empty?
 end
 
@@ -427,7 +505,9 @@ def card_transport(raw, profile, result)
       body = body.byteslice(response_prefix.bytesize, body.bytesize - response_prefix.bytesize)
       result['response_prefix_bytes'] = response_prefix.bytesize
     end
-    encoded_bytes = rule.fetch('payload_encoding', 'binary') == 'hex_ascii' ? count * 2 : count
+    hex_payload = rule.fetch('payload_encoding', 'binary') == 'hex_ascii' ||
+                  (rule['_hex_header'] && body.byteslice(0, rule['_hex_header'].bytesize).to_s.upcase == rule['_hex_header'])
+    encoded_bytes = hex_payload ? count * 2 : count
     card_external_input_loss(result) if body.bytesize >= encoded_bytes
     if body.bytesize < encoded_bytes
       card_error(result, 'truncated_transport_payload', nil, prefix_bytes, encoded_bytes, body.bytesize)
@@ -436,7 +516,7 @@ def card_transport(raw, profile, result)
       result['transport_trimmed_bytes'] = body.bytesize - encoded_bytes
       body = body.byteslice(0, encoded_bytes)
     end
-    if rule.fetch('payload_encoding', 'binary') == 'hex_ascii'
+    if hex_payload
       unless body.bytesize.even? && /\A[0-9a-fA-F]*\z/.match?(body)
         card_error(result, 'invalid_transport_hex_payload')
         return nil
@@ -464,10 +544,28 @@ end
 def card_parse_fixed(raw, profile, result)
   result['payload_bytes'] = raw.bytesize
   direction = result['direction']
+  marker_offset = nil
   record = profile['records'].find do |candidate|
-    next false unless candidate['direction'] == direction && candidate['lengths'].include?(raw.bytesize)
-    candidate['offsets'].any? do |offset|
+    next false unless candidate['direction'] == direction
+    marker_offset = candidate['offsets'].find do |offset|
       raw.byteslice(offset, candidate['marker'].bytesize) == candidate['marker']
+    end
+    marker_offset
+  end
+  if !record && profile['_fixed_common_records']
+    mismatch = profile['records'].any? do |candidate|
+      candidate['direction'] != direction && candidate['offsets'].any? { |offset| raw.byteslice(offset, candidate['marker'].bytesize) == candidate['marker'] }
+    end
+    if mismatch
+      card_error(result, 'fixed_record_direction_mismatch')
+      return
+    end
+    profile['fixed_common_fallback']['offsets'].each do |offset|
+      candidate = profile['_fixed_common_records'][raw.byteslice(offset, 3)]
+      next unless candidate && /\A[0-9]{4}\z/.match?(raw.byteslice(offset + 3, 4).to_s)
+      record = candidate
+      marker_offset = offset
+      break
     end
   end
   unless record
@@ -475,8 +573,42 @@ def card_parse_fixed(raw, profile, result)
     return
   end
   result['record_type'] = record['name']
+  if record['lengths'] && !record['lengths'].include?(raw.bytesize)
+    card_error(result, 'fixed_record_length_mismatch', nil, 0, record['lengths'].min, raw.bytesize)
+  end
+  if record['layouts'] || record['common_only']
+    base = marker_offset - record['layout_origin']
+    layout = (record['layouts'] || []).find do |choice|
+      value = raw.byteslice(base + choice['offset'], choice['_length'])
+      value && (choice['value'] ? value == choice['value'] : choice['_pattern'].match?(value))
+    end
+    card_error(result, 'unknown_fixed_layout') if record['layouts'] && !layout
+    card_warn(result, 'unregistered_fixed_detail_common_only') if record['common_only']
+    values = {}
+    (layout ? layout['_fields'] : profile['fixed_header_fields']).each do |part|
+      next if part['directions'] && !part['directions'].include?(direction)
+      condition = part['when']
+      next if condition && raw.byteslice(base + condition['offset'], condition['equals'].bytesize) != condition['equals']
+      offset = base + part['offset']
+      bytes = raw.byteslice(offset, part['length'])
+      unless bytes && bytes.bytesize == part['length']
+        card_error(result, 'truncated_fixed_field', part['emit'], offset, part['length'], [raw.bytesize - offset, 0].max)
+        next
+      end
+      value = card_value(bytes, part, result, part['emit'], offset)
+      next unless value
+      if value.empty?
+        card_error(result, 'missing_fixed_field', part['emit'], offset) if part['required']
+      elsif part['_pattern'] && !part['_pattern'].match?(value)
+        card_error(result, 'invalid_fixed_field', part['emit'], offset)
+      else
+        values[part['emit']] = value
+      end
+    end
+    result['fields'] = values unless values.empty?
+  end
   unless record['business']
-    result['status'] = 'control'
+    result['status'] = 'control' if record['lengths'].include?(raw.bytesize)
     result['control_frame'] = true
   end
   result['consumed_bytes'] = raw.bytesize
@@ -521,6 +653,58 @@ def card_network_common(raw, offset, profile, result)
   true
 end
 
+def card_encode_text(text, result)
+  text.encode(@text_encoding).b
+rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
+  raise unless @recover_lossy_prefix
+  source = text.dup
+  output = ''
+  converter = Encoding::Converter.new(text.encoding, @text_encoding)
+  converter.primitive_convert(source, output)
+  result['input_loss_truncated'] = true
+  result['logged_bytes_exact'] = false
+  result['input_recovered_prefix_bytes'] = output.bytesize
+  card_error(result, 'input_encoding_not_reversible', nil, output.bytesize)
+  output.b
+end
+
+def card_header_common(raw, profile, result)
+  profile['header_offsets'].each do |offset|
+    header = raw.byteslice(offset, 12)
+    next unless header && @iso_header_re.match?(header)
+    pos = offset + 12
+    width = profile['_binary'] ? 2 : 4
+    bytes = raw.byteslice(pos, width)
+    next unless bytes && bytes.bytesize == width
+    mti = profile['_binary'] ? bytes.unpack1('H*') : bytes
+    next unless /\A[0-9]{4}\z/.match?(mti) && mti != '0000'
+    pos += width
+    complete = false
+    announced_data = false
+    profile['max_bitmaps'].times do
+      width = profile['_binary'] ? 8 : 16
+      chunk = raw.byteslice(pos, width)
+      break unless chunk && chunk.bytesize == width
+      break if !profile['_binary'] && !@ascii_bitmap_re.match?(chunk)
+      map = profile['_binary'] ? chunk : [chunk].pack('H*')
+      announced_data ||= (map.getbyte(0) & 127) != 0 || map.byteslice(1, 7).bytes.any? { |byte| byte != 0 }
+      pos += width
+      if (map.getbyte(0) & 128).zero?
+        complete = true
+        break
+      end
+    end
+    next unless complete && (!announced_data || raw.bytesize > pos)
+    result['iso_header'] = header.dup.force_encoding(Encoding::UTF_8)
+    result['mti'] = mti.dup.force_encoding(Encoding::UTF_8)
+    result['validated_common_header'] = true
+    result['frame_status'] = 'partial'
+    card_warn(result, 'unregistered_iso_header_common_only')
+    return true
+  end
+  false
+end
+
 def card_parse(raw, profile, result)
   result['payload_bytes'] = raw.bytesize
   common_only = false
@@ -552,10 +736,19 @@ def card_parse(raw, profile, result)
       result['remaining_bytes'] = 0
       return
     end
+    common_record = profile['_common_records'].find { |record| record['direction'] == result['direction'] && record['_pattern'].match?(raw) }
+    if common_record
+      result['record_type'] = common_record['name']
+      result['validated_common_header'] = true
+      result['frame_status'] = 'partial'
+      card_warn(result, 'unregistered_record_common_header_only')
+      return
+    end
     has_iso_header = profile['header_offsets'].any? do |candidate|
       header = raw.byteslice(candidate, 12)
       header && @iso_header_re.match?(header)
     end
+    return if has_iso_header && card_header_common(raw, profile, result)
     card_error(result, has_iso_header ? 'unexpected_iso_header' : 'missing_iso_header')
     return
   end
@@ -621,7 +814,7 @@ def card_parse(raw, profile, result)
     # A configured header variant establishes only the documented common prefix.
     # Stop before detailed DEs instead of assuming their layout is unchanged.
     break if common_only && bit > @fallback_policy['common_max_de']
-    spec = profile['compiled'][bit]
+    spec = common_only && profile['_common_compiled'] ? profile['_common_compiled'][bit] : profile['compiled'][bit]
     if spec.nil? || spec['kind'] == 'blocked'
       card_error(result, spec.nil? ? 'unknown_field' : 'unresolved_spec_field', bit, pos)
       break
@@ -642,11 +835,13 @@ def card_parse(raw, profile, result)
     length = spec['length']
     if spec['kind'] == 'var'
       prefix_bytes = spec['_prefix_bytes']
+      first = raw.getbyte(pos)
+      prefix_bytes = 2 if spec['alternate_prefix'] == 'ascii2' && first && (48..57).cover?(first)
       if pos + prefix_bytes > raw.bytesize
         card_error(result, 'truncated_length_prefix', bit, pos, prefix_bytes, raw.bytesize - pos)
         break
       end
-      if spec['prefix'] == 'binary'
+      if spec['prefix'] == 'binary' && prefix_bytes == 1
         count = raw.getbyte(pos)
       else
         prefix = raw.byteslice(pos, prefix_bytes)
@@ -668,7 +863,7 @@ def card_parse(raw, profile, result)
         end
         count -= prefix_bytes
       end
-      length = spec['unit'] == 'digits' ? (count + 1) / 2 : count
+      length = spec['unit'] == 'digits' && !(spec['byte_counts'] && spec['byte_counts'].include?(count)) ? (count + 1) / 2 : count
       pos += prefix_bytes
     end
 
@@ -775,7 +970,22 @@ def filter(event)
     return [event]
   end
 
-  profile = @profiles[event.get('[@metadata][target_alias]')]
+  # Select from the original logger header; filenames never participate.
+  message = event.get('message')
+  header = @gateway_header_re.match(message) if message.is_a?(String)
+  gateway = header ? header[1] : event.get('gateway')
+  if gateway.is_a?(String) && !gateway.empty?
+    profile = @gateway_profiles[gateway]
+    event.set('gateway', gateway) if header
+    if profile
+      event.set('[@metadata][target_alias]', profile['alias'])
+    else
+      event.remove('[@metadata][target_alias]')
+    end
+  else
+    # Keep explicit profile calls for payload-only callers without a header.
+    profile = @profiles[event.get('[@metadata][target_alias]')]
+  end
   unless profile
     result['status'] = 'unconfigured'
     result['frame_status'] = 'not_parsed'
@@ -790,7 +1000,6 @@ def filter(event)
     return card_publish(event, result)
   end
 
-  message = event.get('message')
   if !message.is_a?(String)
     card_error(result, 'message_not_string')
   elsif message.bytesize > @max_message_bytes
@@ -884,7 +1093,7 @@ def filter(event)
         if @recover_lossy_prefix
           # Everything after the first replacement character has unknown byte
           # positions. Parse only the reversible prefix and force fallback/error.
-          raw = raw[0...loss_offset].encode(@text_encoding).b
+          raw = card_encode_text(raw[0...loss_offset], result)
           result['input_loss_truncated'] = true
           result['logged_bytes_exact'] = false
           result['input_recovered_prefix_bytes'] = raw.bytesize
@@ -894,7 +1103,7 @@ def filter(event)
           raw = nil
         end
       else
-        raw = raw.encode(@text_encoding).b
+        raw = card_encode_text(raw, result)
       end
     end
 
@@ -932,7 +1141,9 @@ def filter(event)
       end
       raw = card_transport(raw, profile, result)
       if raw
-        if profile['format'] == 'fixed'
+        fixed = profile['format'] == 'fixed' || (profile['records'] &&
+                !profile['header_offsets'].any? { |offset| profile['expected_headers'].include?(raw.byteslice(offset, 12)) || (profile['_common_header_prefixes'] && profile['_common_header_prefixes'].key?(raw.byteslice(offset, profile['_common_header_width']))) })
+        if fixed
           card_parse_fixed(raw, profile, result)
         else
           card_parse(raw, profile, result)

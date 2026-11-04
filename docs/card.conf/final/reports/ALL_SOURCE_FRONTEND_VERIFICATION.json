@@ -1,0 +1,162 @@
+{
+  "result": "passed",
+  "method": "Independent full-source regex equivalent of the reference Logstash split; actual plugin pipeline separately checked",
+  "events": 1291227,
+  "split_failures": 0,
+  "header_packet_leaks": 0,
+  "sources": [
+    {
+      "source": "BCC_IC",
+      "events": 56134,
+      "text": 28067,
+      "hex": 28067,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "bcc_ms",
+      "events": 13456,
+      "text": 13456,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "CNB_IC",
+      "events": 302191,
+      "text": 0,
+      "hex": 302191,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "CNB_MS",
+      "events": 71302,
+      "text": 71302,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "din_ic",
+      "events": 5474,
+      "text": 0,
+      "hex": 5474,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "din_ms",
+      "events": 13180,
+      "text": 13180,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "keb_sum",
+      "events": 142703,
+      "text": 0,
+      "hex": 142703,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "lgc_ic",
+      "events": 194098,
+      "text": 0,
+      "hex": 194098,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "lgc_ms",
+      "events": 114824,
+      "text": 114824,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "LTC_IC",
+      "events": 12104,
+      "text": 12104,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "LTC_MS",
+      "events": 51766,
+      "text": 51766,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "NIC_IC",
+      "events": 111352,
+      "text": 111352,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "NIC_MS",
+      "events": 10296,
+      "text": 10296,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "win_ic",
+      "events": 3826,
+      "text": 0,
+      "hex": 3826,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "wrc",
+      "events": 49640,
+      "text": 0,
+      "hex": 49640,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "NEW_SAMSUNG_MS",
+      "events": 113136,
+      "text": 113136,
+      "hex": 0,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    },
+    {
+      "source": "NEW_LOTTE_IC",
+      "events": 25745,
+      "text": 0,
+      "hex": 25745,
+      "split_failures": 0,
+      "header_packet_leaks": 0,
+      "failure_lines": []
+    }
+  ]
+}

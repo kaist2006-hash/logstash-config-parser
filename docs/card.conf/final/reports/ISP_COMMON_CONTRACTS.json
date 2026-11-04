@@ -1,0 +1,272 @@
+{
+  "result": "passed",
+  "observed_signature_only": true,
+  "internal_business_layout_verified": false,
+  "cases": [
+    {
+      "name": "observed_isp_request_variable_0",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_0",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_1",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_1",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_2",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_2",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_3",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_3",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_4",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_4",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_5",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_5",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_6",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_6",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_7",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_7",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_8",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_8",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_9",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_9",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_10",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_10",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_11",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_11",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_12",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_12",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_13",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_13",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_14",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_14",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_15",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_15",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_16",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_16",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_17",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_17",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_18",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_18",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_19",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_19",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_20",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_20",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_21",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_21",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_22",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_22",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "observed_isp_request_variable_23",
+      "status": "fallback",
+      "record_type": "isp_request_common_only"
+    },
+    {
+      "name": "observed_isp_response_variable_23",
+      "status": "fallback",
+      "record_type": "isp_response_common_only"
+    },
+    {
+      "name": "wrong_request_direction",
+      "status": "error",
+      "record_type": null
+    },
+    {
+      "name": "short_response",
+      "status": "error",
+      "record_type": null
+    },
+    {
+      "name": "non_numeric_response",
+      "status": "error",
+      "record_type": null
+    },
+    {
+      "name": "wrong_request_numeric_slot",
+      "status": "error",
+      "record_type": null
+    },
+    {
+      "name": "other_issuer_does_not_inherit_isp",
+      "status": "error",
+      "record_type": null
+    }
+  ]
+}

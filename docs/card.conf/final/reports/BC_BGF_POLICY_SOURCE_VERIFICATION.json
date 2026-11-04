@@ -1,0 +1,138 @@
+{
+  "bcc_ms": {
+    "events": 13456,
+    "old_status": {
+      "ok": 5776,
+      "control": 7680
+    },
+    "status": {
+      "ok": 5114,
+      "control": 7680,
+      "fallback": 662
+    },
+    "record_types": {
+      "bcb_request": 2557,
+      "bcb_response": 2557,
+      "health_request": 2400,
+      "network_request": 1440,
+      "health_response": 2400,
+      "ept_450_response": 63,
+      "network_response": 1440,
+      "ept_450_request": 63,
+      "bca_response": 114,
+      "ept_300_request": 154,
+      "ept_300_response": 154,
+      "bca_request": 114
+    },
+    "errors": {
+    },
+    "field_counts": {
+      "channel": 5114,
+      "merchant_number": 5114,
+      "request_type": 5114,
+      "authentication_type": 5114,
+      "message_code": 5776,
+      "service_provider_code": 5114,
+      "customer_category": 5108,
+      "retrieval_reference": 5776,
+      "transmission_datetime": 5776,
+      "authentication_approval_number": 2531,
+      "response_code": 2888,
+      "card_product_code": 2556,
+      "processing_result": 2557,
+      "business_id": 138,
+      "approved_amount": 6,
+      "service_management_number": 4,
+      "discount_eligible_amount": 6,
+      "transaction_amount": 6,
+      "discount_amount": 6,
+      "partner_share_amount": 3,
+      "member_company_code": 3,
+      "service_code": 2,
+      "request_count": 2
+    },
+    "records_with_fields": {
+      "bcb_request": 2557,
+      "bcb_response": 2557,
+      "ept_450_response": 63,
+      "ept_450_request": 63,
+      "bca_response": 114,
+      "ept_300_request": 154,
+      "ept_300_response": 154,
+      "bca_request": 114
+    },
+    "expected_common_recoveries": 662,
+    "unexpected_differences": 0,
+    "error_cases": [
+
+    ],
+    "business_field_changes": 662,
+    "status_direction_tag_changes": 662
+  },
+  "BCC_IC": {
+    "events": 56134,
+    "old_status": {
+      "control": 7200,
+      "ok": 48892,
+      "error": 42
+    },
+    "status": {
+      "control": 7200,
+      "ok": 48892,
+      "fallback": 42
+    },
+    "record_types": {
+      "network_request": 3600,
+      "network_response": 3600,
+      "0300": 21793,
+      "0310": 21793,
+      "0410": 2653,
+      "0400": 2653,
+      "0550": 21,
+      "0540": 21
+    },
+    "errors": {
+      "0550|unknown_field|38": 16,
+      "0540|unknown_field|41": 21,
+      "0550|unknown_field|41": 5
+    },
+    "field_counts": {
+      "business_id": 48892,
+      "trace_number": 48934,
+      "local_date": 48934,
+      "terminal_id": 48892,
+      "service_charge": 48892,
+      "tax_amount": 48892,
+      "installment_months": 48892,
+      "pos_entry_mode": 46272,
+      "transmission_datetime": 48934,
+      "acquirer_country": 21820,
+      "local_time": 48934,
+      "pos_condition": 24467,
+      "merchant_number": 48892,
+      "currency_code": 24446,
+      "processing_code": 48934,
+      "merchant_type": 21835,
+      "approval_number": 48892,
+      "transaction_amount": 48934,
+      "retrieval_reference": 48934,
+      "response_code": 27104,
+      "card_sequence": 14265
+    },
+    "records_with_fields": {
+      "0300": 21793,
+      "0310": 21793,
+      "0410": 2653,
+      "0400": 2653,
+      "0550": 21,
+      "0540": 21
+    },
+    "expected_common_recoveries": 42,
+    "unexpected_differences": 0,
+    "error_cases": [
+
+    ],
+    "business_field_changes": 42,
+    "status_direction_tag_changes": 42
+  }
+}

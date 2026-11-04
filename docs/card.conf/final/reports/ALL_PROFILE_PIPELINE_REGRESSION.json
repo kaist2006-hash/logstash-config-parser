@@ -1,0 +1,42 @@
+{
+  "result": "passed",
+  "runtime": "Logstash 8.17.6; 4 workers; shared text-wrapper split; JSON header registry; no filename routing",
+  "input_events": 1022,
+  "output_events": 1016,
+  "same_exclusions": 6,
+  "all_original_984_value_status_direction_tags_split_differences": 0,
+  "renamed_filename_inputs": 1022,
+  "conflicting_input_alias_injected": true,
+  "new_lotte_ic_events": 32,
+  "new_lotte_ic_status": {
+    "ok": 32
+  },
+  "new_lotte_ic_directions": {
+    "OUT": 16,
+    "IN": 16
+  },
+  "selected_profile_alias_disagreements": 0,
+  "real_source_events": 1014,
+  "synthetic_negative_events": 2,
+  "source_filter_failures": 0,
+  "actual_real_profiles": 16,
+  "lotte_ic_actual_source_supplied": true,
+  "profiles": {
+    "lotte_ms": 72,
+    "nh_ms": 405,
+    "samsung_ms": 120,
+    "bcc_ic": 32,
+    "bcc_ms": 32,
+    "kb_ms": 32,
+    "hyundai_ms": 32,
+    "kb_ic": 34,
+    "hyundai_ic": 32,
+    "hana_sum": 32,
+    "shinhan_ms": 32,
+    "shinhan_ic": 32,
+    "nh_ic": 33,
+    "samsung_ic": 32,
+    "woori_sum": 32,
+    "lotte_ic": 32
+  }
+}

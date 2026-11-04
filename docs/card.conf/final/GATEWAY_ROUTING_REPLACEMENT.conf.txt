@@ -1,0 +1,10 @@
+# Remove the old card-company filename/path routing section.
+# Keep the existing header/body split and a single Ruby filter below.
+# Ruby reads the logger gateway and chooses the JSON profile; it also sets target_alias.
+ruby {
+  id => "card_detail_parser"
+  path => "${CARD_PARSER_DIR}/card_detail_parser.rb"
+  script_params => {
+    "specs_path" => "${CARD_PARSER_DIR}/card_detail_specs.json"
+  }
+}

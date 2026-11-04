@@ -1,0 +1,597 @@
+{
+  "version": "2026-11-04.final19",
+  "runtime": "Logstash 8.17.6 JRuby; 4 concurrent workers; header selector; no filename/alias input",
+  "sources": [
+    {
+      "source": "BCC_IC",
+      "selected_profile": "bcc_ic",
+      "physical_lines": 112268,
+      "sha256": "3a806c7d744a0eef8a690d85765c5395b79a40beb45f1aeaaab35de70ec94f8d",
+      "events": 56134,
+      "status": {
+        "control": 7200,
+        "ok": 48892,
+        "fallback": 42
+      },
+      "directions": {
+        "OUT": 28067,
+        "IN": 28067
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "header_variant_common_only": 42,
+        "mti_not_in_document": 42,
+        "unknown_field:41": 26,
+        "unknown_field:38": 16
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 864991
+    },
+    {
+      "source": "bcc_ms",
+      "selected_profile": "bcc_ms",
+      "physical_lines": 22728,
+      "sha256": "459dfcaf3cd803a0b17fe2d704cafbff65250c0fc414ac271e4bc8f33e588be2",
+      "events": 13456,
+      "status": {
+        "ok": 5114,
+        "control": 7680,
+        "fallback": 662
+      },
+      "directions": {
+        "OUT": 6728,
+        "IN": 6728
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "unregistered_fixed_detail_common_only": 662
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 58714
+    },
+    {
+      "source": "CNB_IC",
+      "selected_profile": "kb_ic",
+      "physical_lines": 453297,
+      "sha256": "3baa1eb394994a08b03e8696d6669e5cfbd837dd44245860ad3e996eb3a51f89",
+      "events": 302191,
+      "status": {
+        "ok": 302189,
+        "fallback": 2
+      },
+      "directions": {
+        "OUT": 151100,
+        "IN": 151091
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "header_variant_common_only": 2
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 6496138
+    },
+    {
+      "source": "CNB_MS",
+      "selected_profile": "kb_ms",
+      "physical_lines": 71346,
+      "sha256": "4502baf05739373c3e87a93481f6777f1c40307d0cdead93fe9b8e2e713191c6",
+      "events": 71302,
+      "status": {
+        "fallback": 21665,
+        "ok": 49637
+      },
+      "directions": {
+        "IN": 35651,
+        "OUT": 35651
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "declared_length_mismatch": 19283,
+        "input_decoding_loss": 13252,
+        "truncated_field:35": 19328,
+        "missing_text_envelope_tail": 2375,
+        "recovered_outer_trailing_bytes": 2323,
+        "unregistered_record_common_header_only": 6,
+        "truncated_field:37": 4,
+        "redacted_length_prefix:46": 1,
+        "truncated_field:46": 3
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 619175
+    },
+    {
+      "source": "din_ic",
+      "selected_profile": "hyundai_ic",
+      "physical_lines": 10948,
+      "sha256": "02cfe89530330f2013086975fb54cb41f2924d593e55134d31957000677a9aec",
+      "events": 5474,
+      "status": {
+        "ok": 5474
+      },
+      "directions": {
+        "OUT": 2737,
+        "IN": 2737
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 65679
+    },
+    {
+      "source": "din_ms",
+      "selected_profile": "hyundai_ms",
+      "physical_lines": 19770,
+      "sha256": "b796225ca9e1a43a30043796188a42a9abaa84627bd61540113127e231b2f5ce",
+      "events": 13180,
+      "status": {
+        "ok": 11979,
+        "fallback": 1201
+      },
+      "directions": {
+        "OUT": 6590,
+        "IN": 6590
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "input_decoding_loss": 487,
+        "truncated_transport_payload": 724,
+        "truncated_field:35": 724,
+        "missing_text_envelope_tail": 426,
+        "bitmap_field_omitted_f39": 62
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 154532
+    },
+    {
+      "source": "keb_sum",
+      "selected_profile": "hana_sum",
+      "physical_lines": 214234,
+      "sha256": "007c3cd9d274ef9192fbb3f0df5875a552dcc805c06fc6ff0283ef82af385339",
+      "events": 142703,
+      "status": {
+        "ok": 142703
+      },
+      "directions": {
+        "OUT": 71354,
+        "IN": 71349
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 1341083
+    },
+    {
+      "source": "lgc_ic",
+      "selected_profile": "shinhan_ic",
+      "physical_lines": 291157,
+      "sha256": "a855d14e175b87a49e87ac7e896352cb7f602088198a28486c98a6f10d14efc9",
+      "events": 194098,
+      "status": {
+        "ok": 194098
+      },
+      "directions": {
+        "OUT": 97047,
+        "IN": 97051
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 2239067
+    },
+    {
+      "source": "lgc_ms",
+      "selected_profile": "shinhan_ms",
+      "physical_lines": 347806,
+      "sha256": "bbd1ae84acb0ad13a9bde12aba17dbd0a12815559be9208041f70defbbb12c23",
+      "events": 114824,
+      "status": {
+        "ok": 104716,
+        "fallback": 10108
+      },
+      "directions": {
+        "IN": 57414,
+        "OUT": 57410
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "missing_text_envelope_tail": 10105,
+        "recovered_outer_trailing_bytes": 10105,
+        "input_decoding_loss": 292,
+        "redacted_length_prefix:46": 3
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 1041969
+    },
+    {
+      "source": "LTC_IC",
+      "selected_profile": "lotte_ms",
+      "physical_lines": 12110,
+      "sha256": "34df2707bd3148551d7a61ba2538899c9a801da39cbe357dbff59ae5f8af41f2",
+      "events": 12104,
+      "status": {
+        "ok": 10091,
+        "fallback": 2013
+      },
+      "directions": {
+        "OUT": 6052,
+        "IN": 6052
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "declared_length_mismatch": 1074,
+        "input_decoding_loss": 818,
+        "truncated_field:35": 1074,
+        "omitted_document_field_f61": 741,
+        "missing_text_envelope_tail": 196,
+        "recovered_outer_trailing_bytes": 115,
+        "truncated_field:61": 71,
+        "truncated_field:37": 10,
+        "invalid_numeric_value:49": 2
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 212201,
+      "note": "User confirmed IC-labelled attachment contains MS logs; no actual Lotte IC log supplied."
+    },
+    {
+      "source": "LTC_MS",
+      "selected_profile": "lotte_ms",
+      "physical_lines": 51818,
+      "sha256": "d80a8367eab850b45518802ed9ad155bc32dd83c4f385523a7f20f9963fe4090",
+      "events": 51766,
+      "status": {
+        "ok": 44145,
+        "fallback": 7621
+      },
+      "directions": {
+        "OUT": 25883,
+        "IN": 25883
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "declared_length_mismatch": 2605,
+        "input_decoding_loss": 2287,
+        "truncated_field:35": 2605,
+        "omitted_document_field_f61": 2145,
+        "missing_text_envelope_tail": 2864,
+        "recovered_outer_trailing_bytes": 2724,
+        "truncated_field:61": 123,
+        "truncated_field:37": 17,
+        "invalid_numeric_value:49": 3,
+        "header_variant_common_only": 4
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 919693
+    },
+    {
+      "source": "NIC_IC",
+      "selected_profile": "nh_ic",
+      "physical_lines": 111434,
+      "sha256": "1c5a1bdd2b45a5db8551cffb43d2be75578f5470ffac86932bdff3272edce0f5",
+      "events": 111352,
+      "status": {
+        "ok": 98855,
+        "fallback": 12497
+      },
+      "directions": {
+        "OUT": 55673,
+        "IN": 55679
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "missing_text_envelope_tail": 9908,
+        "recovered_outer_trailing_bytes": 9908,
+        "declared_length_mismatch": 2254,
+        "truncated_field:118": 2254,
+        "padded_field_f118": 401,
+        "invalid_numeric_value:49": 2
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 55617,
+      "fields_exported": 2385189
+    },
+    {
+      "source": "NIC_MS",
+      "selected_profile": "nh_ms",
+      "physical_lines": 10348,
+      "sha256": "32682e59a7042b432ae5173b5483271f1396b9a9321bf85ed8d89e7aeaaa3361",
+      "events": 10296,
+      "status": {
+        "ok": 9720,
+        "fallback": 576
+      },
+      "directions": {
+        "OUT": 6864,
+        "IN": 3432
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "missing_text_envelope_tail": 398,
+        "recovered_outer_trailing_bytes": 354,
+        "network_layout_common_only": 186,
+        "declared_length_mismatch": 36,
+        "truncated_field:126": 34,
+        "truncated_field:118": 2
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 1075,
+      "fields_exported": 221028
+    },
+    {
+      "source": "win_ic",
+      "selected_profile": "samsung_ic",
+      "physical_lines": 5739,
+      "sha256": "0fa85ffbb20c6690927483557c879c2a24e8106af36a779b3a50c64d97958ec4",
+      "events": 3826,
+      "status": {
+        "ok": 3826
+      },
+      "directions": {
+        "OUT": 1913,
+        "IN": 1913
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 51606
+    },
+    {
+      "source": "wrc",
+      "selected_profile": "woori_sum",
+      "physical_lines": 84376,
+      "sha256": "02cb3399ec320182b74d3d2e7577db934146e167bed3f0ec21d669038ff14608",
+      "events": 49640,
+      "status": {
+        "ok": 48111,
+        "fallback": 1529
+      },
+      "directions": {
+        "IN": 24820,
+        "OUT": 24820
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "missing_bracket_envelope_tail": 1492,
+        "invalid_numeric_value:49": 38,
+        "invalid_numeric_value:70": 1
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 616890
+    },
+    {
+      "source": "NEW_SAMSUNG_MS",
+      "selected_profile": "samsung_ms",
+      "physical_lines": 113192,
+      "sha256": "bd71e484b9ea3bb2b09f2b3736d29b6a927edec4785fe4d08cf946270e280dd1",
+      "events": 113136,
+      "status": {
+        "ok": 95967,
+        "fallback": 17169
+      },
+      "directions": {
+        "OUT": 56568,
+        "IN": 56568
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "declared_length_mismatch": 6914,
+        "input_decoding_loss": 12825,
+        "truncated_field:35": 6969,
+        "missing_completed_text_envelope_tail": 7046,
+        "invalid_length_prefix:55": 1606,
+        "legacy_space_padding": 1607,
+        "missing_text_envelope_tail": 77,
+        "truncated_field:37": 22,
+        "invalid_length_prefix:127": 20,
+        "field_length_exceeds_limit:32": 1,
+        "redacted_length_prefix:56": 1
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 1051266
+    },
+    {
+      "source": "NEW_LOTTE_IC",
+      "selected_profile": "lotte_ic",
+      "physical_lines": 38628,
+      "sha256": "b06817a3eceba06748e862a46e8a42f486fd86d49cf9ef737e27854a82becf8b",
+      "events": 25745,
+      "status": {
+        "ok": 25436,
+        "fallback": 309
+      },
+      "directions": {
+        "OUT": 12874,
+        "IN": 12871
+      },
+      "errors": {
+      },
+      "fallback_reasons": {
+        "field_length_exceeds_limit:134": 308,
+        "unknown_field:57": 1
+      },
+      "error_cases": [
+
+      ],
+      "profile_mismatches": 0,
+      "source_mutations": 0,
+      "error_business_exports": 0,
+      "fallback_detail_exports": 0,
+      "tag_mismatches": 0,
+      "metadata_version_mismatches": 0,
+      "rest_events": 0,
+      "fields_exported": 867658
+    }
+  ],
+  "events": 1291227,
+  "status": {
+    "control": 14880,
+    "ok": 1200953,
+    "fallback": 75394
+  },
+  "actual_profiles": 16,
+  "lotte_ic_actual_source_supplied": true,
+  "parser_sha256": "12f71fa4942c50d463858f538a4d38e73bf0437950cf6ae3cafb09fcac2f32cb",
+  "specs_sha256": "998cfc2267231d476c4b06d23d53d449b9a37b3a4219a3fe61c43fe9cdd8cc8d",
+  "result": "passed"
+}

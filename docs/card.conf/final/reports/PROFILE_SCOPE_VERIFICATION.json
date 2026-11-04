@@ -1,0 +1,36 @@
+{
+  "result": "passed",
+  "changed_wire_field_profiles": [
+    "bcc_ms",
+    "lotte_ic"
+  ],
+  "unchanged_wire_field_profiles": [
+    "bcc_ic",
+    "kb_ic",
+    "kb_ms",
+    "lotte_ms",
+    "nh_ms",
+    "nh_ic",
+    "samsung_ms",
+    "samsung_ic",
+    "shinhan_ms",
+    "shinhan_ic",
+    "woori_sum",
+    "hana_sum",
+    "hyundai_ms",
+    "hyundai_ic"
+  ],
+  "gateway_registry_profiles": 16,
+  "common_only_additions": {
+    "bcc_ic": "legacy ISO023400053 0540/0550; F4 six BCD bytes in common branch only",
+    "bcc_ms": "BCA/EPT/unknown fixed record common header",
+    "kb_ms": "ISP/CCNBCCRDISP observed-signature header-only fallback"
+  },
+  "global_changes": [
+    "safe reversible encoding prefix recovery",
+    "complete unregistered ISO header common-only fallback"
+  ],
+  "other_existing_field_definitions_unchanged": 14,
+  "lotte_ic_actual_source_supplied": true,
+  "no_filename_selection": true
+}

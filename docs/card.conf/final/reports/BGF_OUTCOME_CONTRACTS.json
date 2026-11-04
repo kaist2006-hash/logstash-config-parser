@@ -1,0 +1,138 @@
+{
+  "result": "passed",
+  "cases": [
+    {
+      "name": "valid_detail",
+      "status": "ok",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "unreversible_after_common",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+        "input_encoding_not_reversible",
+        "truncated_length_prefix"
+      ]
+    },
+    {
+      "name": "unreversible_before_common",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "input_encoding_not_reversible",
+        "truncated_field",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "unreversible_outside_complete_multibyte_payload",
+      "status": "ok",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "unknown_header_common_only",
+      "status": "fallback",
+      "fields": [
+
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "unknown_header_no_announced_data",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "unexpected_iso_header"
+      ]
+    },
+    {
+      "name": "invalid_unknown_bitmap",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "unexpected_iso_header"
+      ]
+    },
+    {
+      "name": "invalid_required_amount",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "invalid_numeric_value",
+        "insufficient_common_fields"
+      ]
+    },
+    {
+      "name": "documented_legacy_bc_common_width",
+      "status": "fallback",
+      "fields": [
+        "processing_code",
+        "transaction_amount",
+        "transmission_datetime"
+      ]
+    },
+    {
+      "name": "unknown_bc_fixed_BCA6998",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "message_code",
+        "retrieval_reference"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "unknown_bc_fixed_EPT6926",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "message_code",
+        "retrieval_reference"
+      ],
+      "codes": [
+
+      ]
+    },
+    {
+      "name": "known_fixed_direction_mismatch",
+      "status": "error",
+      "fields": [
+
+      ],
+      "codes": [
+        "fixed_record_direction_mismatch"
+      ]
+    }
+  ]
+}

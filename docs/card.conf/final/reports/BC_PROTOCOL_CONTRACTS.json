@@ -1,0 +1,1600 @@
+{
+  "result": "passed",
+  "cases": [
+    {
+      "name": "integrated_text_hex_0",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_0",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_0",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_1",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_1",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_1",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_2",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_2",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_2",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_3",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_3",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_3",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_4",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_4",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_4",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_5",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_5",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_5",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_6",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_6",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_6",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_7",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_7",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_7",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_8",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_8",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_8",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_9",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_9",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_9",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_10",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_10",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_10",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_11",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_11",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_11",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_12",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_12",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_12",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_13",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_13",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_13",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_14",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_14",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_14",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_15",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_15",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_15",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_16",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_16",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_16",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_17",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_17",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_17",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_18",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_18",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_18",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_19",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_19",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_19",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_20",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_20",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_20",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_21",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_21",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_21",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_22",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_22",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_22",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_23",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_23",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_23",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_24",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_24",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_24",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_25",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_25",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_25",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_26",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_26",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_26",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_27",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_27",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_27",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_28",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_28",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_28",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_29",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_29",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_29",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_30",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_30",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_30",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_31",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_31",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_31",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_32",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_32",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_32",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_33",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_33",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_33",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_34",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_34",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_34",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_35",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_35",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_35",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_36",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_36",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_36",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_37",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_37",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_37",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_38",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_38",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_38",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_39",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_39",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_39",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_40",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_40",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_40",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_41",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_41",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_41",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_42",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_42",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_42",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_43",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_43",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_43",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_44",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_44",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_44",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_45",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_45",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_45",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_46",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_46",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_46",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_47",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_47",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_47",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_48",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_48",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_48",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_49",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_49",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_49",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_50",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_50",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_50",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_51",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_51",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_51",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_52",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_52",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_52",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_53",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_53",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_53",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_54",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_54",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_54",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_55",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_55",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_55",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_56",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_56",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_56",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_57",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_57",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_57",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_58",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_58",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_58",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_59",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_59",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_59",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_60",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_60",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_60",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_61",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_61",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_61",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_62",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_62",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_62",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_63",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_63",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_63",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_64",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_64",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_64",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_65",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_65",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_65",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_66",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_66",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_66",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_67",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_67",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_67",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_68",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_68",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_68",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_69",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_69",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_69",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_70",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_70",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_70",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_71",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_71",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_71",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_72",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_72",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_72",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_73",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_73",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_73",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_74",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_74",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_74",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_75",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_75",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_75",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_76",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_76",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_76",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_77",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_77",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_77",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_78",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_78",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_78",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_79",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_79",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_79",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_80",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_80",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_80",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_81",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_81",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_81",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_82",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_82",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_82",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_83",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_83",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_83",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_84",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_84",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_84",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_85",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_85",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_85",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_86",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_86",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_86",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_87",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_87",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_87",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_88",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_88",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_88",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_89",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_89",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_89",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_90",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_90",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_90",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_91",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_91",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_91",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_92",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_92",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_92",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_93",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_93",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_93",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_94",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_94",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_94",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_95",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_95",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_95",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_96",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_96",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_96",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_97",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_97",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_97",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_text_hex_98",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_binary_hex_98",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "ic_shared_spec_98",
+      "status": "ok",
+      "field_count": 7
+    },
+    {
+      "name": "integrated_text_hex_99",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "integrated_binary_hex_99",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "ic_shared_spec_99",
+      "status": "ok",
+      "field_count": 8
+    },
+    {
+      "name": "fixed_0000_IN",
+      "status": "ok",
+      "field_count": 13
+    },
+    {
+      "name": "fixed_0000_OUT",
+      "status": "ok",
+      "field_count": 9
+    },
+    {
+      "name": "fixed_M002_IN",
+      "status": "ok",
+      "field_count": 17
+    },
+    {
+      "name": "fixed_M002_OUT",
+      "status": "ok",
+      "field_count": 12
+    },
+    {
+      "name": "fixed_M003_IN",
+      "status": "ok",
+      "field_count": 17
+    },
+    {
+      "name": "fixed_M003_OUT",
+      "status": "ok",
+      "field_count": 12
+    },
+    {
+      "name": "fixed_0001_IN",
+      "status": "ok",
+      "field_count": 17
+    },
+    {
+      "name": "fixed_0001_OUT",
+      "status": "ok",
+      "field_count": 12
+    },
+    {
+      "name": "document_general_request_512",
+      "status": "ok",
+      "field_count": 9
+    },
+    {
+      "name": "document_general_response_origin",
+      "status": "ok",
+      "field_count": 13
+    },
+    {
+      "name": "declined_response_is_valid_log",
+      "status": "ok",
+      "field_count": 12
+    },
+    {
+      "name": "original_approval_only_on_cancellation",
+      "status": "ok",
+      "field_count": 12
+    },
+    {
+      "name": "invalid_detail_common_fallback",
+      "status": "fallback",
+      "field_count": 10
+    },
+    {
+      "name": "invalid_date_error",
+      "status": "error",
+      "field_count": 0
+    },
+    {
+      "name": "short_fixed_common_fallback",
+      "status": "fallback",
+      "field_count": 5
+    },
+    {
+      "name": "very_short_fixed_error",
+      "status": "error",
+      "field_count": 0
+    },
+    {
+      "name": "unknown_auth_common_fallback",
+      "status": "fallback",
+      "field_count": 3
+    },
+    {
+      "name": "control_HDRREQPOLL",
+      "status": "control",
+      "field_count": 0
+    },
+    {
+      "name": "control_0800",
+      "status": "control",
+      "field_count": 0
+    }
+  ]
+}
