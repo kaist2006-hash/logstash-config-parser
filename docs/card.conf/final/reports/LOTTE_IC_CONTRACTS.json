@@ -624,7 +624,7 @@
       "name": "invalid_required_bcd_amount",
       "status": "error",
       "fields": [
-
+        "processing_code"
       ]
     },
     {

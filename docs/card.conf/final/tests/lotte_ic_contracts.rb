@@ -14,7 +14,7 @@ parse=lambda do |name,wire,status,direction='OUT'|
  p.filter(e);d=e.get('card_detail');tags=Array(e.get('tags'))
  raise "#{name}: #{d['status']} #{d['errors']}" unless d['status']==status && d['profile']=='lotte_ic' && e.get('[@metadata][target_alias]')=='s_service_ltc_ic'
  raise 'message modified' unless e.get('message')==message
- raise 'error leaked fields' if status=='error' && d['fields']
+ raise 'error leaked detail' if status=='error' && (d['emv'] || d['rest'])
  raise 'fallback tagged error' if status=='fallback' && (!tags.include?('fallback') || tags.include?('error'))
  cases<<{'name'=>name,'status'=>d['status'],'fields'=>d.fetch('fields',{}).keys}
  d

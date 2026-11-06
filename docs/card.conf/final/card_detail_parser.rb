@@ -27,6 +27,8 @@ def register(params)
   @diagnostics = params.fetch('diagnostics', document.fetch('diagnostics', 'minimal'))
   raise ArgumentError, 'invalid diagnostics mode' unless %w[minimal full].include?(@diagnostics)
   @public_fields = %w[profile issuer service status direction mti record_type fields emv rest errors warnings].freeze
+  @preserve_error_common = document.fetch('error_policy', {}).fetch('preserve_validated_common_fields', false)
+  raise ArgumentError, 'invalid error common policy' unless [true, false].include?(@preserve_error_common)
   @fallback_policy = document.fetch('fallback_policy')
   raise ArgumentError, 'invalid common DE limit' unless (3..49).cover?(@fallback_policy.fetch('common_max_de'))
   %w[extra_common_fields minimum_business_fields network_context_fields network_identifier_fields].each do |key|
@@ -327,9 +329,17 @@ def card_warn(result, code)
 end
 
 def card_publish(event, result)
-  if result['status'] == 'fallback'
+  preserve_common = result['status'] == 'fallback' ||
+                    (result['status'] == 'error' && @preserve_error_common &&
+                     !Array(result['errors']).any? { |item| item['code'] == 'unexpected_parser_exception' })
+  if preserve_common
     profile = @profiles[event.get('[@metadata][target_alias]')]
-    result['fields'].delete_if { |name, _| !profile['_fallback_fields'].key?(name) } if result['fields']
+    if profile && result['fields'].is_a?(Hash)
+      result['fields'].delete_if { |name, _| !profile['_fallback_fields'].key?(name) }
+      result.delete('fields') if result['fields'].empty?
+    else
+      result.delete('fields')
+    end
     result.delete('emv')
     result.delete('rest')
   elsif result['status'] == 'error'
@@ -365,7 +375,7 @@ def card_common_ready?(profile, result)
   return false unless profile && profile['format'] == 'iso8583' && result['iso_header'] &&
     result['mti'] && result['present_fields'].is_a?(Array) && result['fields'].is_a?(Hash)
   fields = result['fields']
-  present = ->(name) { fields[name].is_a?(String) && !fields[name].empty? }
+  present = ->(name) { profile['_fallback_fields'].key?(name) && fields[name].is_a?(String) && !fields[name].empty? }
   if result['mti'].start_with?('08')
     @fallback_policy['network_context_fields'].any?(&present) &&
       @fallback_policy['network_identifier_fields'].any?(&present)

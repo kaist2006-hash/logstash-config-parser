@@ -1569,7 +1569,7 @@
     {
       "name": "invalid_date_error",
       "status": "error",
-      "field_count": 0
+      "field_count": 8
     },
     {
       "name": "short_fixed_common_fallback",
@@ -1579,7 +1579,7 @@
     {
       "name": "very_short_fixed_error",
       "status": "error",
-      "field_count": 0
+      "field_count": 1
     },
     {
       "name": "unknown_auth_common_fallback",

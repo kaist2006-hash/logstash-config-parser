@@ -1,0 +1,576 @@
+{
+  "result": "passed",
+  "cases": [
+    {
+      "profile": "bcc_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "bcc_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "bcc_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "bcc_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "bcc_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "bcc_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "bcc_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "bcc_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "kb_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "kb_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "lotte_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "lotte_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "lotte_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "lotte_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "lotte_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "lotte_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "lotte_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "lotte_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "nh_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "nh_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "nh_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "nh_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "samsung_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "samsung_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "samsung_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "samsung_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "samsung_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "samsung_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "samsung_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "samsung_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "shinhan_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "shinhan_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "shinhan_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "shinhan_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "shinhan_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "shinhan_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "shinhan_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "shinhan_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "woori_sum",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "woori_sum",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "woori_sum",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "woori_sum",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hana_sum",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hana_sum",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hana_sum",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "hana_sum",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hyundai_ms",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hyundai_ms",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hyundai_ms",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "hyundai_ms",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hyundai_ic",
+      "case": "short_common_1",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hyundai_ic",
+      "case": "short_common_2",
+      "status": "error",
+      "fields": [
+        "transaction_amount",
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "hyundai_ic",
+      "case": "invalid_common_3",
+      "status": "error",
+      "fields": [
+
+      ]
+    },
+    {
+      "profile": "hyundai_ic",
+      "case": "invalid_common_4",
+      "status": "error",
+      "fields": [
+        "processing_code"
+      ]
+    },
+    {
+      "profile": "kb_ic",
+      "case": "detail_identifier_is_not_common_evidence",
+      "status": "error",
+      "fields": [
+        "transmission_datetime"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "photo_network",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "trace_number",
+        "network_code"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "short_network_date_only",
+      "status": "error",
+      "fields": [
+        "transmission_datetime"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "short_network_partial_trace",
+      "status": "error",
+      "fields": [
+        "transmission_datetime"
+      ]
+    },
+    {
+      "profile": "nh_ms",
+      "case": "short_network_complete_trace",
+      "status": "fallback",
+      "fields": [
+        "transmission_datetime",
+        "trace_number"
+      ]
+    }
+  ]
+}

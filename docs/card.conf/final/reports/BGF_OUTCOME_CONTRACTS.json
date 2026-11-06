@@ -30,7 +30,7 @@
       "name": "unreversible_before_common",
       "status": "error",
       "fields": [
-
+        "processing_code"
       ],
       "codes": [
         "input_encoding_not_reversible",
@@ -84,7 +84,7 @@
       "name": "invalid_required_amount",
       "status": "error",
       "fields": [
-
+        "processing_code"
       ],
       "codes": [
         "invalid_numeric_value",

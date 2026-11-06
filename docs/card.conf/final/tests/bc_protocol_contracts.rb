@@ -8,7 +8,11 @@ parse=lambda do |name,message,expected,route='s_service_bcc_ms'|
  p.filter(e);d=e.get('card_detail')
  raise 'message altered' unless e.get('message')==message
  raise "#{name}: #{d['status']} instead of #{expected}: #{d['errors']}" unless d['status']==expected
- raise 'error exports business fields' if expected=='error' && d['fields']
+ if expected=='error'
+  allowed=p.instance_variable_get(:@profiles)[route]['_fallback_fields']
+  raise 'error exports non-common fields' unless d.fetch('fields',{}).keys.all?{|key|allowed[key]}
+  raise 'error exports detail' if d['emv'] || d['rest']
+ end
  cases<<{'name'=>name,'status'=>d['status'],'field_count'=>d.fetch('fields',{}).size}
  d
 end

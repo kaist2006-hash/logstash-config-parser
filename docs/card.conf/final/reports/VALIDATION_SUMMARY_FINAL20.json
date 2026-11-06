@@ -1,0 +1,15 @@
+{
+  "result": "passed",
+  "baseline_version": "2026-11-04.final19",
+  "current_version": "2026-11-04.final20",
+  "events": 1291227,
+  "status_changes": 0,
+  "per_source_export_count_changes": 0,
+  "rest_event_changes": 0,
+  "partial_error_cases": 69,
+  "exportable_common_evidence_only": true,
+  "workbook_sheets": 17,
+  "request_response_catalogs": 32,
+  "rendered_review_views": 50,
+  "clipped_review_cells": 0
+}

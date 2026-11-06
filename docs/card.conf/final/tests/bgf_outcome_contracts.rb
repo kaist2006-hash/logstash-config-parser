@@ -11,7 +11,7 @@ parse=lambda do |name,body,length,status,route='s_service_cnb_ms'|
  p.filter(e);d=e.get('card_detail');tags=Array(e.get('tags'))
  raise "#{name}: #{d['status']} != #{status}: #{d['errors']}" unless d['status']==status
  raise 'fallback tagged error' if status=='fallback' && (tags.include?('error') || !tags.include?('fallback'))
- raise 'invalid event exported fields' if status=='error' && d['fields']
+ raise 'invalid event exported detail' if status=='error' && (d['emv'] || d['rest'])
  cases<<{'name'=>name,'status'=>status,'fields'=>d.fetch('fields',{}).keys,'codes'=>d.fetch('errors',[]).map{|x|x['code']}}
  d
 end

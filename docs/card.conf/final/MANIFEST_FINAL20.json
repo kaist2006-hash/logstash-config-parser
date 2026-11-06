@@ -1,0 +1,26 @@
+{
+  "version": "2026-11-04.final20",
+  "files": {
+    "card_detail_parser.rb": "b95502c90565fed257adc29b649c6869d256cf3c1953201cb638690c9c1bfb17",
+    "card_detail_specs.json": "78828c6a59a6e619b7cb7e3d9b8456a57eb4d1d2ad75e5b38975c8cac5e0f4be",
+    "APPLY_GUIDE_FINAL20.md": "7beb319d4245cc3eb391282d73311f2ae00b46782d968fa01b40ff6c21acbbbd",
+    "PROCESS_FLOW_FINAL20.md": "f1b14ff1e8f51e941a8fbb26da2d2b87977530a659fd1838bc9c657486871d10",
+    "reference/card.conf": "181f34a1df3e665aa8f36c7eac7ad6823593faf74967c10aa47dd134ee9c8113",
+    "tests/bc_protocol_contracts.rb": "27b36c7e69e4a43bcf70cc49db69a2dcfe85eb8ae30a5775918ebd32fd9cdfd1",
+    "tests/bgf_outcome_contracts.rb": "9ae22b77cffc024b3bf0338f635e2ebdc4c3b279e159090f549072def3c415db",
+    "tests/isp_common_contracts.rb": "994a75d22e278e8507d185588c56638bb8527e6dbdb85af7fef6d01a28929351",
+    "tests/lotte_ic_contracts.rb": "b20bd014eb11b87a374ba863d8c4b8719daee6ec6d1718dba768f7809600b106",
+    "tests/output_contracts_final20.rb": "29811b92ba67e7dae45733c57c795fa6a6d158347493a37c3e1d5b33a5aca67f",
+    "tests/envelope_variable_final20.rb": "aeb81e29add94ce668b30cad5dd425fceee87a77cd539b93d9ed995627c4f580",
+    "tests/partial_error_contracts.rb": "4e8953f60cf85d8560db61eb38a07e507c478e051a8467cceb2fcbd23ab51ff7",
+    "reports/ALL_REAL_SOURCE_VERIFICATION.json": "2132ef89edd9eadf9191f847d408c13acece9baf8002cb9f3a9c5736c2fe029d",
+    "reports/PARTIAL_ERROR_CONTRACTS.json": "5aafbe0438a3bf5a0c95c63ad9bcc557b899062bb0e725a1427587a0a1f5ddb7",
+    "reports/BC_PROTOCOL_CONTRACTS.json": "93ba1d66e9f73324396b694467759f8d37e21af44bcbfe9b522f2cec5d6ce2f4",
+    "reports/BGF_OUTCOME_CONTRACTS.json": "f4d9cd7d5d1e83c12e9cb511a058390ce6038cf74e71e9f5cb451b20147a9a75",
+    "reports/ISP_COMMON_CONTRACTS.json": "2e5f61fd8d9054beb77192b4f746b66351e265cd5061bade773c3b5b43e786e7",
+    "reports/LOTTE_IC_CONTRACTS.json": "3904c84844e8df53938c5903c8cd3fb83cc25a4cbcb8db164f8da5c8ca23f1f9",
+    "reports/OUTPUT_CONTRACTS.json": "9ebfb62293ecef1601472440bce32fe7d112ac72f934b4a7c2da940ee494faa1",
+    "reports/VALIDATION_SUMMARY_FINAL20.json": "70cbc3884789056966becaefe9bfcf61b30cceeafdfb9f4d4a862b5c2e206f53",
+    "CARD_CONF_공통필드_요청응답_FINAL20_20261106.xlsx": "9d1a8de070f6137df04fe3e8deed882e77bdce427ed1a9b38d931acebdad20a2"
+  }
+}
